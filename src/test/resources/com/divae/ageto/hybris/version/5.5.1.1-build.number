@@ -1,0 +1,7 @@
+#Ant properties
+#Tue May 12 10:24:04 CEST 2015
+builddate=20150512 1023
+releasedate=20150512 1023
+vendor=hybris
+version=5.5.1.1
+version.api=5.5.1

@@ -1,0 +1,15 @@
+<configuration>
+
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class{1}.%method:%line - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="com.divae.ageto.hybris" level="debug"/>
+  <logger name="com.strobel" level="error"/>
+
+  <root level="warn">
+    <appender-ref ref="stdout"/>
+  </root>
+</configuration>
