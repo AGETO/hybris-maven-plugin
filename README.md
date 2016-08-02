@@ -1,33 +1,17 @@
 # Hybris Maven Plugin
 This maven plugin aims for allowing the hybris commerce suite to be build to java archive files.
+It converts a given hybris installation to a maven project. 
+It allows for compiling extensions into separate modules for better dependency management of the classes of the hybris commerce suite and better maintainability of its source code.
+In the end it should also be possible to build a hybris installation on a dedicated build server by simply typing `mvn hybris:install`and
+copying the resulting class files to the productive system.
 
 **ATTENTION**
 This plugin is currently WiP, not stable and not recommended for productive
 use! The only tested version is 5.5.1.1
 
-## Convert hybris suite to maven project
-
-The first use of the plugin is the conversion of a given hybris installation to
-a pure maven project.
-
-This step is necessary for the next usage of the plugin.
-
-Simply type `mvn hybris:install` within the hybris installation directory and
-it will happen. After this your local maven repository contains various
-artifacts according to your hybris installation.
-
-### In detail
-* determine the version of the hybris installation
-* disassembly and re-structure the suites sources and resources in a temporary
-folder
-* utilize the hybris build tools (ybootstrap.jar etc.)
-* install the reactor build for the hybris suite which automatically generates
-the sources defined in *-items.xml and *-beans.xml
-
-## Build custom extensions
-
-With the hybris artifact in you local maven repository you can develop you
-custom extension within a pure maven reactor build.
+## In detail
+First it determines the version of the hybris installation and then disassembles and restructures the sources and resources of the suite in a temporary folder. After that, it calls the hybris build tools for preparing the build of the hybris suite, before it runs the actual build process and installs the reactor build.
+Basing on the resulting hybris artifacts in your local maven repository you can develop your custom extenions before building and deploying your hybris installation.
 
 ## Current TODO's
 
