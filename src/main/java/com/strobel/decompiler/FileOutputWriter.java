@@ -10,7 +10,8 @@ final class FileOutputWriter extends OutputStreamWriter {
     private final File file;
 
     FileOutputWriter(File file, DecompilerSettings settings) throws IOException {
-        super(new FileOutputStream(file), settings.isUnicodeOutputEnabled() ? Charset.forName("UTF-8") : Charset.defaultCharset());
+        super(new FileOutputStream(file),
+                settings.isUnicodeOutputEnabled() ? Charset.forName("UTF-8") : Charset.defaultCharset());
         this.file = file;
     }
 

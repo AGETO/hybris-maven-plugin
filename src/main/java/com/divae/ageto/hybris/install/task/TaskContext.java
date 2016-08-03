@@ -1,17 +1,17 @@
 package com.divae.ageto.hybris.install.task;
 
-import com.divae.ageto.hybris.version.HybrisVersion;
-import com.google.common.collect.Maps;
-
 import java.io.File;
 import java.util.Map;
+
+import com.divae.ageto.hybris.version.HybrisVersion;
+import com.google.common.collect.Maps;
 
 /**
  * @author Klaus Hauschild
  */
 public class TaskContext {
 
-    private final HybrisVersion hybrisVersion;
+    private final HybrisVersion       hybrisVersion;
     private final Map<String, Object> parameters;
     private final File                hybrisDirectory;
 

@@ -1,8 +1,8 @@
 package com.divae.ageto.hybris;
 
-import com.google.common.base.Strings;
-
 import java.io.File;
+
+import com.google.common.base.Strings;
 
 /**
  * @author Klaus Hauschild

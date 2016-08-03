@@ -1,10 +1,10 @@
 package com.divae.ageto.hybris.install;
 
+import java.io.File;
+
 import com.divae.ageto.hybris.install.task.TaskChainTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
 import com.divae.ageto.hybris.version.HybrisVersion;
-
-import java.io.File;
 
 /**
  * @author Klaus Hauschild

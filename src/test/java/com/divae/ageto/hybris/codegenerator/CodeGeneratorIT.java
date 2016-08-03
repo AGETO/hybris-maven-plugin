@@ -1,8 +1,8 @@
 package com.divae.ageto.hybris.codegenerator;
 
-import org.testng.annotations.Test;
-
 import java.io.File;
+
+import org.testng.annotations.Test;
 
 /**
  * @author Klaus Hauschild

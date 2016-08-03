@@ -1,17 +1,18 @@
 package com.divae.ageto.hybris.install.task;
 
+import java.io.File;
+import java.util.logging.LogManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import com.google.common.base.Stopwatch;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.decompiler.CommandLineOptions;
 import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerDriver;
 import com.strobel.decompiler.DecompilerSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
-
-import java.io.File;
-import java.util.logging.LogManager;
 
 /**
  * @author Klaus Hauschild

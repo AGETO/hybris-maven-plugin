@@ -1,12 +1,12 @@
 package com.divae.ageto.hybris.codegenerator;
 
-import com.google.common.collect.Lists;
-
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author khauschild
@@ -26,8 +26,8 @@ class CodeGenerator {
             if (!extensionDir.isDirectory()) {
                 continue;
             }
-            extensionInfos.add(ExtensionInfo.newExtensionInfo(new File(extensionDir, "src/main/resources/"
-                    + ExtensionInfo.EXTENSION_INFO__FILE)));
+            extensionInfos.add(ExtensionInfo
+                    .newExtensionInfo(new File(extensionDir, "src/main/resources/" + ExtensionInfo.EXTENSION_INFO__FILE)));
         }
         return extensionInfos;
     }

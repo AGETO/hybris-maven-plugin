@@ -97,8 +97,8 @@ public class DecompilerDriver {
                 if (writeToFile) {
                     output = new PlainTextOutput(writer1);
                 } else {
-                    output = new AnsiTextOutput(writer1, commandLineOptions.getUseLightColorScheme() ? ColorScheme.LIGHT
-                            : ColorScheme.DARK);
+                    output = new AnsiTextOutput(writer1,
+                            commandLineOptions.getUseLightColorScheme() ? ColorScheme.LIGHT : ColorScheme.DARK);
                 }
 
                 ((PlainTextOutput) output).setUnicodeOutputEnabled(settings.isUnicodeOutputEnabled());
@@ -139,8 +139,8 @@ public class DecompilerDriver {
     private static Writer createWriter(TypeDefinition type, DecompilerSettings settings) throws IOException {
         String outputDirectory = settings.getOutputDirectory();
         if (StringUtilities.isNullOrWhitespace(outputDirectory)) {
-            return new OutputStreamWriter(System.out, settings.isUnicodeOutputEnabled() ? Charset.forName("UTF-8")
-                    : Charset.defaultCharset());
+            return new OutputStreamWriter(System.out,
+                    settings.isUnicodeOutputEnabled() ? Charset.forName("UTF-8") : Charset.defaultCharset());
         } else {
             String fileName = type.getName() + settings.getLanguage().getFileExtension();
             String packageName = type.getPackageName();
@@ -155,8 +155,8 @@ public class DecompilerDriver {
             File outputFile = new File(outputPath);
             File parentFile = outputFile.getParentFile();
             if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs()) {
-                throw new IllegalStateException(String.format("Could not create output directory for file \"%s\".",
-                        new Object[] { outputPath }));
+                throw new IllegalStateException(
+                        String.format("Could not create output directory for file \"%s\".", new Object[] { outputPath }));
             } else if (!outputFile.exists() && !outputFile.createNewFile()) {
                 throw new IllegalStateException(
                         String.format("Could not create output file \"%s\".", new Object[] { outputPath }));

@@ -1,11 +1,15 @@
 package com.divae.ageto.hybris.install.task;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * @author Klaus Hauschild
@@ -27,8 +31,8 @@ public class CreatePomTask extends AbstractWorkDirectoryTask {
         Map<String, String> token = Maps.newHashMap();
         token.putAll(parameters);
         token.put("hybris.version", taskContext.getHybrisVersion().getVersion());
-        try (final BufferedReader reader = new BufferedReader(new TokenReplacingReader(new InputStreamReader(
-                ClassLoader.getSystemResourceAsStream(template)), token))) {
+        try (final BufferedReader reader = new BufferedReader(
+                new TokenReplacingReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(template)), token))) {
 
             final List<String> lines = Lists.newArrayList();
             String line;

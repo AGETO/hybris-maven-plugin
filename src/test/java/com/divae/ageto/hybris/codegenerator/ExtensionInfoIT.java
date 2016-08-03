@@ -1,9 +1,10 @@
 package com.divae.ageto.hybris.codegenerator;
 
-import com.divae.ageto.hybris.EnvironmentUtils;
+import java.io.File;
+
 import org.testng.annotations.Test;
 
-import java.io.File;
+import com.divae.ageto.hybris.EnvironmentUtils;
 
 /**
  * @author Klaus Hauschild

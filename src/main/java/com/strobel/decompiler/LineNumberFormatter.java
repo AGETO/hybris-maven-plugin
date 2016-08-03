@@ -42,8 +42,8 @@ public class LineNumberFormatter {
         try {
             for (int x2 = 0; x2 < this._positions.size(); ++x2) {
                 LineNumberPosition pos = this._positions.get(x2);
-                o_LineBrokenPositions.add(new LineNumberPosition(pos.getOriginalLine(), pos.getEmittedLine() + lineOffset, pos
-                        .getEmittedColumn()));
+                o_LineBrokenPositions.add(
+                        new LineNumberPosition(pos.getOriginalLine(), pos.getEmittedLine() + lineOffset, pos.getEmittedColumn()));
 
                 while (numLinesRead < pos.getEmittedLine() - 1) {
                     brokenLines.add(r.readLine());
@@ -68,8 +68,8 @@ public class LineNumberFormatter {
                         indent = new char[prevPartLen];
                         Arrays.fill(indent, ' ');
                         line = line.substring(firstPart.length(), line.length());
-                        o_LineBrokenPositions.add(new LineNumberPosition(nextPos.getOriginalLine(), nextPos.getEmittedLine()
-                                + lineOffset, nextPos.getEmittedColumn()));
+                        o_LineBrokenPositions.add(new LineNumberPosition(nextPos.getOriginalLine(),
+                                nextPos.getEmittedLine() + lineOffset, nextPos.getEmittedColumn()));
                     } else {
                         nextPos = null;
                     }

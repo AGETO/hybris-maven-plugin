@@ -1,12 +1,12 @@
 package com.divae.ageto.hybris.install.task;
 
-import org.apache.maven.cli.MavenCli;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+
+import org.apache.maven.cli.MavenCli;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Klaus Hauschild

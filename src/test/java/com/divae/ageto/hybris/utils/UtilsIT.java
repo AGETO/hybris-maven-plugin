@@ -1,12 +1,13 @@
 package com.divae.ageto.hybris.utils;
 
-import com.divae.ageto.hybris.EnvironmentUtils;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.testng.Assert.fail;
 
 import java.io.File;
 
-import static org.testng.Assert.fail;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.divae.ageto.hybris.EnvironmentUtils;
 
 /**
  * @author Klaus Hauschild

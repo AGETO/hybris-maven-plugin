@@ -1,11 +1,12 @@
 package com.divae.ageto.hybris.version;
 
-import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
+import java.text.SimpleDateFormat;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import java.text.SimpleDateFormat;
+import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
 
 /**
  * @author Klaus Hauschild
