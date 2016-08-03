@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * @author khauschild
- * @date 24.03.2016
+ * @author Klaus Hauschild
  */
 public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
