@@ -1,12 +1,12 @@
 package com.divae.ageto.hybris.utils;
 
-import static org.testng.Assert.fail;
+import com.divae.ageto.hybris.EnvironmentUtils;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.io.File;
 
-import com.divae.ageto.hybris.Constants;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.testng.Assert.fail;
 
 /**
  * @author Klaus Hauschild
@@ -15,7 +15,7 @@ public class UtilsIT {
 
     @DataProvider
     public Object[][] getHybrisPlatformDirectoryTestDataProvider() {
-        return new Object[][] { { new File("."), false, }, { new File(Constants.HYBRIS_INSTALLATION_DIR), true, }, };
+        return new Object[][] { { new File("."), false, }, { EnvironmentUtils.getHybrisInstallationDirectory(), true, }, };
     }
 
     @Test(dataProvider = "getHybrisPlatformDirectoryTestDataProvider")

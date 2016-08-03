@@ -1,10 +1,9 @@
 package com.divae.ageto.hybris.install;
 
+import com.divae.ageto.hybris.EnvironmentUtils;
 import org.testng.annotations.Test;
 
 import java.io.File;
-
-import static org.testng.Assert.fail;
 
 /**
  * @author Klaus Hauschild
@@ -15,21 +14,9 @@ public class InstallHybrisArtifactsIT {
 
     @Test
     public void installHybrisArtifactsTest() {
-        String hybrisFolder = System.getenv(hybrisDirectoryEnvKey);
-        if (hybrisFolder == null) {
-            hybrisDirNotFound(hybrisDirectoryEnvKey);
-        }
-        else {
-            final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(new File(
-                    hybrisFolder));
-            installHybrisArtifacts.execute();
-        }
+        final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
+        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory);
+        installHybrisArtifacts.execute();
     }
 
-    private void hybrisDirNotFound(String hybrisDir)
-    {
-        fail("Error: You have to set the environment variable \""+
-                hybrisDirectoryEnvKey+"\" " +
-                "to the folder of your hybris suite to run this test.");
-    }
 }
