@@ -21,7 +21,7 @@ public class CleanupTask extends AbstractWorkDirectoryTask {
     private void delete(final File file) {
         if (file.isDirectory()) {
             for (final File child : file.listFiles()) {
-                child.delete();
+                delete(child);
             }
         }
         file.delete();
