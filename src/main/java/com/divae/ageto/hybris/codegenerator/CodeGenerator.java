@@ -2,11 +2,17 @@ package com.divae.ageto.hybris.codegenerator;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
+import com.divae.ageto.hybris.utils.EnvironmentUtils;
 import com.google.common.collect.Lists;
+
+
+/*import de.hybris.bootstrap.config.ConfigUtil;
+import de.hybris.bootstrap.config.SystemConfig;
+import de.hybris.bootstrap.config.PlatformConfig;
+import de.hybris.bootstrap.codegenerator.CodeGenerator;
+import de.hybris.bootstrap.typesystem.YTypeSystemLoader;*/
 
 /**
  * @author khauschild
@@ -15,6 +21,64 @@ import com.google.common.collect.Lists;
 class CodeGenerator {
 
     private static final Class<?> CODE_GENERATOR__CLASS = Utils.loadClass("de.hybris.bootstrap.codegenerator.CodeGenerator");
+
+    /*public static void generate(final File hybrisReactorDir) {
+        /*Hashtable<String, String> conf = new Hashtable<>();
+        conf.put(SystemConfig.PROPERTY_BIN_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_BIN_DIR).toString());
+        conf.put(SystemConfig.PROPERTY_CONFIG_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_CONFIG_DIR).toString());
+        conf.put(SystemConfig.PROPERTY_BOOTSTRAP_BIN_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_BOOTSTRAP_BIN_DIR).toString());
+        conf.put(SystemConfig.PROPERTY_ROLES_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_ROLES_DIR).toString());
+        conf.put(SystemConfig.PROPERTY_DATA_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_DATA_DIR).toString());
+        conf.put(SystemConfig.PROPERTY_LOG_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_LOG_DIR).toString());
+        conf.put(SystemConfig.PROPERTY_TEMP_DIR,
+                hybrisReactorDir.toString());
+        conf.put(SystemConfig.PLATFORM_HOME,
+                EnvironmentUtils.getHybrisPlatformDir().toString());
+
+        SystemConfig sc = SystemConfig.getInstanceByProps(conf);
+
+        de.hybris.bootstrap.config.PlatformConfig pc = de.hybris.bootstrap.config.PlatformConfig.getInstance(sc);
+
+        //CodeGenerator.generate(pc);
+
+        //CodeGenerator cg = new CodeGenerator(hybrisReactorDir.toString());
+        CodeGenerator cg = new CodeGenerator(pc);
+
+        //CodeGenerator cg = new CodeGenerator(hybrisReactorDir.toString());*/
+
+        /*System.setProperty(SystemConfig.PROPERTY_BIN_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_BIN_DIR).toString());
+        System.setProperty(SystemConfig.PROPERTY_CONFIG_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_CONFIG_DIR).toString());
+        System.setProperty(SystemConfig.PROPERTY_BOOTSTRAP_BIN_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_BOOTSTRAP_BIN_DIR).toString());
+        System.setProperty(SystemConfig.PROPERTY_ROLES_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_ROLES_DIR).toString());
+        System.setProperty(SystemConfig.PROPERTY_DATA_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_DATA_DIR).toString());
+        System.setProperty(SystemConfig.PROPERTY_LOG_DIR,
+                EnvironmentUtils.getPropertyFromEnvPropFile(SystemConfig.PROPERTY_LOG_DIR).toString());
+        System.setProperty(SystemConfig.PROPERTY_TEMP_DIR,
+                hybrisReactorDir.toString());
+        System.setProperty(SystemConfig.PLATFORM_HOME,
+                EnvironmentUtils.getHybrisPlatformDir().toString());
+
+        CodeGenerator cg = new CodeGenerator(hybrisReactorDir.toString());
+
+        cg.generate(cg.getPlatformConfig());*/
+
+        /*String cmdline[] = {
+                ""
+        };
+
+        CodeGenerator.main(cmdline);*/
+    //}
 
     static void generate(final File hybrisReactorDir) {
         final Collection<Object> extensionInfos = getExtensionInfos(hybrisReactorDir);
@@ -32,7 +96,9 @@ class CodeGenerator {
         return extensionInfos;
     }
 
-    public static void generate_() {
+    /*public static void generate_() {
+
+
         final Properties environmentProperties = new Properties();
         environmentProperties.setProperty("HYBRIS_BIN_DIR", "TODO");
         environmentProperties.setProperty("HYBRIS_TEMP_DIR", "TODO");
@@ -52,6 +118,5 @@ class CodeGenerator {
         // code generator
         final Method generateMethod = Utils.getMethod(CODE_GENERATOR__CLASS, "generate", PlatformConfig.PLATFORM_CONFIG__CLASS);
         Utils.invoke(generateMethod, null, platformConfig);
-    }
-
+    }*/
 }
