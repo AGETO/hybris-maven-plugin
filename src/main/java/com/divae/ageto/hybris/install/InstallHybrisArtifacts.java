@@ -14,14 +14,18 @@ public class InstallHybrisArtifacts {
     private final TaskContext   taskContext;
     private final TaskChainTask installTasks;
 
-    InstallHybrisArtifacts(final File hybrisDirectory) {
+    public InstallHybrisArtifacts(final File hybrisDirectory) {
         final HybrisVersion hybrisVersion = HybrisVersion.of(hybrisDirectory);
         taskContext = new TaskContext(hybrisVersion, hybrisDirectory);
         installTasks = new TaskChainTask(InstallStrategy.getInstallTasks(taskContext));
     }
 
-    void execute() {
+    public void execute() {
         installTasks.execute(taskContext);
+    }
+
+    public TaskContext getTaskContext() {
+        return taskContext;
     }
 
 }

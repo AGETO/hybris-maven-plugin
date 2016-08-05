@@ -36,5 +36,4 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new MoveTestSourcesTask(sourcesDirectory, testSourcesDirectory) //
         )).execute(taskContext);
     }
-
 }

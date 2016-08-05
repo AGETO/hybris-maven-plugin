@@ -11,6 +11,7 @@ import com.divae.ageto.hybris.install.task.ExecuteMavenTask;
 import com.divae.ageto.hybris.install.task.InstallTask;
 import com.divae.ageto.hybris.install.task.OpenWorkDirectoryInExplorerTask;
 import com.divae.ageto.hybris.install.task.RestructureExtensionTask;
+import com.divae.ageto.hybris.install.task.RestructurePlatformTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
 
 /**
@@ -32,6 +33,8 @@ public enum InstallStrategy {
 
                 // platform
                 new CreatePomTask("com/divae/ageto/hybris/install/platform.pom.xml", "", Collections.<String, String>emptyMap()), //
+
+                new RestructurePlatformTask(),
 
                 // prepare code generator
                 new ExecuteMavenTask("",

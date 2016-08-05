@@ -1,11 +1,6 @@
 package com.divae.ageto.hybris.codegenerator;
 
 import java.io.File;
-import java.lang.reflect.Method;
-import java.util.*;
-
-import com.divae.ageto.hybris.utils.EnvironmentUtils;
-import com.google.common.collect.Lists;
 
 /**
  * @author khauschild
@@ -13,7 +8,8 @@ import com.google.common.collect.Lists;
 class CodeGenerator {
 
     static void generate(final File hybrisReactorDir) {
-
+        HybrisFakeStructure.generate(hybrisReactorDir);
+        de.hybris.bootstrap.codegenerator.CodeGenerator.main(new String[] { hybrisReactorDir.toString() });
     }
 
 }
