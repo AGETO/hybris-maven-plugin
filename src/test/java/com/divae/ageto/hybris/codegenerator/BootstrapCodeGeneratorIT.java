@@ -15,6 +15,8 @@ public class BootstrapCodeGeneratorIT {
         CodeGenerator
                 .main(new String[] { "C:\\Users\\mhaagen\\AppData\\Local\\Temp\\1458829098347-0\\hybris\\bin\\platform" });
                 //.main(new String[] { EnvironmentUtils.getHybrisInstallationDirectory().getAbsolutePath() + "/bin/platform" });
+
+
     }
 
 }
