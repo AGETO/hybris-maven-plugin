@@ -10,21 +10,27 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Created by mhaagen on 05.08.2016.
+ * @author Marvin Haagen
  */
 public class HybrisFakeStructure {
 
     public static List<Path> getFiles() {
-        return Lists.newArrayList(Paths.get("extensions.xml"), Paths.get("project.properties"),
-                Paths.get("bootstrap/resources/pojo/global-eventtemplate.vm"),
-                Paths.get("ext/core/resources/core-advanced-deployment.xml"), Paths.get("ext/core/resources/core-beans.xml"),
-                Paths.get("ext/core/resources/core-items.xml"), Paths.get("ext/core/extensioninfo.xml"),
-                Paths.get("ext/core/project.properties"), Paths.get("resources/schemas/beans.xsd"),
-                Paths.get("resources/advanced.properties"));
+        return Lists.newArrayList( //
+                Paths.get("extensions.xml"), //
+                Paths.get("project.properties"), //
+                Paths.get("bootstrap/resources/pojo/global-eventtemplate.vm"), //
+                Paths.get("ext/core/resources/core-advanced-deployment.xml"), //
+                Paths.get("ext/core/resources/core-beans.xml"), //
+                Paths.get("ext/core/resources/core-items.xml"), //
+                Paths.get("ext/core/extensioninfo.xml"), //
+                Paths.get("ext/core/project.properties"), //
+                Paths.get("resources/schemas/beans.xsd"), //
+                Paths.get("resources/advanced.properties") //
+        );
     }
 
     static void generate(File hybrisReactorDir) {
-        Path homePath = Paths.get(hybrisReactorDir.toString(), "target", "bin", "platform");
+        final Path homePath = Paths.get(hybrisReactorDir.toString(), "target", "bin", "platform");
 
         Path paths[] = { Paths.get(homePath.toString()), Paths.get(homePath.toString(), "bootstrap", "resources", "pojo"),
                 Paths.get(homePath.toString(), "ext", "core", "resources"),

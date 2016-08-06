@@ -15,22 +15,21 @@ public class CodeGeneratorIT {
 
     private File workDirectory;
 
-    // @BeforeTest
+    @BeforeTest
     public void before() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
         final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory);
-        installHybrisArtifacts.execute();
+        try {
+            installHybrisArtifacts.execute();
+        } catch (final Exception exception) {
+            // expected exception, ignore it!
+        }
         workDirectory = AbstractWorkDirectoryTask.getWorkDirectory(installHybrisArtifacts.getTaskContext());
     }
 
     @Test
     public void generateTest() {
-        final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
-        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory);
-        installHybrisArtifacts.execute();
-        workDirectory = AbstractWorkDirectoryTask.getWorkDirectory(installHybrisArtifacts.getTaskContext());
         CodeGenerator.generate(workDirectory);
-        // CodeGenerator.generate(new File("C:\\Users\\mhaagen\\AppData\\Local\\Temp\\1470382850099-0"));
     }
 
 }

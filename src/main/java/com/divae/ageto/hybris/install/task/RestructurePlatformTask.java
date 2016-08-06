@@ -11,13 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by mhaagen on 05.08.2016.
+ * @author Marvin Haagen
  */
 public class RestructurePlatformTask extends AbstractWorkDirectoryTask {
 
     @Override
-    protected void execute(TaskContext taskContext, File workDirectory) {
-        List<InstallTask> tasks = Lists.newArrayList();
+    protected void execute(final TaskContext taskContext, final File workDirectory) {
+        final List<InstallTask> tasks = Lists.newArrayList();
 
         tasks.add(new CopyFilesTask("core", "ext/core"));
 
