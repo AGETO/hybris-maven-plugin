@@ -29,7 +29,8 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                         Collections.<String, String>emptyMap()), //
                 new CreateDirectoryTask(sourcesDirectory), //
                 new CreateDirectoryTask(resourcesDirectory), //
-                new DecompileTask(String.format("bin/platform/%s/bin/%s", extensionDirectory, binary), sourcesDirectory), //
+                // new DecompileTask(String.format("bin/platform/%s/bin/%s", extensionDirectory, binary), sourcesDirectory), //
+                new ExtractZipTask(String.format("bin/platform/%s/bin/%s", extensionDirectory, binary), resourcesDirectory), //
                 new CopyFilesTask(String.format("bin/platform/%s", extensionDirectory), resourcesDirectory), //
                 new CopyFilesTask(String.format("bin/platform/%s/resources", extensionDirectory), resourcesDirectory), //
                 new CopyFilesTask(String.format("bin/platform/%s/testsrc", extensionDirectory), testSourcesDirectory),
