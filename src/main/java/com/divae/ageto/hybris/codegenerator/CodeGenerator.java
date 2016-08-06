@@ -3,7 +3,7 @@ package com.divae.ageto.hybris.codegenerator;
 import java.io.File;
 
 /**
- * @author khauschild
+ * @author Klaus Hauschild
  */
 class CodeGenerator {
 
