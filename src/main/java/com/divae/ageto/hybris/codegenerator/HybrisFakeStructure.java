@@ -1,60 +1,59 @@
 package com.divae.ageto.hybris.codegenerator;
 
-import com.google.common.collect.Lists;
-
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+import java.io.FileOutputStream;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.google.common.base.Throwables;
 
 /**
  * @author Marvin Haagen
  */
 public class HybrisFakeStructure {
 
-    public static List<Path> getFiles() {
-        return Lists.newArrayList( //
-                Paths.get("extensions.xml"), //
-                Paths.get("project.properties"), //
-                Paths.get("bootstrap/resources/pojo/global-eventtemplate.vm"), //
-                Paths.get("ext/core/resources/core-advanced-deployment.xml"), //
-                Paths.get("ext/core/resources/core-beans.xml"), //
-                Paths.get("ext/core/resources/core-items.xml"), //
-                Paths.get("ext/core/extensioninfo.xml"), //
-                Paths.get("ext/core/project.properties"), //
-                Paths.get("resources/schemas/beans.xsd"), //
-                Paths.get("resources/advanced.properties") //
-        );
-    }
-
     static File generate(final File hybrisReactorDir) {
-        final File hybrisFakeDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris/bin/platform");
-        hybrisFakeDirectory.mkdirs();
-        return hybrisFakeDirectory.getParentFile();
+        try {
+            final File platformDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris/bin/platform");
+            platformDirectory.mkdirs();
 
-        // final Path homePath = Paths.get(hybrisReactorDir.toString(), "target", "bin", "platform");
-        //
-        // Path paths[] = { Paths.get(homePath.toString()), Paths.get(homePath.toString(), "bootstrap", "resources", "pojo"),
-        // Paths.get(homePath.toString(), "ext", "core", "resources"),
-        // Paths.get(homePath.toString(), "resources", "schemas") };
-        //
-        // for (Path p : paths) {
-        // try {
-        // Files.createDirectories(p);
-        // } catch (IOException e) {
-        // throw new RuntimeException("Can not create directory '" + p.toString() + "'\n" + e.getStackTrace());
-        // }
-        // }
-        //
-        // for (Path f : getFiles()) {
-        // try {
-        // Files.copy(Paths.get(hybrisReactorDir + "/" + f), Paths.get(homePath + "/" + f));
-        // } catch (IOException e) {
-        // throw new RuntimeException("Can not copy file '" + f.toString() + "'\n" + e.getStackTrace());
-        // }
-        // }
+            final File binDirectory = platformDirectory.getParentFile();
+            IOUtils.copy(ClassLoader.getSystemResourceAsStream("com/divae/ageto/hybris/install/platform.extensions.xml"),
+                    new FileOutputStream(new File(binDirectory, "extensions.xml")));
+
+            final File coreExtensionDirectory = new File(binDirectory, "ext/core");
+            coreExtensionDirectory.mkdirs();
+            FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/extensioninfo.xml"),
+                    new File(coreExtensionDirectory, "extensioninfo.xml"));
+            FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-advanced-deployment.xml"),
+                    new File(coreExtensionDirectory, "core-advanced-deployment.xml"));
+            FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-beans.xml"),
+                    new File(coreExtensionDirectory, "core-beans.xml"));
+            FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-items.xml"),
+                    new File(coreExtensionDirectory, "core-items.xml"));
+            FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/project.properties"),
+                    new File(coreExtensionDirectory, "project.properties"));
+
+            FileUtils.copyFile(new File(hybrisReactorDir, "src/main/resources/advanced.properties"),
+                    new File(binDirectory, "resources/advanced.properties"));
+
+            FileUtils.copyFile(new File(hybrisReactorDir, "src/main/resources/schemas/beans.xsd"),
+                    new File(binDirectory, "resources/schemas/beans.xsd"));
+
+            FileUtils.copyFile(new File(hybrisReactorDir, "src/main/resources/project.properties"),
+                    new File(binDirectory, "project.properties"));
+
+            FileUtils.copyFile(new File(hybrisReactorDir, "src/main/resources/project.properties"),
+                    new File(binDirectory, "project.properties"));
+
+            FileUtils.copyFile(new File(hybrisReactorDir, "src/main/resources/bootstrap/pojo/global-eventtemplate.vm"),
+                    new File(binDirectory, "bootstrap/resources/pojo/global-eventtemplate.vm"));
+
+            return binDirectory;
+        } catch (final Exception exception) {
+            throw Throwables.propagate(exception);
+        }
     }
 
 }
