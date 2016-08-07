@@ -34,7 +34,7 @@ public enum InstallStrategy {
                 // platform
                 new CreatePomTask("com/divae/ageto/hybris/install/platform.pom.xml", "", Collections.<String, String>emptyMap()), //
 
-                // new RestructurePlatformTask(),
+                new RestructurePlatformTask(),
 
                 // prepare code generator
                 new ExecuteMavenTask("",

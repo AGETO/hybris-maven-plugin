@@ -15,7 +15,7 @@ public class CodeGeneratorIT {
 
     private File workDirectory;
 
-    @BeforeTest
+    // @BeforeTest
     public void before() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
         final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory);
@@ -29,6 +29,7 @@ public class CodeGeneratorIT {
 
     @Test
     public void generateTest() {
+        workDirectory = new File("C:\\Users\\KlausH\\AppData\\Local\\Temp\\1470595958139-0");
         CodeGenerator.generate(workDirectory);
     }
 

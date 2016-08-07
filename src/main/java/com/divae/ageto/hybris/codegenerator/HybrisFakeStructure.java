@@ -29,28 +29,32 @@ public class HybrisFakeStructure {
         );
     }
 
-    static void generate(File hybrisReactorDir) {
-        final Path homePath = Paths.get(hybrisReactorDir.toString(), "target", "bin", "platform");
+    static File generate(final File hybrisReactorDir) {
+        final File hybrisFakeDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris/bin/platform");
+        hybrisFakeDirectory.mkdirs();
+        return hybrisFakeDirectory.getParentFile();
 
-        Path paths[] = { Paths.get(homePath.toString()), Paths.get(homePath.toString(), "bootstrap", "resources", "pojo"),
-                Paths.get(homePath.toString(), "ext", "core", "resources"),
-                Paths.get(homePath.toString(), "resources", "schemas") };
-
-        for (Path p : paths) {
-            try {
-                Files.createDirectories(p);
-            } catch (IOException e) {
-                throw new RuntimeException("Can not create directory '" + p.toString() + "'\n" + e.getStackTrace());
-            }
-        }
-
-        for (Path f : getFiles()) {
-            try {
-                Files.copy(Paths.get(hybrisReactorDir + "/" + f), Paths.get(homePath + "/" + f));
-            } catch (IOException e) {
-                throw new RuntimeException("Can not copy file '" + f.toString() + "'\n" + e.getStackTrace());
-            }
-        }
+        // final Path homePath = Paths.get(hybrisReactorDir.toString(), "target", "bin", "platform");
+        //
+        // Path paths[] = { Paths.get(homePath.toString()), Paths.get(homePath.toString(), "bootstrap", "resources", "pojo"),
+        // Paths.get(homePath.toString(), "ext", "core", "resources"),
+        // Paths.get(homePath.toString(), "resources", "schemas") };
+        //
+        // for (Path p : paths) {
+        // try {
+        // Files.createDirectories(p);
+        // } catch (IOException e) {
+        // throw new RuntimeException("Can not create directory '" + p.toString() + "'\n" + e.getStackTrace());
+        // }
+        // }
+        //
+        // for (Path f : getFiles()) {
+        // try {
+        // Files.copy(Paths.get(hybrisReactorDir + "/" + f), Paths.get(homePath + "/" + f));
+        // } catch (IOException e) {
+        // throw new RuntimeException("Can not copy file '" + f.toString() + "'\n" + e.getStackTrace());
+        // }
+        // }
     }
 
 }
