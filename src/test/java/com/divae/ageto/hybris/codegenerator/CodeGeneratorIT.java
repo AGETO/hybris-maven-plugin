@@ -29,7 +29,7 @@ public class CodeGeneratorIT {
 
     @Test
     public void generateTest() {
-        // workDirectory = new File("C:\\Users\\mhaagen\\AppData\\Local\\Temp\\1470725779461-0");
+        // workDirectory = new File("C:\\Users\\mhaagen\\AppData\\Local\\Temp\\1470733250377-0");
         CodeGenerator.generate(workDirectory);
     }
 
