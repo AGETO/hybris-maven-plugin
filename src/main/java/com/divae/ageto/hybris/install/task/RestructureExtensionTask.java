@@ -1,5 +1,8 @@
 package com.divae.ageto.hybris.install.task;
 
+import com.divae.ageto.hybris.install.task.CopyFilesTasks.CopyDirectoryContentToDirectoryTask;
+import com.divae.ageto.hybris.install.task.CopyFilesTasks.CopyDirectoryFilesToDirectoryTask;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +35,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 // new DecompileTask(String.format("bin/platform/%s/bin/%s", extensionDirectory, binary), sourcesDirectory), //
                 new ExtractZipTask(String.format("bin/platform/%s/bin/%s", extensionDirectory, binary),
                         resourcesDirectory.toString()), //
-                new CopyDirectoryContentToDirectoryTask(new File(String.format("bin/platform/%s", extensionDirectory)),
+                new CopyDirectoryFilesToDirectoryTask(new File(String.format("bin/platform/%s", extensionDirectory)),
                         resourcesDirectory), //
                 new CopyDirectoryContentToDirectoryTask(new File(String.format("bin/platform/%s/resources", extensionDirectory)),
                         resourcesDirectory), //

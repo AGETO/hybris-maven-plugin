@@ -2,6 +2,7 @@ package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
 
+import com.divae.ageto.hybris.install.task.CopyFilesTasks.CopyDirectoryContentToDirectoryTask;
 import org.testng.annotations.Test;
 
 /**

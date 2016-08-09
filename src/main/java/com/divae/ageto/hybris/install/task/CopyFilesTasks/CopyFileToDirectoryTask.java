@@ -1,5 +1,6 @@
-package com.divae.ageto.hybris.install.task;
+package com.divae.ageto.hybris.install.task.CopyFilesTasks;
 
+import com.divae.ageto.hybris.install.task.CopyFilesTask;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
