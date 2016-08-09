@@ -10,11 +10,12 @@ public class RestructurePlatformTask extends AbstractWorkDirectoryTask {
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
-        final String resourcesDirectory = "src/main/resources";
+        final File resourcesDirectory = new File("src/main/resources");
         new TaskChainTask(Arrays.<InstallTask>asList( //
-                new CopyFilesTask("bin/platform/project.properties", resourcesDirectory), //
-                new CopyFilesTask("bin/platform/resources", resourcesDirectory), //
-                new CopyFilesTask("bin/platform/bootstrap/resources", resourcesDirectory + "/bootstrap") //
+                new CopyFileToDirectoryTask(new File("bin/platform/project.properties"), resourcesDirectory), //
+                new CopyDirectoryContentToDirectoryTask(new File("bin/platform/resources"), resourcesDirectory), //
+                new CopyDirectoryContentToDirectoryTask(new File("bin/platform/bootstrap/resources"),
+                        new File(resourcesDirectory + "/bootstrap")) //
         )).execute(taskContext);
     }
 
