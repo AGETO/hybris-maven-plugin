@@ -5,6 +5,7 @@ import java.io.File;
 import com.divae.ageto.hybris.install.InstallHybrisArtifacts;
 import com.divae.ageto.hybris.install.task.AbstractWorkDirectoryTask;
 import com.divae.ageto.hybris.utils.EnvironmentUtils;
+import com.divae.ageto.hybris.version.HybrisVersion;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 

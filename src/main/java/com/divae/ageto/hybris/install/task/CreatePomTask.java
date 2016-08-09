@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
+import com.divae.ageto.hybris.utils.PomCreator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -28,35 +29,38 @@ public class CreatePomTask extends AbstractWorkDirectoryTask {
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
-        Map<String, String> token = Maps.newHashMap();
-        token.putAll(parameters);
-        token.put("hybris.version", taskContext.getHybrisVersion().getVersion());
-        try (final BufferedReader reader = new BufferedReader(
-                new TokenReplacingReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(template)), token))) {
+        PomCreator.create(taskContext.getHybrisVersion().getVersion(), parameters, template, workDirectory, targetDirectory);
 
-            final List<String> lines = Lists.newArrayList();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                lines.add(line);
-            }
 
-            final File directory = new File(workDirectory, targetDirectory);
-            directory.mkdirs();
-            final File targetFile = new File(directory, "pom.xml");
-            targetFile.createNewFile();
-            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(targetFile))) {
-                for (final String lineToWrite : lines) {
-                    try {
-                        writer.write(lineToWrite);
-                        writer.newLine();
-                    } catch (final Exception exception) {
-                        throw new RuntimeException(exception);
-                    }
-                }
-            }
-
-        } catch (final Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        // final Map<String, String> token = Maps.newHashMap();
+        // token.putAll(parameters);
+        // token.put("hybris.version", taskContext.getHybrisVersion().getVersion());
+        // try (final BufferedReader reader = new BufferedReader(
+        // new TokenReplacingReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(template)), token))) {
+        //
+        // final List<String> lines = Lists.newArrayList();
+        // String line;
+        // while ((line = reader.readLine()) != null) {
+        // lines.add(line);
+        // }
+        //
+        // final File directory = new File(workDirectory, targetDirectory);
+        // directory.mkdirs();
+        // final File targetFile = new File(directory, "pom.xml");
+        // targetFile.createNewFile();
+        // try (final BufferedWriter writer = new BufferedWriter(new FileWriter(targetFile))) {
+        // for (final String lineToWrite : lines) {
+        // try {
+        // writer.write(lineToWrite);
+        // writer.newLine();
+        // } catch (final Exception exception) {
+        // throw new RuntimeException(exception);
+        // }
+        // }
+        // }
+        //
+        // } catch (final Exception exception) {
+        // throw new RuntimeException(exception);
+        // }
     }
 }
