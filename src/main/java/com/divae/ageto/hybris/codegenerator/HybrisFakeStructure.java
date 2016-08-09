@@ -27,11 +27,11 @@ public class HybrisFakeStructure {
             FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/extensioninfo.xml"),
                     new File(coreExtensionDirectory, "extensioninfo.xml"));
             FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-advanced-deployment.xml"),
-                    new File(coreExtensionDirectory, "core-advanced-deployment.xml"));
+                    new File(coreExtensionDirectory, "resources/core-advanced-deployment.xml"));
             FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-beans.xml"),
-                    new File(coreExtensionDirectory, "core-beans.xml"));
+                    new File(coreExtensionDirectory, "resources/core-beans.xml"));
             FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-items.xml"),
-                    new File(coreExtensionDirectory, "core-items.xml"));
+                    new File(coreExtensionDirectory, "resources/core-items.xml"));
             FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/project.properties"),
                     new File(coreExtensionDirectory, "project.properties"));
 
