@@ -1,9 +1,10 @@
-package com.divae.ageto.hybris.install.task;
+package com.divae.ageto.hybris.install.task.copy;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
+import com.divae.ageto.hybris.install.task.AbstractWorkDirectoryTask;
+import com.divae.ageto.hybris.install.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

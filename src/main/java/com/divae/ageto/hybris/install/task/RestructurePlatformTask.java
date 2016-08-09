@@ -1,7 +1,7 @@
 package com.divae.ageto.hybris.install.task;
 
-import com.divae.ageto.hybris.install.task.CopyFilesTasks.CopyDirectoryContentToDirectoryTask;
-import com.divae.ageto.hybris.install.task.CopyFilesTasks.CopyFileToDirectoryTask;
+import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
+import com.divae.ageto.hybris.install.task.copy.CopyFileToDirectoryTask;
 
 import java.io.File;
 import java.util.Arrays;

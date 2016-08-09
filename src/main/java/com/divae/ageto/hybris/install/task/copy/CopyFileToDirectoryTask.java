@@ -1,13 +1,12 @@
-package com.divae.ageto.hybris.install.task.CopyFilesTasks;
+package com.divae.ageto.hybris.install.task.copy;
 
-import com.divae.ageto.hybris.install.task.CopyFilesTask;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by mhaagen on 09.08.2016.
+ * @author Marvin Haagen
  */
 public class CopyFileToDirectoryTask extends CopyFilesTask {
 
@@ -25,4 +24,5 @@ public class CopyFileToDirectoryTask extends CopyFilesTask {
         }
         FileUtils.copyFileToDirectory(source, target);
     }
+
 }
