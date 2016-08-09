@@ -13,4 +13,19 @@
         <version>${hybris.version}</version>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.1.4.RELEASE</version>
+        </dependency>
+        <!-- hybris dependencies -->
+        <dependency>
+            <groupId>de.hybris</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${hybris.version}</version>
+        </dependency>
+        <!-- /hybris dependencies -->
+    </dependencies>
+
 </project>

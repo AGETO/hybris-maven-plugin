@@ -38,9 +38,9 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CopyDirectoryFilesToDirectoryTask(new File(String.format("bin/platform/%s", extensionDirectory)),
                         resourcesDirectory), //
                 new CopyDirectoryContentToDirectoryTask(new File(String.format("bin/platform/%s/resources", extensionDirectory)),
-                        resourcesDirectory), //
-                new CopyDirectoryContentToDirectoryTask(new File(String.format("bin/platform/%s/testsrc", extensionDirectory)),
-                        testSourcesDirectory) //
+                        resourcesDirectory)// , //
+        // new CopyDirectoryContentToDirectoryTask(new File(String.format("bin/platform/%s/testsrc", extensionDirectory)),
+        // testSourcesDirectory) //
         // new MoveTestSourcesTask(sourcesDirectory, testSourcesDirectory) //
         )).execute(taskContext);
     }

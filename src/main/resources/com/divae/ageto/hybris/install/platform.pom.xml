@@ -15,6 +15,7 @@
 
     <modules>
         <module>core</module>
+        <module>models</module>
     </modules>
 
     <build>
@@ -23,6 +24,7 @@
                 <groupId>com.divae.ageto</groupId>
                 <artifactId>hybris-maven-plugin</artifactId>
                 <version>${project.version}</version>
+                <inherited>false</inherited>
                 <dependencies>
                     <dependency>
                         <groupId>de.hybris</groupId>
@@ -82,6 +84,9 @@
                             <goal>jar</goal>
                             <goal>test-jar</goal>
                         </goals>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
