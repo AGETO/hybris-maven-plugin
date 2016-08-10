@@ -3,8 +3,10 @@ package com.divae.ageto.hybris.install;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.task.CreatePomTask;
 import com.divae.ageto.hybris.install.task.CreateWorkDirectoryTask;
 import com.divae.ageto.hybris.install.task.ExecuteMavenTask;
@@ -13,6 +15,7 @@ import com.divae.ageto.hybris.install.task.OpenWorkDirectoryInExplorerTask;
 import com.divae.ageto.hybris.install.task.RestructureExtensionTask;
 import com.divae.ageto.hybris.install.task.RestructurePlatformTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
+import com.google.common.collect.Lists;
 
 /**
  * @author Klaus Hauschild
@@ -21,15 +24,19 @@ public enum InstallStrategy {
 
     ;
 
-    static List<InstallTask> getInstallTasks(final TaskContext taskContext) {
+    static List<InstallTask> getInstallTasks(final TaskContext taskContext, List<Extension> extensions) {
         if (!taskContext.getHybrisVersion().getVersion().startsWith("5")) {
             throw new IllegalStateException("Installation of hybris commerce suite is only supported for version 5.x.x.x!");
         }
-        return Arrays.asList( //
-                new CreateWorkDirectoryTask(), //
+        List<InstallTask> installTasks = Lists.newArrayList();
 
-                // core
-                new RestructureExtensionTask("ext/core", "core", "coreserver.jar"), //
+        installTasks.add(new CreateWorkDirectoryTask());
+
+        for (final Extension extension : extensions) {
+            installTasks.add(new RestructureExtensionTask(extension));
+        }
+
+        installTasks.addAll(Arrays.asList( //
 
                 // platform
                 new CreatePomTask("com/divae/ageto/hybris/install/platform.pom.xml", "", Collections.<String, String>emptyMap()), //
@@ -51,7 +58,9 @@ public enum InstallStrategy {
                 // cleanup
                 new OpenWorkDirectoryInExplorerTask() //
         // TODO new CleanupTask()
-        );
+        ));
+
+        return installTasks;
     }
 
 }

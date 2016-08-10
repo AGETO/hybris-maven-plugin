@@ -10,7 +10,7 @@
         <path dir="${HYBRIS_BIN_DIR}"/>
 
         <extension name="core"/>
-
+        <!--<extension name="advancedsavedquery"/>-->
 
         <!--&lt;!&ndash; ext-platform &ndash;&gt;-->
         <!--<extension name="admincockpit" />-->
