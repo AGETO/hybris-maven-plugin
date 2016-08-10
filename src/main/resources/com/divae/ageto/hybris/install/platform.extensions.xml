@@ -11,6 +11,9 @@
 
         <extension name="core"/>
         <!--<extension name="advancedsavedquery"/>-->
+        <!--<extension name="processing"/>-->
+        <!--<extension name="catalog"/>-->
+        <!--<extension name="impex"/>-->
 
         <!--&lt;!&ndash; ext-platform &ndash;&gt;-->
         <!--<extension name="admincockpit" />-->

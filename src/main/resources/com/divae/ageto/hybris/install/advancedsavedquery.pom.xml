@@ -14,9 +14,24 @@
     </parent>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>de.hybris</groupId>
             <artifactId>models</artifactId>
+            <version>${hybris.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>de.hybris</groupId>
+            <artifactId>processing</artifactId>
+            <version>${hybris.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.hybris</groupId>
+            <artifactId>catalog</artifactId>
+            <version>${hybris.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.hybris</groupId>
+            <artifactId>impex</artifactId>
             <version>${hybris.version}</version>
         </dependency>
     </dependencies>
