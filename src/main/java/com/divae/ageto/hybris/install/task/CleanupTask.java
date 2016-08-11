@@ -8,14 +8,16 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Klaus Hauschild
  */
-class CleanupTask extends AbstractWorkDirectoryTask {
+public class CleanupTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CleanupTask.class);
 
     @Override
     protected void execute(TaskContext taskContext, File workDirectory) {
         LOGGER.info(String.format("Cleanup work directory: %s", workDirectory));
-        delete(workDirectory);
+
+        // TODO activate this for production
+        // delete(workDirectory);
     }
 
     private void delete(final File file) {

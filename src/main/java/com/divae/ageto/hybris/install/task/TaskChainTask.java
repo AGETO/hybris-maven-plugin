@@ -7,17 +7,24 @@ import java.util.List;
  */
 public class TaskChainTask implements InstallTask {
 
-    private final List<InstallTask> installTasks;
+    private final String            chainName;
+    private final List<InstallTask> tasks;
 
-    public TaskChainTask(final List<InstallTask> installTasks) {
-        this.installTasks = installTasks;
+    public TaskChainTask(final String chainName, final List<InstallTask> tasks) {
+        this.chainName = chainName;
+        this.tasks = tasks;
     }
 
     @Override
     public void execute(final TaskContext taskContext) {
-        for (final InstallTask installTask : installTasks) {
+        for (final InstallTask installTask : tasks) {
             installTask.execute(taskContext);
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", chainName, tasks);
     }
 
 }

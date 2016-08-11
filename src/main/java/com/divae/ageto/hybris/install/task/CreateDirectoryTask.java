@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * @author Klaus Hauschild
  */
-public class CreateDirectoryTask extends AbstractWorkDirectoryTask {
+class CreateDirectoryTask extends AbstractWorkDirectoryTask {
 
     private final String directory;
 

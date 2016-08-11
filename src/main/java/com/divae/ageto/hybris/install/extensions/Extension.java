@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
+import com.google.common.collect.Lists;
 
 /**
- * Created by mhaagen on 10.08.2016.
+ * @author Marvin Haagen
  */
 public class Extension {
 
@@ -16,7 +17,7 @@ public class Extension {
     private final ExtensionBinary binary;
     private final List<Extension> dependencies;
 
-    public Extension(final File baseDirectory, final String name, final ExtensionBinary binary,
+    Extension(final File baseDirectory, final String name, final ExtensionBinary binary,
             final List<Extension> dependencies) {
         this.baseDirectory = baseDirectory;
         this.name = name;
@@ -54,4 +55,14 @@ public class Extension {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    @Override
+    public String toString() {
+        final List<String> dependencyNames = Lists.newArrayList();
+        for (final Extension dependency : dependencies) {
+            dependencyNames.add(dependency.getName());
+        }
+        return String.format("%s %s", name, dependencyNames);
+    }
+
 }

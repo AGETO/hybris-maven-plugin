@@ -57,16 +57,21 @@ public class HybrisVersion {
         return version;
     }
 
-    public String getApiVersion() {
+    String getApiVersion() {
         return apiVersion;
     }
 
-    public Date getBuildDate() {
+    Date getBuildDate() {
         return buildDate;
     }
 
-    public Date getReleaseDate() {
+    Date getReleaseDate() {
         return releaseDate;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", version, apiVersion);
     }
 
 }

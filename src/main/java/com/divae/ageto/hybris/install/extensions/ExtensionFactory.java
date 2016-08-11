@@ -15,6 +15,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Marvin Haagen
@@ -23,9 +25,12 @@ public enum ExtensionFactory {
 
     ;
 
+    private static final Logger                 LOGGER     = LoggerFactory.getLogger(ExtensionFactory.class);
+
     private static final Map<String, Extension> EXTENSIONS = Maps.newHashMap();
 
     public static List<Extension> getExtensions(final File hybrisInstallDirectory) {
+        LOGGER.info(String.format("Read extensions of hybris installed in %s", hybrisInstallDirectory));
         final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
         final Map<String, File> extensionPaths = getExtensionPaths(hybrisInstallDirectory);
         final List<Extension> extensions = Lists.newArrayList();
@@ -94,6 +99,7 @@ public enum ExtensionFactory {
     }
 
     private static Extension createExtension(final String extensionName, final Map<String, File> extensionPaths) {
+        LOGGER.debug(String.format("Read extension informations for: %s", extensionName));
         final Extension extension = new Extension(extensionPaths.get(extensionName), extensionName, null,
                 getDependencies(extensionName, extensionPaths));
         EXTENSIONS.put(extensionName, extension);

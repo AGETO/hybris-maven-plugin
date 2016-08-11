@@ -9,13 +9,21 @@
 
         <path dir="${HYBRIS_BIN_DIR}"/>
 
-        <extension name="core"/>
-        <extension name="advancedsavedquery"/>
-        <!--<extension name="processing"/>-->
-        <!--<extension name="catalog"/>-->
-        <!--<extension name="impex"/>-->
+        <extension name="catalog"/>
+        <extension name="comments"/>
+        <extension name="commons"/>
+        <extension name="deliveryzone"/>
+        <extension name="europe1"/>
+        <extension name="impex"/>
+        <extension name="paymentstandard"/>
+        <extension name="platformservices"/>
+        <extension name="processing"/>
+        <extension name="scripting"/>
+        <extension name="validation"/>
+        <extension name="workflow"/>
 
-        <!--&lt;!&ndash; ext-platform &ndash;&gt;-->
+
+        <!-- ext-platform -->
         <!--<extension name="admincockpit" />-->
         <!--<extension name="backoffice" />-->
         <!--<extension name="cockpit" />-->
@@ -23,8 +31,8 @@
         <!--<extension name="mcc" />-->
         <!--<extension name="platformhmc" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-commerce &ndash;&gt;-->
+
+        <!-- ext-commerce -->
         <!--<extension name="btg" />-->
         <!--<extension name="btgcockpit" />-->
         <!--<extension name="commercesearch" />-->
@@ -46,16 +54,16 @@
         <!--<extension name="wishlist" />-->
         <!--<extension name="commercefacades" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-data &ndash;&gt;-->
+
+        <!-- ext-data -->
         <!--<extension name="commercesearchsampledata" />-->
         <!--<extension name="apparelstore" />-->
         <!--<extension name="electronicsstore" />-->
         <!--<extension name="b2bacceleratorsampledata" />-->
         <!--<extension name="instoresampledata" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-content &ndash;&gt;-->
+
+        <!-- ext-content -->
         <!--<extension name="productcockpit" />-->
         <!--<extension name="cms2" />-->
         <!--<extension name="cms2lib" />-->
@@ -66,26 +74,26 @@
         <!--<extension name="classificationsystems" />-->
         <!--<extension name="classificationsystemshmc" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-channel &ndash;&gt;-->
+
+        <!-- ext-channel -->
         <!--<extension name="cscockpit" />-->
         <!--<extension name="mobileoptionals" />-->
         <!--<extension name="mobileservices" />-->
         <!--<extension name="instore" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-addon &ndash;&gt;-->
+
+        <!-- ext-addon -->
         <!--<extension name="addonsupport" />-->
         <!--<extension name="b2ccheckoutaddon" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-print &ndash;&gt;-->
+
+        <!-- ext-print -->
         <!--<extension name="print" />-->
         <!--<extension name="printcockpit" />-->
         <!--<extension name="printhmc" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-template &ndash;&gt;-->
+
+        <!-- ext-template -->
         <!--<extension name="ycommercewebservices" />-->
         <!--<extension name="ycommercewebserviceshmc" />-->
         <!--<extension name="yacceleratorfulfilmentprocess" />-->
@@ -101,8 +109,8 @@
         <!--<extension name="yb2bacceleratortest" />-->
         <!--<extension name="yinstoreinitialdata" />-->
 
-        <!---->
-        <!--&lt;!&ndash; ext-accelerator &ndash;&gt;-->
+
+        <!-- ext-accelerator -->
         <!--<extension name="acceleratorservices" />-->
         <!--<extension name="acceleratorfacades" />-->
         <!--<extension name="acceleratorcms" />-->

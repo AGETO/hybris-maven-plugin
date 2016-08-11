@@ -14,9 +14,7 @@
     </prerequisites>
 
     <modules>
-        <module>core</module>
         <module>models</module>
-        <module>advancedsavedquery</module>
     </modules>
 
     <build>
