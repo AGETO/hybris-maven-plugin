@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/AGETO/hybris-maven-plugin.svg?branch=master)](https://travis-ci.org/AGETO/hybris-maven-plugin)
+
 # Hybris Maven Plugin
 This maven plugin aims for allowing the hybris commerce suite to be build to java archive files.
 It converts a given hybris installation to a maven project. 
