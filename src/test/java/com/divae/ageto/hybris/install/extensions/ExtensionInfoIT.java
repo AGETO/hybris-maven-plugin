@@ -8,21 +8,22 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
+import com.divae.ageto.hybris.utils.EnvironmentUtils;
+
 /**
- * Created by mhaagen on 11.08.2016.
+ * @author Marvin Haagen
  */
 public class ExtensionInfoIT {
 
     @Test
-    public void testGetExtensionName() throws Exception {
-        assertEquals(ExtensionInfo
-                .getExtensionName(new File(com.divae.ageto.hybris.utils.EnvironmentUtils.getHybrisInstallationDirectory(),
-                        "bin/platform/ext/core/extensioninfo.xml")),
-                "core");
+    public void extensionNameTest() throws Exception {
+        final String extensionName = ExtensionInfo.getExtensionName(
+                new File(EnvironmentUtils.getHybrisInstallationDirectory(), "bin/platform/ext/core/extensioninfo.xml"));
+        assertEquals(extensionName, "core");
     }
 
     @Test
-    public void testGetDependencyNames() throws Exception {
+    public void dependencyNamesOfCoreTest() throws Exception {
         List<String> dependencies = ExtensionInfo
                 .getDependencyNames(new File(com.divae.ageto.hybris.utils.EnvironmentUtils.getHybrisInstallationDirectory(),
                         "bin/platform/ext/core/extensioninfo.xml"));
@@ -30,7 +31,7 @@ public class ExtensionInfoIT {
     }
 
     @Test
-    public void testGetDependencyNames2() throws Exception {
+    public void dependencyNamesOfAdvancedSavedQueryTest() throws Exception {
         List<String> dependencies = ExtensionInfo
                 .getDependencyNames(new File(com.divae.ageto.hybris.utils.EnvironmentUtils.getHybrisInstallationDirectory(),
                         "bin/platform/ext/advancedsavedquery/extensioninfo.xml"));

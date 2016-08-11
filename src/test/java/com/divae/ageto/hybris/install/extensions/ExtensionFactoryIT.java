@@ -22,7 +22,7 @@ public class ExtensionFactoryIT {
     public void getExtensionsFromPlatformTest() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
         final List<Extension> extensions = ExtensionFactory.getExtensions(hybrisInstallationDirectory);
-        assertEquals(extensions.size(), 69);
+        assertEquals(extensions.size(), 70);
 
         if (LOGGER.isTraceEnabled()) {
             for (final Extension extension : extensions) {
@@ -30,7 +30,7 @@ public class ExtensionFactoryIT {
             }
         }
 
-        assertEquals(ExtensionFactory.getTransitiveExtensions(extensions).size(), 89);
+        assertEquals(ExtensionFactory.getTransitiveExtensions(extensions).size(), 90);
     }
 
     private void printExtension(Extension extension, String indent) {

@@ -1,6 +1,7 @@
 package com.divae.ageto.hybris.install.extensions;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -8,10 +9,9 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 
 /**
- * Created by mhaagen on 11.08.2016.
+ * @author Marvin Haagen
  */
 enum ExtensionInfo {
 
@@ -29,6 +29,10 @@ enum ExtensionInfo {
     }
 
     static List<String> getDependencyNames(final File extensionInfo) {
+        if (getExtensionName(extensionInfo).equals("core")) {
+            return Collections.emptyList();
+        }
+
         try {
             final FileBasedConfigurationBuilder<XMLConfiguration> builder = new FileBasedConfigurationBuilder<>(
                     XMLConfiguration.class).configure(new Parameters().xml().setFile(extensionInfo));
@@ -36,7 +40,7 @@ enum ExtensionInfo {
             final List<String> dependencies = platformExtensionsConfiguration.getList(String.class,
                     "extension.requires-extension[@name]");
             if (dependencies == null) {
-                return Lists.newArrayList();
+                return Collections.singletonList("core");
             }
             return dependencies;
         } catch (final Exception exception) {

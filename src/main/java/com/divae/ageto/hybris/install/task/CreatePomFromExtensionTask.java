@@ -57,6 +57,13 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
             dependency.setVersion(taskContext.getHybrisVersion().getVersion());
             model.getDependencies().add(dependency);
         }
+        if (extension.getName().equals("core")) {
+            final Dependency dependency = new Dependency();
+            dependency.setGroupId(HYBRIS__GROUP_ID);
+            dependency.setArtifactId("models");
+            dependency.setVersion(taskContext.getHybrisVersion().getVersion());
+            model.getDependencies().add(dependency);
+        }
         return model;
     }
 

@@ -33,7 +33,7 @@ class ExtractZipTask extends AbstractWorkDirectoryTask {
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
-        LOGGER.info(String.format("Extracting '%s'...", source));
+        LOGGER.trace(String.format("Extracting '%s'...", source));
 
         final byte[] buffer = new byte[1024];
 
@@ -74,8 +74,6 @@ class ExtractZipTask extends AbstractWorkDirectoryTask {
 
             zipInputStream.closeEntry();
             zipInputStream.close();
-
-            LOGGER.info("Extraction complete.");
         } catch (final IOException exception) {
             throw new RuntimeException(exception);
         }

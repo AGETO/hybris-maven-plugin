@@ -8,9 +8,10 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 
 /**
- * Created by mhaagen on 11.08.2016.
+ * @author Marvin Haagen
  */
 enum Extensions {
 
@@ -23,7 +24,10 @@ enum Extensions {
             final FileBasedConfigurationBuilder<XMLConfiguration> builder = new FileBasedConfigurationBuilder<>(
                     XMLConfiguration.class).configure(new Parameters().xml().setFile(platformExtensionsFile));
             final XMLConfiguration platformExtensionsConfiguration = builder.getConfiguration();
-            return platformExtensionsConfiguration.getList(String.class, "extensions.extension[@name]");
+            final List<String> platformExtensions = Lists
+                    .newArrayList(platformExtensionsConfiguration.getList(String.class, "extensions.extension[@name]"));
+            platformExtensions.add("core");
+            return platformExtensions;
         } catch (final Exception exception) {
             throw Throwables.propagate(exception);
         }

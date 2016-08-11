@@ -38,13 +38,23 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         installTasks.addAll(Arrays.<InstallTask>asList( //
                 new CreatePomFromExtensionTask(extension), //
                 new CreateDirectoryTask(sourcesDirectory.toString()), //
-                new CreateDirectoryTask(resourcesDirectory.toString()))); //
+                new CreateDirectoryTask(resourcesDirectory.toString())) //
+        );
+
+        // TODO platformservices will be excluded because the binaries are present as .class files
+        // TODO determine binary representation within ExtensionFactory
+        if (!extension.getName().equals("platformservices")) {
+            installTasks.add(new ExtractZipTask(
+                    String.format("bin/platform/ext/%s/bin/%sserver.jar", extension.getName(), extension.getName()),
+                    resourcesDirectory.toString()));
+        }
 
         installTasks.addAll(Arrays.<InstallTask>asList(
                 new CopyDirectoryFilesToDirectoryTask(new File(String.format("%s", extension.getBaseDirectory())),
                         resourcesDirectory), //
                 new CopyDirectoryContentToDirectoryTask(new File(String.format("%s/resources", extension.getBaseDirectory())),
-                        resourcesDirectory)));
+                        resourcesDirectory)) //
+        );
 
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
     }
