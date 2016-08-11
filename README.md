@@ -1,6 +1,9 @@
 [![Build Status](https://travis-ci.org/AGETO/hybris-maven-plugin.svg?branch=master)](https://travis-ci.org/AGETO/hybris-maven-plugin)
+
 [![Dependency Status](https://www.versioneye.com/user/projects/57acbc42fc256900403eab3e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57acbc42fc256900403eab3e)
+
 [![Issue Stats](http://issuestats.com/github/AGETO/hybris-maven-plugin/badge/pr)](http://issuestats.com/github/AGETO/hybris-maven-plugin)
+
 [![Issue Stats](http://issuestats.com/github/AGETO/hybris-maven-plugin/badge/issue)](http://issuestats.com/github/AGETO/hybris-maven-plugin)
 
 # Hybris Maven Plugin
