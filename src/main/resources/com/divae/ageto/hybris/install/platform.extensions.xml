@@ -10,7 +10,7 @@
         <path dir="${HYBRIS_BIN_DIR}"/>
 
         <extension name="core"/>
-        <!--<extension name="advancedsavedquery"/>-->
+        <extension name="advancedsavedquery"/>
         <!--<extension name="processing"/>-->
         <!--<extension name="catalog"/>-->
         <!--<extension name="impex"/>-->

@@ -1,16 +1,16 @@
 package com.divae.ageto.hybris.install.task;
 
-import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
-import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
-import com.divae.ageto.hybris.install.extensions.Extension;
-import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
-import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
-import com.google.common.collect.Lists;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
+import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
+import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
+import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
+import com.google.common.collect.Lists;
 
 /**
  * @author Klaus Hauschild
@@ -28,9 +28,9 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
     }*/
 
     public RestructureExtensionTask(final Extension extension) {
-        this.extensionDirectory = extension.getExtensionBaseDirectory().toString();
-        this.extensionName = extension.getExtensionName();
-        this.binary = extension.getExtensionBinary();
+        this.extensionDirectory = extension.getBaseDirectory().toString();
+        this.extensionName = extension.getName();
+        this.binary = extension.getBinary();
     }
 
     @Override

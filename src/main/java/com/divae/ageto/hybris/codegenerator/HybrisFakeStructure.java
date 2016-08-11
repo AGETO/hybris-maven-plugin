@@ -2,30 +2,23 @@ package com.divae.ageto.hybris.codegenerator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import com.divae.ageto.hybris.install.extensions.AdvancedSavedQuery;
-import com.divae.ageto.hybris.install.extensions.Core;
-import com.divae.ageto.hybris.install.extensions.Extension;
-import com.google.common.collect.Lists;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import com.google.common.base.Throwables;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import com.divae.ageto.hybris.install.extensions.Extension;
+import com.google.common.base.Throwables;
 
 /**
  * @author Marvin Haagen
@@ -46,13 +39,14 @@ public class HybrisFakeStructure {
             final List<Extension> extensions = readExtensionList(new FileInputStream(platformExtensionsXML));
 
             for (Extension extension : extensions) {
-                File coreExtensionDirectory = new File(binDirectory, "ext/" + extension.getExtensionName());
+                File coreExtensionDirectory = new File(binDirectory, "ext/" + extension.getName());
                 coreExtensionDirectory.mkdirs();
                 FileUtils.copyFile(
-                        new File(hybrisReactorDir, extension.getExtensionName() + "/src/main/resources/extensioninfo.xml"),
+                        new File(hybrisReactorDir, extension.getName() + "/src/main/resources/extensioninfo.xml"),
                         new File(coreExtensionDirectory, "extensioninfo.xml"));
 
-                if (extension.getClass() == Core.class) {
+                // TODO
+                // if (extension.getClass() == Core.class) {
                     FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-advanced-deployment.xml"),
                             new File(coreExtensionDirectory, "resources/core-advanced-deployment.xml"));
                     FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-beans.xml"),
@@ -61,7 +55,7 @@ public class HybrisFakeStructure {
                             new File(coreExtensionDirectory, "resources/core-items.xml"));
                     FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/project.properties"),
                             new File(coreExtensionDirectory, "project.properties"));
-                }
+                // }
             }
 
             FileUtils.copyFile(new File(hybrisReactorDir, "src/main/resources/advanced.properties"),
@@ -108,18 +102,17 @@ public class HybrisFakeStructure {
 
         for (int a = 0; a < nodeList.getLength(); a++) {
 
-            Extension[] extension = { new Core(), new AdvancedSavedQuery() };
+            // TODO
+            Extension[] extension = {};
 
             Node node = nodeList.item(a);
             String extensionName = node.getAttributes().getNamedItem("name").getNodeValue().toLowerCase();
 
             for (Extension ext : extension) {
-                if (extensionName.equals(ext.getClass().getSimpleName().toLowerCase())) {
+                if (extensionName.equals(ext.getName().toLowerCase())) {
                     try {
                         extensions.add(ext.getClass().newInstance());
-                    } catch (InstantiationException e) {
-                        throw new RuntimeException("Extension '" + extensionName + "' can not be added to extensions list", e);
-                    } catch (IllegalAccessException e) {
+                    } catch (ReflectiveOperationException e) {
                         throw new RuntimeException("Extension '" + extensionName + "' can not be added to extensions list", e);
                     }
                 }
