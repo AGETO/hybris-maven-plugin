@@ -3,11 +3,10 @@ package com.divae.ageto.hybris.codegenerator;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 
-import com.divae.ageto.hybris.utils.PomCreator;
-import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
+
+import com.google.common.base.Throwables;
 
 /**
  * @author Klaus Hauschild

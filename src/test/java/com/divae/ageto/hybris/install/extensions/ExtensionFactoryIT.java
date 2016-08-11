@@ -4,14 +4,12 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import com.divae.ageto.hybris.utils.EnvironmentUtils;
-import com.google.common.collect.Sets;
 
 /**
  * @author Marvin Haagen
@@ -32,18 +30,7 @@ public class ExtensionFactoryIT {
             }
         }
 
-        final Set<Extension> allExtensions = Sets.newHashSet();
-        for (final Extension extension : extensions) {
-            collectExtension(extension, allExtensions);
-        }
-        assertEquals(allExtensions.size(), 89);
-    }
-
-    private void collectExtension(final Extension extension, final Set<Extension> allExtensions) {
-        allExtensions.add(extension);
-        for (Extension dependency : extension.getDependencies()) {
-            collectExtension(dependency, allExtensions);
-        }
+        assertEquals(ExtensionFactory.getTransitiveExtensions(hybrisInstallationDirectory).size(), 89);
     }
 
     private void printExtension(Extension extension, String indent) {

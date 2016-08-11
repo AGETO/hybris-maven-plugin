@@ -1,9 +1,8 @@
 package com.divae.ageto.hybris.install;
 
 import java.io.File;
-import java.util.Arrays;
 
-import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
 import com.divae.ageto.hybris.install.task.TaskChainTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
 import com.divae.ageto.hybris.version.HybrisVersion;
@@ -20,8 +19,7 @@ public class InstallHybrisArtifacts {
         final HybrisVersion hybrisVersion = HybrisVersion.of(hybrisDirectory);
         taskContext = new TaskContext(hybrisVersion, hybrisDirectory);
         installTasks = new TaskChainTask(
-                // TODO
-                InstallStrategy.getInstallTasks(taskContext, Arrays.<Extension>asList()));
+                InstallStrategy.getInstallTasks(taskContext, ExtensionFactory.getTransitiveExtensions(hybrisDirectory)));
     }
 
     public void execute() {

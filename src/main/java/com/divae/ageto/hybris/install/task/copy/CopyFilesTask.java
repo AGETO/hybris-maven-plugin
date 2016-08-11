@@ -3,10 +3,11 @@ package com.divae.ageto.hybris.install.task.copy;
 import java.io.File;
 import java.io.IOException;
 
-import com.divae.ageto.hybris.install.task.AbstractWorkDirectoryTask;
-import com.divae.ageto.hybris.install.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.divae.ageto.hybris.install.task.AbstractWorkDirectoryTask;
+import com.divae.ageto.hybris.install.task.TaskContext;
 
 /**
  * @author Klaus Hauschild
@@ -25,7 +26,7 @@ public abstract class CopyFilesTask extends AbstractWorkDirectoryTask {
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
-        final File sourceDirectory = new File(taskContext.getHybrisDirectory(), source.toString());
+        final File sourceDirectory = source;
         final File targetDirectory = getTargetDirectory(workDirectory, target.toString());
         LOGGER.trace(String.format("Copy '%s' to '%s'.", sourceDirectory, targetDirectory));
         try {

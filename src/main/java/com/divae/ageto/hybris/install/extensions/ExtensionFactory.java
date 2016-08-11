@@ -9,10 +9,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * @author Marvin Haagen
@@ -34,6 +36,29 @@ public enum ExtensionFactory {
         }
 
         return extensions;
+    }
+
+    public static final List<Extension> getTransitiveExtensions(final File hybrisInstallDirectory) {
+        Set<Extension> extensions = Sets.newHashSet();
+        List<Extension> extensionList = Lists.newArrayList();
+
+        for (Extension extension : getExtensions(hybrisInstallDirectory)) {
+            collectExtension(extension, extensions);
+        }
+
+        for (Extension extension : extensions) {
+            extensionList.add(extension);
+        }
+
+        return extensionList;
+    }
+
+    private static void collectExtension(Extension extension, Set<Extension> extensions) {
+        extensions.add(extension);
+
+        for (Extension dependency : extension.getDependencies()) {
+            collectExtension(dependency, extensions);
+        }
     }
 
     private static Map<String, File> getExtensionPaths(final File hybrisInstallDirectory) {

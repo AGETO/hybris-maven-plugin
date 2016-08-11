@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
-import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
 import com.google.common.collect.Lists;
@@ -46,16 +45,16 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CreateDirectoryTask(sourcesDirectory.toString()), //
                 new CreateDirectoryTask(resourcesDirectory.toString()))); //
 
-        if (binary.getClass() == JARArchive.class) {
-            installTasks.add(new ExtractZipTask(
-                    String.format("bin/platform/%s/bin/%s", extensionDirectory, binary.getExtensionBinaryPath().toString()),
-                    resourcesDirectory.toString()));
-        }
+        // if (binary.getClass() == JARArchive.class) {
+        // installTasks.add(new ExtractZipTask(
+        // String.format("bin/platform/%s/bin/%s", extensionDirectory, binary.getExtensionBinaryPath().toString()),
+        // resourcesDirectory.toString()));
+        // }
 
         installTasks.addAll(Arrays.<InstallTask>asList(
-                new CopyDirectoryFilesToDirectoryTask(new File(String.format("bin/platform/%s", extensionDirectory)),
+                new CopyDirectoryFilesToDirectoryTask(new File(String.format("%s", extensionDirectory)),
                         resourcesDirectory), //
-                new CopyDirectoryContentToDirectoryTask(new File(String.format("bin/platform/%s/resources", extensionDirectory)),
+                new CopyDirectoryContentToDirectoryTask(new File(String.format("%s/resources", extensionDirectory)),
                         resourcesDirectory)));
 
         new TaskChainTask(installTasks).execute(taskContext);
