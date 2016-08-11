@@ -23,13 +23,3 @@ Also maven gives you good support while the life cycle of your project.
 ## In detail
 First it determines the version of the hybris installation and then disassembles and restructures the sources and resources of the suite in a temporary folder. After that, it calls the hybris build tools for preparing the build of the hybris suite, before it runs the actual build process and installs the reactor build.
 Basing on the resulting hybris artifacts in your local maven repository you can develop your custom extenions before building and deploying your hybris installation.
-
-## Current TODO's
-
-* rearrange all extensions for hybris suite
-  * ~~core~~
-  * *all other extensions*
-* generate code
-  * ~~utilize CodeGenerator from ybootstrap.jar~~
-  * execute code generation
-* ~~execute the reactor build and install hybris suite artifacts~~
