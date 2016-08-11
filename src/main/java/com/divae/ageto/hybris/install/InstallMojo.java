@@ -10,7 +10,7 @@ import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
  * @author Klaus Hauschild
  */
 @Mojo(name = "install", requiresProject = false)
-public class InstallMojo extends AbstractHybrisDirectoryMojo {
+class InstallMojo extends AbstractHybrisDirectoryMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

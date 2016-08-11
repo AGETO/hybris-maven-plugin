@@ -12,10 +12,10 @@ import org.apache.maven.project.MavenProject;
  * @author Klaus Hauschild
  */
 @Mojo(name = "code-generator", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
-public class CodeGeneratorMojo extends AbstractMojo {
+class CodeGeneratorMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true)
-    MavenProject project;
+    private MavenProject project;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

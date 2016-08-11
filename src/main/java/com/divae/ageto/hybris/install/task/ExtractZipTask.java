@@ -19,14 +19,14 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Klaus Hauschild
  */
-public class ExtractZipTask extends AbstractWorkDirectoryTask {
+class ExtractZipTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtractZipTask.class);
 
     private final String        source;
     private final String        destination;
 
-    public ExtractZipTask(final String source, final String destination) {
+    ExtractZipTask(final String source, final String destination) {
         this.source = source;
         this.destination = destination;
     }

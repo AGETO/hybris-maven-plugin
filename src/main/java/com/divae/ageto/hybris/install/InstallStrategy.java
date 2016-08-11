@@ -3,7 +3,6 @@ package com.divae.ageto.hybris.install;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.divae.ageto.hybris.install.extensions.Extension;

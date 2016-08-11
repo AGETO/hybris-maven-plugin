@@ -24,17 +24,17 @@ public class ExtensionFactoryIT {
         final List<Extension> extensions = ExtensionFactory.getExtensions(hybrisInstallationDirectory);
         assertEquals(extensions.size(), 69);
 
-        if (LOGGER.isDebugEnabled()) {
+        if (LOGGER.isTraceEnabled()) {
             for (final Extension extension : extensions) {
                 printExtension(extension, "  ");
             }
         }
 
-        assertEquals(ExtensionFactory.getTransitiveExtensions(hybrisInstallationDirectory).size(), 89);
+        assertEquals(ExtensionFactory.getTransitiveExtensions(extensions).size(), 89);
     }
 
     private void printExtension(Extension extension, String indent) {
-        LOGGER.debug(String.format("%s%s", indent, extension.getName()));
+        LOGGER.trace(String.format("%s%s", indent, extension.getName()));
         for (Extension dependency : extension.getDependencies()) {
             printExtension(dependency, indent + "  ");
         }

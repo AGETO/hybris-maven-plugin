@@ -1,9 +1,9 @@
 package com.divae.ageto.hybris.install.task.copy;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author Marvin Haagen

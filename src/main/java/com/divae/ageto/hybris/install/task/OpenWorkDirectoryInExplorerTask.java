@@ -1,6 +1,6 @@
 package com.divae.ageto.hybris.install.task;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 

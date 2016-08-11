@@ -15,7 +15,6 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.google.common.base.Throwables;
@@ -23,9 +22,9 @@ import com.google.common.base.Throwables;
 /**
  * @author Marvin Haagen
  */
-public class HybrisFakeStructure {
+class HybrisFakeStructure {
 
-    public static File generate(final File hybrisReactorDir) {
+    static File generate(final File hybrisReactorDir) {
         try {
             final File platformDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris/bin/platform");
             platformDirectory.mkdirs();
@@ -41,20 +40,19 @@ public class HybrisFakeStructure {
             for (Extension extension : extensions) {
                 File coreExtensionDirectory = new File(binDirectory, "ext/" + extension.getName());
                 coreExtensionDirectory.mkdirs();
-                FileUtils.copyFile(
-                        new File(hybrisReactorDir, extension.getName() + "/src/main/resources/extensioninfo.xml"),
+                FileUtils.copyFile(new File(hybrisReactorDir, extension.getName() + "/src/main/resources/extensioninfo.xml"),
                         new File(coreExtensionDirectory, "extensioninfo.xml"));
 
                 // TODO
                 // if (extension.getClass() == Core.class) {
-                    FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-advanced-deployment.xml"),
-                            new File(coreExtensionDirectory, "resources/core-advanced-deployment.xml"));
-                    FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-beans.xml"),
-                            new File(coreExtensionDirectory, "resources/core-beans.xml"));
-                    FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-items.xml"),
-                            new File(coreExtensionDirectory, "resources/core-items.xml"));
-                    FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/project.properties"),
-                            new File(coreExtensionDirectory, "project.properties"));
+                FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-advanced-deployment.xml"),
+                        new File(coreExtensionDirectory, "resources/core-advanced-deployment.xml"));
+                FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-beans.xml"),
+                        new File(coreExtensionDirectory, "resources/core-beans.xml"));
+                FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/core-items.xml"),
+                        new File(coreExtensionDirectory, "resources/core-items.xml"));
+                FileUtils.copyFile(new File(hybrisReactorDir, "core/src/main/resources/project.properties"),
+                        new File(coreExtensionDirectory, "project.properties"));
                 // }
             }
 
@@ -79,7 +77,7 @@ public class HybrisFakeStructure {
         }
     }
 
-    protected static List<com.divae.ageto.hybris.install.extensions.Extension> readExtensionList(InputStream inputStream) {
+    static List<Extension> readExtensionList(InputStream inputStream) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
         try {
@@ -87,12 +85,10 @@ public class HybrisFakeStructure {
         } catch (ParserConfigurationException e) {
             throw new RuntimeException("Can not initiate XML parser", e);
         }
-        Document document = null;
+        Document document;
         try {
             document = builder.parse(inputStream);
-        } catch (SAXException e) {
-            throw new RuntimeException("Can not parse input stream", e);
-        } catch (IOException e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Can not parse input stream", e);
         }
 

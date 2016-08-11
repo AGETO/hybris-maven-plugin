@@ -12,14 +12,14 @@ import com.divae.ageto.hybris.install.task.TaskContext;
 /**
  * @author Klaus Hauschild
  */
-public abstract class CopyFilesTask extends AbstractWorkDirectoryTask {
+abstract class CopyFilesTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CopyFilesTask.class);
 
     private final File          source;
     private final File          target;
 
-    public CopyFilesTask(final File source, final File target) {
+    CopyFilesTask(final File source, final File target) {
         this.source = source;
         this.target = target;
     }

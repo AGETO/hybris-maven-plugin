@@ -10,16 +10,16 @@ import com.divae.ageto.hybris.version.HybrisVersion;
 /**
  * @author Klaus Hauschild
  */
-public class InstallHybrisArtifacts {
+class InstallHybrisArtifacts {
 
     private final TaskContext   taskContext;
     private final TaskChainTask installTasks;
 
-    public InstallHybrisArtifacts(final File hybrisDirectory) {
+    InstallHybrisArtifacts(final File hybrisDirectory) {
         final HybrisVersion hybrisVersion = HybrisVersion.of(hybrisDirectory);
         taskContext = new TaskContext(hybrisVersion, hybrisDirectory);
-        installTasks = new TaskChainTask(
-                InstallStrategy.getInstallTasks(taskContext, ExtensionFactory.getTransitiveExtensions(hybrisDirectory)));
+        installTasks = new TaskChainTask(InstallStrategy.getInstallTasks(taskContext,
+                ExtensionFactory.getTransitiveExtensions(ExtensionFactory.getExtensions(hybrisDirectory))));
     }
 
     public void execute() {

@@ -17,14 +17,14 @@ import com.strobel.decompiler.DecompilerSettings;
 /**
  * @author Klaus Hauschild
  */
-public class DecompileTask extends AbstractWorkDirectoryTask {
+class DecompileTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecompileTask.class);
 
     private final String        source;
     private final String        destination;
 
-    public DecompileTask(final String source, final String destination) {
+    DecompileTask(final String source, final String destination) {
         this.source = source;
         this.destination = destination;
     }

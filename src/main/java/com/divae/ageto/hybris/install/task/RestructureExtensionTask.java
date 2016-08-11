@@ -16,8 +16,8 @@ import com.google.common.collect.Lists;
  */
 public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
-    private final String extensionDirectory;
-    private final String extensionName;
+    private final String          extensionDirectory;
+    private final String          extensionName;
     private final ExtensionBinary binary;
 
     /*public RestructureExtensionTask(final String extensionDirectory, final String extensionName, final String binary) {
@@ -52,8 +52,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         // }
 
         installTasks.addAll(Arrays.<InstallTask>asList(
-                new CopyDirectoryFilesToDirectoryTask(new File(String.format("%s", extensionDirectory)),
-                        resourcesDirectory), //
+                new CopyDirectoryFilesToDirectoryTask(new File(String.format("%s", extensionDirectory)), resourcesDirectory), //
                 new CopyDirectoryContentToDirectoryTask(new File(String.format("%s/resources", extensionDirectory)),
                         resourcesDirectory)));
 

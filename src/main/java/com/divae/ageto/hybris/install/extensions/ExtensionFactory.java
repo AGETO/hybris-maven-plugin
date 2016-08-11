@@ -30,27 +30,22 @@ public enum ExtensionFactory {
         final Map<String, File> extensionPaths = getExtensionPaths(hybrisInstallDirectory);
         final List<Extension> extensions = Lists.newArrayList();
 
-        for (String extensionName : extensionNames) {
-            Extension extension = createExtension(extensionName, extensionPaths);
+        for (final String extensionName : extensionNames) {
+            final Extension extension = createExtension(extensionName, extensionPaths);
             extensions.add(extension);
         }
 
         return extensions;
     }
 
-    public static final List<Extension> getTransitiveExtensions(final File hybrisInstallDirectory) {
-        Set<Extension> extensions = Sets.newHashSet();
-        List<Extension> extensionList = Lists.newArrayList();
+    public static List<Extension> getTransitiveExtensions(final List<Extension> extensions) {
+        final Set<Extension> transitiveExtensions = Sets.newHashSet();
 
-        for (Extension extension : getExtensions(hybrisInstallDirectory)) {
-            collectExtension(extension, extensions);
+        for (final Extension extension : extensions) {
+            collectExtension(extension, transitiveExtensions);
         }
 
-        for (Extension extension : extensions) {
-            extensionList.add(extension);
-        }
-
-        return extensionList;
+        return Lists.newArrayList(transitiveExtensions);
     }
 
     private static void collectExtension(Extension extension, Set<Extension> extensions) {
@@ -62,9 +57,9 @@ public enum ExtensionFactory {
     }
 
     private static Map<String, File> getExtensionPaths(final File hybrisInstallDirectory) {
-        final File hybrisBinDirectory = new File(hybrisInstallDirectory, "bin");
-        final Map<String, File> extensionPaths = Maps.newHashMap();
         try {
+            final File hybrisBinDirectory = new File(hybrisInstallDirectory, "bin");
+            final Map<String, File> extensionPaths = Maps.newHashMap();
             Files.walkFileTree(hybrisBinDirectory.toPath(), new SimpleFileVisitor<Path>() {
 
                 @Override
@@ -73,13 +68,13 @@ public enum ExtensionFactory {
                         extensionPaths.put(ExtensionInfo.getExtensionName(file.toFile()), file.getParent().toFile());
                     }
                     return FileVisitResult.CONTINUE;
-
                 }
+
             });
-        } catch (IOException e) {
-            Throwables.propagate(e);
+            return extensionPaths;
+        } catch (final IOException e) {
+            throw Throwables.propagate(e);
         }
-        return extensionPaths;
     }
 
     private static List<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths) {

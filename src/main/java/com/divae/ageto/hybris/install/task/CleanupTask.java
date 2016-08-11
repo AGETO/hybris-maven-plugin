@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Klaus Hauschild
  */
-public class CleanupTask extends AbstractWorkDirectoryTask {
+class CleanupTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CleanupTask.class);
 
@@ -19,7 +19,7 @@ public class CleanupTask extends AbstractWorkDirectoryTask {
     }
 
     private void delete(final File file) {
-        if (file.isDirectory()) {
+        if (file.isDirectory() && file.listFiles() != null) {
             for (final File child : file.listFiles()) {
                 delete(child);
             }

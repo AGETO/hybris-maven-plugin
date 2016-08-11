@@ -6,7 +6,8 @@ import java.io.File;
  * Created by mhaagen on 10.08.2016.
  */
 public class JARArchive implements ExtensionBinary {
-    private File archivePath;
+
+    private final File archivePath;
 
     public JARArchive(final File archivePath) {
         this.archivePath = archivePath;

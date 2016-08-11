@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @author Klaus Hauschild
  */
-public class TokenReplacingReader extends Reader {
+class TokenReplacingReader extends Reader {
 
     private final PushbackReader      pushbackReader;
     private final Map<String, String> token;
@@ -18,7 +18,7 @@ public class TokenReplacingReader extends Reader {
     private String                    tokenValue;
     private int                       tokenValueIndex;
 
-    public TokenReplacingReader(final Reader source, final Map<String, String> token) {
+    TokenReplacingReader(final Reader source, final Map<String, String> token) {
         this.pushbackReader = new PushbackReader(source, 2);
         this.token = token;
     }

@@ -12,7 +12,7 @@ import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
  * @author Klaus Hauschild
  */
 @Mojo(name = "version", requiresProject = false)
-public class VersionMojo extends AbstractHybrisDirectoryMojo {
+class VersionMojo extends AbstractHybrisDirectoryMojo {
 
     private final SimpleDateFormat prettyDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
