@@ -9,6 +9,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
+import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
+import com.divae.ageto.hybris.install.task.metadata.ExtensionProperties;
 import com.google.common.base.Throwables;
 
 /**
@@ -35,28 +37,12 @@ class HybrisFakeStructure {
             List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, extensionsDirectory,
                     Arrays.asList(new File("target")));
 
-            // TODO read this list dynamically from reactor and classpath
-            /*for (final String extension : Arrays.asList("core", "catalog", "comments", "commons", "deliveryzone", "europe1",
-                    "impex", "paymentstandard", "platformservices", "processing", "scripting", "validation", "workflow")) {
-                    final File extensionDirectory = new File(binDirectory, "ext/" + extension);
-                extensionDirectory.mkdirs();
-                copyFile(new File(hybrisReactorDir, extension + "/src/main/resources/extensioninfo.xml"),
-                        new File(extensionDirectory, "extensioninfo.xml"));
-            
-                copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/src/main/resources/%s-advanced-deployment.xml", extension, extension)),
-                        new File(extensionDirectory, String.format("resources/%s-advanced-deployment.xml", extension)));
-                copyFile(new File(hybrisReactorDir, String.format("%s/src/main/resources/%s-beans.xml", extension, extension)),
-                        new File(extensionDirectory, String.format("resources/%s-beans.xml", extension)));
-                copyFile(new File(hybrisReactorDir, String.format("%s/src/main/resources/%s-items.xml", extension, extension)),
-                        new File(extensionDirectory, String.format("resources/%s-items.xml", extension)));
-                copyFile(new File(hybrisReactorDir, String.format("%s/src/main/resources/project.properties", extension)),
-                        new File(extensionDirectory, "project.properties"));
-            }
-            */
             for (Extension extension : extensions) {
-                final File extensionDirectory = extension.getBaseDirectory();
+                ExtensionProperties extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir,
+                        extension.getName());
+
+                final File extensionDirectory = new File(hybrisFakeDirectory,
+                        extensionProperties.getExtensionBaseDirectory().toString());
 
                 extensionDirectory.mkdirs();
 
