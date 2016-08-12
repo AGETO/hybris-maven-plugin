@@ -35,14 +35,32 @@ public enum ExtensionFactory {
 
     private static final Map<String, Extension> EXTENSIONS = Maps.newHashMap();
 
-    public static List<Extension> getExtensions(final File hybrisInstallDirectory) {
+    public static List<Extension> getExtensions(final File hybrisInstallDirectory, final File extensionsDirectory,
+            List<File> excludeExtensionsPaths) {
         LOGGER.info(String.format("Read extensions of hybris installed in %s", hybrisInstallDirectory));
+        final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
+        final Map<String, File> extensionPaths = getExtensionPaths(extensionsDirectory, extensionsDirectory,
+                excludeExtensionsPaths);
+        final List<Extension> extensions = Lists.newArrayList();
+
+        for (final String extensionName : extensionNames) {
+            final Extension extension = createExtension(extensionName, extensionPaths, hybrisInstallDirectory,
+                    extensionsDirectory);
+            extensions.add(extension);
+        }
+
+        return extensions;
+    }
+
+    public static List<Extension> getExtensions(final File hybrisInstallDirectory) {
+
         final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
         final Map<String, File> extensionPaths = getExtensionPaths(hybrisInstallDirectory);
         final List<Extension> extensions = Lists.newArrayList();
 
         for (final String extensionName : extensionNames) {
-            final Extension extension = createExtension(extensionName, extensionPaths, hybrisInstallDirectory);
+            final Extension extension = createExtension(extensionName, extensionPaths, hybrisInstallDirectory,
+                    hybrisInstallDirectory);
             extensions.add(extension);
         }
 
@@ -68,16 +86,29 @@ public enum ExtensionFactory {
     }
 
     private static Map<String, File> getExtensionPaths(final File hybrisInstallDirectory) {
+        return getExtensionPaths(hybrisInstallDirectory, new File(hybrisInstallDirectory, "bin"), Lists.newArrayList());
+    }
+
+    private static Map<String, File> getExtensionPaths(final File hybrisInstallDirectory, final File hybrisBinDirectory,
+            final List<File> excludePaths) {
         try {
-            final File hybrisBinDirectory = new File(hybrisInstallDirectory, "bin");
             final Map<String, File> extensionPaths = Maps.newHashMap();
             Files.walkFileTree(hybrisBinDirectory.toPath(), new SimpleFileVisitor<Path>() {
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    if (excludePaths.contains(hybrisInstallDirectory.toPath().relativize(dir).toFile())) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
 
                 @Override
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
                     if (file.getFileName().toString().equals("extensioninfo.xml")) {
                         String extensionName = ExtensionInfo.getExtensionName(file.toFile());
                         Path extensionDirectory = hybrisInstallDirectory.toPath().relativize(file.getParent());
+
                         extensionPaths.put(extensionName, extensionDirectory.toFile());
                     }
                     return FileVisitResult.CONTINUE;
@@ -91,15 +122,20 @@ public enum ExtensionFactory {
     }
 
     private static List<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths,
-            File hybrisInstallDirectory) {
+            File hybrisInstallDirectory, File hybrisBinDirectory) {
         File extensionPath = extensionPaths.get(extensionName);
-        File extensionInfo = new File(extensionPath, "extensioninfo.xml");
-        List<String> dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisInstallDirectory);
+        File extensionInfo = new File(extensionPath.toString(), "extensioninfo.xml");
+        List<String> dependencyNames;
+        if (hybrisInstallDirectory.equals(hybrisBinDirectory)) {
+            dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
+        } else {
+            dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
+        }
         List<Extension> extensions = Lists.newArrayList();
 
         for (String dependencyName : dependencyNames) {
             if (!EXTENSIONS.containsKey(dependencyName)) {
-                createExtension(dependencyName, extensionPaths, hybrisInstallDirectory);
+                createExtension(dependencyName, extensionPaths, hybrisInstallDirectory, hybrisBinDirectory);
             }
             extensions.add(EXTENSIONS.get(dependencyName));
         }
@@ -108,11 +144,11 @@ public enum ExtensionFactory {
     }
 
     private static Extension createExtension(final String extensionName, final Map<String, File> extensionPaths,
-            File hybrisInstallDirectory) {
+            File hybrisInstallDirectory, File hybrisBinDirectory) {
         LOGGER.debug(String.format("Read extension informations for: %s", extensionName));
         File baseDirectory = extensionPaths.get(extensionName);
         ExtensionBinary binary = getBinary(extensionName, extensionPaths);
-        List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory);
+        List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory, hybrisBinDirectory);
         final Extension extension = new Extension(baseDirectory, extensionName, binary, dependencies);
         EXTENSIONS.put(extensionName, extension);
         return extension;

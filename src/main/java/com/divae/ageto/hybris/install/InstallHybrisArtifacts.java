@@ -57,6 +57,8 @@ class InstallHybrisArtifacts {
         final List<Extension> basicTransitiveExtensions = ExtensionFactory.getTransitiveExtensions(basicExtensions);
         installTasks = new TaskChainTask("install artifacts",
                 InstallStrategy.getInstallTasks(taskContext, basicTransitiveExtensions));
+        /*installTasks = new TaskChainTask("install artifacts",
+                InstallStrategy.getInstallTasks(taskContext, transitiveExtensions));*/
     }
 
     private List<Extension> filterBasicExtensions(final List<Extension> extensions) {
