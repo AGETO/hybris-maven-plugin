@@ -121,7 +121,7 @@ public enum ExtensionFactory {
             return new JARArchive(getJARArchive(binPath, extensionName, extensionFolder));
         }
         if (classPath.exists()) {
-            return new ClassFolder(extensionFolder.toPath().relativize(classPath.toPath()).toFile());
+            return new ClassFolder(extensionFolder);
         }
 
         return null; // extension has no binary
@@ -143,8 +143,8 @@ public enum ExtensionFactory {
             }
         });
 
-        Path jarFile = files[0].toPath();
-        return extensionFolder.toPath().relativize(jarFile).toFile();
+        File jarFile = files[0];
+        return jarFile;
     }
 
 }

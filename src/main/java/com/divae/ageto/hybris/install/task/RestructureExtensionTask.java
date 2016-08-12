@@ -1,6 +1,7 @@
 package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
@@ -42,13 +44,15 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CreateDirectoryTask(resourcesDirectory.toString())) //
         );
 
-        // TODO platformservices will be excluded because the binaries are present as .class files
-        // TODO determine binary representation within ExtensionFactory
-
         if (extension.getBinary().getClass() == JARArchive.class) {
+            Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
             installTasks.add(new ExtractZipTask(
-                    String.format("bin/platform/ext/%s/%s", extension.getName(), extension.getBinary().getExtensionBinaryPath()),
+                    hybrisDirectory.relativize(extension.getBinary().getExtensionBinaryPath().toPath()).toString(),
                     resourcesDirectory.toString()));
+        }
+        if (extension.getBinary().getClass() == ClassFolder.class) {
+            installTasks.add(
+                    new CopyDirectoryContentToDirectoryTask(extension.getBinary().getExtensionBinaryPath(), resourcesDirectory));
         }
 
         installTasks.addAll(Arrays.<InstallTask>asList(
