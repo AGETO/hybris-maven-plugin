@@ -1,6 +1,7 @@
 package com.divae.ageto.hybris.install.extensions;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -11,12 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
+import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
+import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Marvin Haagen
@@ -100,10 +105,46 @@ public enum ExtensionFactory {
 
     private static Extension createExtension(final String extensionName, final Map<String, File> extensionPaths) {
         LOGGER.debug(String.format("Read extension informations for: %s", extensionName));
-        final Extension extension = new Extension(extensionPaths.get(extensionName), extensionName, null,
-                getDependencies(extensionName, extensionPaths));
+        final Extension extension = new Extension(extensionPaths.get(extensionName), extensionName,
+                getBinary(extensionName, extensionPaths), getDependencies(extensionName, extensionPaths));
         EXTENSIONS.put(extensionName, extension);
         return extension;
+    }
+
+    private static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths) {
+
+        File extensionFolder = extensionPaths.get(extensionName);
+        final File binPath = new File(extensionFolder, "bin");
+        final File classPath = new File(extensionFolder, "classes");
+
+        if (binPath.exists()) {
+            return new JARArchive(getJARArchive(binPath, extensionName, extensionFolder));
+        }
+        if (classPath.exists()) {
+            return new ClassFolder(extensionFolder.toPath().relativize(classPath.toPath()).toFile());
+        }
+
+        return null; // extension has no binary
+    }
+
+    private static File getJARArchive(File binPath, String extensionName, File extensionFolder) {
+        File[] files = binPath.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+
+                File fileName = new File(pathname.getName());
+                File filePath = pathname.getParentFile();
+
+                if (fileName.toString().equals(String.format("%sserver.jar", extensionName))) {
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        Path jarFile = files[0].toPath();
+        return extensionFolder.toPath().relativize(jarFile).toFile();
     }
 
 }

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
 import com.google.common.collect.Lists;
@@ -43,9 +44,10 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
         // TODO platformservices will be excluded because the binaries are present as .class files
         // TODO determine binary representation within ExtensionFactory
-        if (!extension.getName().equals("platformservices")) {
+
+        if (extension.getBinary().getClass() == JARArchive.class) {
             installTasks.add(new ExtractZipTask(
-                    String.format("bin/platform/ext/%s/bin/%sserver.jar", extension.getName(), extension.getName()),
+                    String.format("bin/platform/ext/%s/%s", extension.getName(), extension.getBinary().getExtensionBinaryPath()),
                     resourcesDirectory.toString()));
         }
 
