@@ -17,4 +17,9 @@ public class JARArchive implements ExtensionBinary {
     public File getExtensionBinaryPath() {
         return archivePath;
     }
+
+    @Override
+    public String getType() {
+        return "JAR archive";
+    }
 }

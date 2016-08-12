@@ -17,4 +17,9 @@ public class ClassFolder implements ExtensionBinary {
     public File getExtensionBinaryPath() {
         return classFolder;
     }
+
+    @Override
+    public String getType() {
+        return "class folder";
+    }
 }

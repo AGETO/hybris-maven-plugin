@@ -28,7 +28,10 @@ enum ExtensionInfo {
         }
     }
 
-    static List<String> getDependencyNames(final File extensionInfo) {
+    static List<String> getDependencyNames(final File extensionInfoDir, File hybrisInstallDirectory) {
+
+        final File extensionInfo = new File(hybrisInstallDirectory, extensionInfoDir.toString());
+
         if (getExtensionName(extensionInfo).equals("core")) {
             return Collections.emptyList();
         }

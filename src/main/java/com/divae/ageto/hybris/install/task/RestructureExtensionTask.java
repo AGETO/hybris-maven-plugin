@@ -13,6 +13,7 @@ import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
+import com.divae.ageto.hybris.install.task.metadata.CreateExtensionMetadataFileTask;
 import com.google.common.collect.Lists;
 
 /**
@@ -36,6 +37,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         final File sourcesDirectory = new File(extensionDirectory, "src/main/java");
         final File testSourcesDirectory = new File(extensionDirectory, "src/test/java");
         final File resourcesDirectory = new File(extensionDirectory, "src/main/resources");
+        Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
 
         List<InstallTask> installTasks = Lists.newArrayList();
         installTasks.addAll(Arrays.<InstallTask>asList( //
@@ -45,7 +47,6 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         );
 
         if (extension.getBinary().getClass() == JARArchive.class) {
-            Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
             installTasks.add(new ExtractZipTask(
                     hybrisDirectory.relativize(extension.getBinary().getExtensionBinaryPath().toPath()).toString(),
                     resourcesDirectory.toString()));
@@ -56,11 +57,15 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         }
 
         installTasks.addAll(Arrays.<InstallTask>asList(
-                new CopyDirectoryFilesToDirectoryTask(new File(String.format("%s", extension.getBaseDirectory())),
+                new CopyDirectoryFilesToDirectoryTask(
+                        new File(String.format("%s/%s", hybrisDirectory, extension.getBaseDirectory())),
                         resourcesDirectory), //
-                new CopyDirectoryContentToDirectoryTask(new File(String.format("%s/resources", extension.getBaseDirectory())),
+                new CopyDirectoryContentToDirectoryTask(
+                        new File(String.format("%s/%s/resources", hybrisDirectory, extension.getBaseDirectory())),
                         resourcesDirectory)) //
         );
+
+        installTasks.add(new CreateExtensionMetadataFileTask(extension));
 
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
     }

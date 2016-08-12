@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
+import com.divae.ageto.hybris.install.extensions.binary.None;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -41,7 +42,7 @@ public enum ExtensionFactory {
         final List<Extension> extensions = Lists.newArrayList();
 
         for (final String extensionName : extensionNames) {
-            final Extension extension = createExtension(extensionName, extensionPaths);
+            final Extension extension = createExtension(extensionName, extensionPaths, hybrisInstallDirectory);
             extensions.add(extension);
         }
 
@@ -75,7 +76,9 @@ public enum ExtensionFactory {
                 @Override
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
                     if (file.getFileName().toString().equals("extensioninfo.xml")) {
-                        extensionPaths.put(ExtensionInfo.getExtensionName(file.toFile()), file.getParent().toFile());
+                        String extensionName = ExtensionInfo.getExtensionName(file.toFile());
+                        Path extensionDirectory = hybrisInstallDirectory.toPath().relativize(file.getParent());
+                        extensionPaths.put(extensionName, extensionDirectory.toFile());
                     }
                     return FileVisitResult.CONTINUE;
                 }
@@ -87,15 +90,16 @@ public enum ExtensionFactory {
         }
     }
 
-    private static List<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths) {
+    private static List<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths,
+            File hybrisInstallDirectory) {
         File extensionPath = extensionPaths.get(extensionName);
         File extensionInfo = new File(extensionPath, "extensioninfo.xml");
-        List<String> dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo);
+        List<String> dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisInstallDirectory);
         List<Extension> extensions = Lists.newArrayList();
 
         for (String dependencyName : dependencyNames) {
             if (!EXTENSIONS.containsKey(dependencyName)) {
-                createExtension(dependencyName, extensionPaths);
+                createExtension(dependencyName, extensionPaths, hybrisInstallDirectory);
             }
             extensions.add(EXTENSIONS.get(dependencyName));
         }
@@ -103,10 +107,13 @@ public enum ExtensionFactory {
         return extensions;
     }
 
-    private static Extension createExtension(final String extensionName, final Map<String, File> extensionPaths) {
+    private static Extension createExtension(final String extensionName, final Map<String, File> extensionPaths,
+            File hybrisInstallDirectory) {
         LOGGER.debug(String.format("Read extension informations for: %s", extensionName));
-        final Extension extension = new Extension(extensionPaths.get(extensionName), extensionName,
-                getBinary(extensionName, extensionPaths), getDependencies(extensionName, extensionPaths));
+        File baseDirectory = extensionPaths.get(extensionName);
+        ExtensionBinary binary = getBinary(extensionName, extensionPaths);
+        List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory);
+        final Extension extension = new Extension(baseDirectory, extensionName, binary, dependencies);
         EXTENSIONS.put(extensionName, extension);
         return extension;
     }
@@ -124,7 +131,7 @@ public enum ExtensionFactory {
             return new ClassFolder(extensionFolder);
         }
 
-        return null; // extension has no binary
+        return new None(); // extension has no binary
     }
 
     private static File getJARArchive(File binPath, String extensionName, File extensionFolder) {

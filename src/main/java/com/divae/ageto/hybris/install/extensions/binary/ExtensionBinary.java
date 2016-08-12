@@ -9,4 +9,6 @@ public interface ExtensionBinary {
 
     File getExtensionBinaryPath();
 
+    String getType();
+
 }

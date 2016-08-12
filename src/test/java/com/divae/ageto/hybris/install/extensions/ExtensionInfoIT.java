@@ -25,16 +25,16 @@ public class ExtensionInfoIT {
     @Test
     public void dependencyNamesOfCoreTest() throws Exception {
         List<String> dependencies = ExtensionInfo
-                .getDependencyNames(new File(com.divae.ageto.hybris.utils.EnvironmentUtils.getHybrisInstallationDirectory(),
-                        "bin/platform/ext/core/extensioninfo.xml"));
+                .getDependencyNames(new File("bin/platform/ext/core/extensioninfo.xml"),
+                        com.divae.ageto.hybris.utils.EnvironmentUtils.getHybrisInstallationDirectory());
         assertEquals(dependencies.size(), 0);
     }
 
     @Test
     public void dependencyNamesOfAdvancedSavedQueryTest() throws Exception {
         List<String> dependencies = ExtensionInfo
-                .getDependencyNames(new File(com.divae.ageto.hybris.utils.EnvironmentUtils.getHybrisInstallationDirectory(),
-                        "bin/platform/ext/advancedsavedquery/extensioninfo.xml"));
+                .getDependencyNames(new File("bin/platform/ext/advancedsavedquery/extensioninfo.xml"),
+                        com.divae.ageto.hybris.utils.EnvironmentUtils.getHybrisInstallationDirectory());
         assertEquals(dependencies.size(), 3);
         assertTrue(dependencies.contains("impex"));
         assertTrue(dependencies.contains("processing"));
