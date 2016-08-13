@@ -14,7 +14,7 @@ import com.divae.ageto.hybris.install.extensions.binary.None;
 import com.google.common.base.Throwables;
 
 /**
- * Created by mhaagen on 12.08.2016.
+ * @author Marvin Haagen
  */
 public enum ExtensionMetadataFile {
     ;
