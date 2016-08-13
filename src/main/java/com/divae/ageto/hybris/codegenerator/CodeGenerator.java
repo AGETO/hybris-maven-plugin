@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 
@@ -14,8 +12,6 @@ import com.google.common.base.Throwables;
  * @author Klaus Hauschild
  */
 class CodeGenerator {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(CodeGenerator.class);
 
     static void generate(final File hybrisReactorDir) {
         final File hybrisFakeDirectory = HybrisFakeStructure.generate(hybrisReactorDir);
@@ -39,7 +35,6 @@ class CodeGenerator {
             final Method mainMethod = bootstrapCodeGeneratorClass.getMethod("main", String[].class);
             mainMethod.invoke(null, new Object[] { new String[] { hybrisFakeDirectory.toString() } });
         } catch (final Exception exception) {
-            LOGGER.error(exception.getCause().toString());
             throw Throwables.propagate(exception);
         }
     }

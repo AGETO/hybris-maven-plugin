@@ -19,7 +19,11 @@ class CodeGeneratorMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        CodeGenerator.generate(project.getBasedir());
+        try {
+            CodeGenerator.generate(project.getBasedir());
+        } catch (final Exception exception) {
+            getLog().error(exception);
+        }
     }
 
 }
