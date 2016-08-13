@@ -45,6 +45,10 @@ class HybrisFakeStructure {
             copyFile(new File(resourcesDirectory, "advanced.properties"),
                     new File(platformDirectory, "resources/advanced.properties"));
             copyFile(new File(resourcesDirectory, "project.properties"), new File(platformDirectory, "project.properties"));
+            copyFile(new File(resourcesDirectory, "schemas/beans.xsd"),
+                    new File(platformDirectory, "resources/schemas/beans.xsd"));
+            copyFile(new File(resourcesDirectory, "bootstrap/pojo/global-eventtemplate.vm"),
+                    new File(platformDirectory, "bootstrap/resources/pojo/global-eventtemplate.vm"));
 
             List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, hybrisReactorDir,
                     Collections.singletonList(new File("target")));
