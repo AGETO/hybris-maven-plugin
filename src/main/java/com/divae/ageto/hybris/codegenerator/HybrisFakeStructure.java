@@ -82,29 +82,10 @@ class HybrisFakeStructure {
                         new File(extensionDirectory, String.format("resources/%s-items.xml", extension.getName())));
 
                 copyFile(new File(hybrisReactorDir, String.format("%s/project.properties", extension.getBaseDirectory())),
-                        new File(extensionDirectory, String.format("project.properties", extension.getName())));
+                        new File(extensionDirectory, "project.properties"));
 
                 copyFile(new File(hybrisReactorDir, String.format("%s/extensioninfo.xml", extension.getBaseDirectory())),
-                        new File(extensionDirectory, String.format("extensioninfo.xml", extension.getName())));
-
-                /*copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/src/main/resources/%s-advanced-deployment.xml", extension.getName(),
-                                        extension.getName())),
-                        new File(extensionDirectory, String.format("resources/%s-advanced-deployment.xml", extension.getName())));
-                copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/src/main/resources/%s-beans.xml", extension.getName(), extension.getName())),
-                        new File(extensionDirectory, String.format("resources/%s-beans.xml", extension.getName())));
-                copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/src/main/resources/%s-items.xml", extension.getName(), extension.getName())),
-                        new File(extensionDirectory, String.format("resources/%s-items.xml", extension.getName())));
-                copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/src/main/resources/project.properties", extension.getName())),
-                        new File(extensionDirectory, "project.properties"));
-                */
+                        new File(extensionDirectory, "extensioninfo.xml"));
             }
 
             return platformDirectory;
@@ -118,8 +99,9 @@ class HybrisFakeStructure {
             return;
         }
 
-        if (!destFile.getParentFile().exists()) {
-            destFile.getParentFile().mkdirs();
+        if (!destFile.getParentFile().exists() && !destFile.getParentFile().mkdirs()) {
+            LOGGER.error(String.format("Directory %s can not be created", destFile.getParentFile()));
+            throw new RuntimeException(String.format("Directory %s can not be created", destFile.getParentFile()));
         }
 
         FileUtils.copyFile(srcFile, destFile);

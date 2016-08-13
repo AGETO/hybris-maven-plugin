@@ -8,7 +8,6 @@ import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyFileToDirectoryTask;
 import com.divae.ageto.hybris.utils.EnvironmentUtils;
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -28,7 +27,7 @@ public class RestructurePlatformTask extends AbstractWorkDirectoryTask {
         final File resourcesDirectory = new File("src/main/resources");
         File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
         new TaskChainTask("restructure platform",
-                Arrays.<InstallTask>asList( //
+                Arrays.asList( //
                         new CreatePomFromTemplateTask(new File("com/divae/ageto/hybris/install/platform.pom.xml"), new File(""),
                                 getExtensionNames(extensions)), //
                         new CopyFileToDirectoryTask(new File(hybrisInstallationDirectory + "/bin/platform/project.properties"),
@@ -44,14 +43,7 @@ public class RestructurePlatformTask extends AbstractWorkDirectoryTask {
     }
 
     private List<String> getExtensionNames(final List<Extension> extensions) {
-        return Lists.newArrayList(Iterables.transform(extensions, new Function<Extension, String>() {
-
-            @Override
-            public String apply(final Extension input) {
-                return input.getName();
-            }
-
-        }));
+        return Lists.newArrayList(Iterables.transform(extensions, (Extension input) -> input.getName()));
     }
 
 }

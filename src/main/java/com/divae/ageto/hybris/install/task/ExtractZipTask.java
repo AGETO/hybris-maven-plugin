@@ -39,8 +39,9 @@ class ExtractZipTask extends AbstractWorkDirectoryTask {
 
         try {
             final File destinationDirectory = new File(workDirectory, this.destinationDirectory.toString());
-            if (!destinationDirectory.exists()) {
-                destinationDirectory.mkdirs();
+            if (!destinationDirectory.exists() && !destinationDirectory.mkdirs()) {
+                LOGGER.error(String.format("Directory %s can not be created", destinationDirectory));
+                throw new RuntimeException(String.format("Directory %s can not be created", destinationDirectory));
             }
 
             final ZipInputStream zipInputStream = new ZipInputStream(
@@ -53,10 +54,16 @@ class ExtractZipTask extends AbstractWorkDirectoryTask {
 
                 LOGGER.trace(String.format("  extracting '%s'", file));
 
-                new File(file.getParent()).mkdirs();
+                if (!file.getParentFile().mkdirs()) {
+                    LOGGER.error(String.format("Directory %s can not be created", file.getParentFile()));
+                    throw new RuntimeException(String.format("Directory %s can not be created", file.getParentFile()));
+                }
 
                 if (zipEntry.isDirectory()) {
-                    file.mkdirs();
+                    if (!file.mkdirs()) {
+                        LOGGER.error(String.format("Directory %s can not be created", file));
+                        throw new RuntimeException(String.format("Directory %s can not be created", file));
+                    }
                     zipEntry = zipInputStream.getNextEntry();
                     continue;
                 }
