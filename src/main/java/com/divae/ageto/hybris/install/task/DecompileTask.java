@@ -21,12 +21,12 @@ class DecompileTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecompileTask.class);
 
-    private final String        source;
-    private final String        destination;
+    private final File          sourceFile;
+    private final File          destinationDirectory;
 
-    DecompileTask(final String source, final String destination) {
-        this.source = source;
-        this.destination = destination;
+    DecompileTask(final File sourceFile, final File destinationDirectory) {
+        this.sourceFile = sourceFile;
+        this.destinationDirectory = destinationDirectory;
     }
 
     @Override
@@ -37,13 +37,13 @@ class DecompileTask extends AbstractWorkDirectoryTask {
         // java.util.logging.Logger.getLogger("global").setLevel(Level.FINEST);
 
         try {
-            final File jarFile = new File(taskContext.getHybrisDirectory(), source);
+            final File jarFile = new File(taskContext.getHybrisDirectory(), sourceFile.toString());
             LOGGER.debug(String.format("Decompiling %s", jarFile));
             final Stopwatch stopwatch = Stopwatch.createStarted();
             final CommandLineOptions commandLineOptions = new CommandLineOptions();
             final DecompilationOptions decompilationOptions = new DecompilationOptions();
             final DecompilerSettings decompilerSettings = decompilationOptions.getSettings();
-            decompilerSettings.setOutputDirectory(new File(workDirectory, destination).getAbsolutePath());
+            decompilerSettings.setOutputDirectory(new File(workDirectory, destinationDirectory.toString()).getAbsolutePath());
             decompilerSettings.setTypeLoader(new InputTypeLoader());
             DecompilerDriver.decompileJar(jarFile.getAbsolutePath(), commandLineOptions, decompilationOptions);
             LOGGER.debug(String.format("... took %s", stopwatch));

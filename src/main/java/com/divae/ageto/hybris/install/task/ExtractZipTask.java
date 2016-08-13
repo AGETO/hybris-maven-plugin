@@ -23,28 +23,28 @@ class ExtractZipTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtractZipTask.class);
 
-    private final String        source;
-    private final String        destination;
+    private final File          sourceFile;
+    private final File          destinationDirectory;
 
-    ExtractZipTask(final String source, final String destination) {
-        this.source = source;
-        this.destination = destination;
+    ExtractZipTask(final File sourceFile, final File destinationDirectory) {
+        this.sourceFile = sourceFile;
+        this.destinationDirectory = destinationDirectory;
     }
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
-        LOGGER.trace(String.format("Extracting '%s'...", source));
+        LOGGER.trace(String.format("Extracting '%s'...", sourceFile));
 
         final byte[] buffer = new byte[1024];
 
         try {
-            final File destinationDirectory = new File(workDirectory, destination);
+            final File destinationDirectory = new File(workDirectory, this.destinationDirectory.toString());
             if (!destinationDirectory.exists()) {
                 destinationDirectory.mkdirs();
             }
 
             final ZipInputStream zipInputStream = new ZipInputStream(
-                    new FileInputStream(new File(taskContext.getHybrisDirectory(), source)));
+                    new FileInputStream(new File(taskContext.getHybrisDirectory(), sourceFile.toString())));
             ZipEntry zipEntry = zipInputStream.getNextEntry();
 
             while (zipEntry != null) {

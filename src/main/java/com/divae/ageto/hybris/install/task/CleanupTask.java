@@ -20,13 +20,15 @@ public class CleanupTask extends AbstractWorkDirectoryTask {
         // delete(workDirectory);
     }
 
-    private void delete(final File file) {
-        if (file.isDirectory() && file.listFiles() != null) {
-            for (final File child : file.listFiles()) {
+    private void delete(final File directory) {
+        if (directory.isDirectory() && directory.listFiles() != null) {
+            for (final File child : directory.listFiles()) {
                 delete(child);
             }
         }
-        file.delete();
+        if (directory.exists() && !directory.delete()) {
+            throw new RuntimeException(String.format("Directory %s can not be deleted", directory));
+        }
     }
 
 }

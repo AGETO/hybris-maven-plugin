@@ -23,11 +23,11 @@ public class ExecuteMavenTask extends AbstractWorkDirectoryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteMavenTask.class);
 
-    private final String        directory;
+    private final File          directory;
     private final String[]      arguments;
     private final boolean       workDirectoryRelative;
 
-    public ExecuteMavenTask(final String directory, final String[] arguments, final boolean workDirectoryRelative) {
+    public ExecuteMavenTask(final File directory, final String[] arguments, final boolean workDirectoryRelative) {
         this.directory = directory;
         this.arguments = arguments;
         this.workDirectoryRelative = workDirectoryRelative;
@@ -40,7 +40,7 @@ public class ExecuteMavenTask extends AbstractWorkDirectoryTask {
         final MavenCli mavenCli = new MavenCli();
         final ByteArrayOutputStream stdOutStream = new ByteArrayOutputStream();
         final ByteArrayOutputStream stdErrStream = new ByteArrayOutputStream();
-        final int exitCode = mavenCli.doMain(arguments, getDirectory(workDirectory), printStream(stdOutStream),
+        final int exitCode = mavenCli.doMain(arguments, getDirectory(workDirectory).toString(), printStream(stdOutStream),
                 printStream(stdErrStream));
         final List<String> executionOutput = toString(stdOutStream);
         if (!executionOutput.isEmpty()) {
@@ -69,9 +69,9 @@ public class ExecuteMavenTask extends AbstractWorkDirectoryTask {
         }
     }
 
-    private String getDirectory(final File workDirectory) {
+    private File getDirectory(final File workDirectory) {
         if (workDirectoryRelative) {
-            return new File(workDirectory, directory).getAbsolutePath();
+            return new File(workDirectory, directory.toString()).getAbsoluteFile();
         }
         return directory;
     }

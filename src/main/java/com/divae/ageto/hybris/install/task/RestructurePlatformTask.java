@@ -29,7 +29,7 @@ public class RestructurePlatformTask extends AbstractWorkDirectoryTask {
         File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
         new TaskChainTask("restructure platform",
                 Arrays.<InstallTask>asList( //
-                        new CreatePomFromTemplateTask("com/divae/ageto/hybris/install/platform.pom.xml", "",
+                        new CreatePomFromTemplateTask(new File("com/divae/ageto/hybris/install/platform.pom.xml"), new File(""),
                                 getExtensionNames(extensions)), //
                         new CopyFileToDirectoryTask(new File(hybrisInstallationDirectory + "/bin/platform/project.properties"),
                                 resourcesDirectory), //
@@ -38,7 +38,8 @@ public class RestructurePlatformTask extends AbstractWorkDirectoryTask {
                         new CopyDirectoryContentToDirectoryTask(
                                 new File(hybrisInstallationDirectory + "/bin/platform/bootstrap/resources"),
                                 new File(resourcesDirectory + "/bootstrap")), //
-                        new CreatePomFromTemplateTask("com/divae/ageto/hybris/install/models.pom.xml", "models", null) //
+                        new CreatePomFromTemplateTask(new File("com/divae/ageto/hybris/install/models.pom.xml"),
+                                new File("models"), null) //
                 )).execute(taskContext);
     }
 

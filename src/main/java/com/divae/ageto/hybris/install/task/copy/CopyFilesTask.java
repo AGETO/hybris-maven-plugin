@@ -27,7 +27,7 @@ abstract class CopyFilesTask extends AbstractWorkDirectoryTask {
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
         final File sourceDirectory = source;
-        final File targetDirectory = getTargetDirectory(workDirectory, target.toString());
+        final File targetDirectory = getTargetDirectory(workDirectory, target);
         LOGGER.trace(String.format("Copy '%s' to '%s'.", sourceDirectory, targetDirectory));
         try {
             doCopy(sourceDirectory, targetDirectory);
@@ -39,11 +39,11 @@ abstract class CopyFilesTask extends AbstractWorkDirectoryTask {
 
     protected abstract void doCopy(final File source, final File target) throws IOException;
 
-    private File getTargetDirectory(final File workDirectory, final String target) {
+    private File getTargetDirectory(final File workDirectory, final File target) {
         if (target == null) {
             return workDirectory;
         }
-        return new File(workDirectory, target);
+        return new File(workDirectory, target.toString());
     }
 
     @Override

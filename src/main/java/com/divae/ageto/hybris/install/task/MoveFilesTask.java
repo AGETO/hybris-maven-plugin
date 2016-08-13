@@ -10,18 +10,18 @@ import org.apache.commons.io.FileUtils;
  */
 public class MoveFilesTask extends AbstractWorkDirectoryTask {
 
-    private final String source;
-    private final String target;
+    private final File source;
+    private final File targetDirectory;
 
-    public MoveFilesTask(final String source, final String target) {
+    public MoveFilesTask(final File source, final File targetDirectory) {
         this.source = source;
-        this.target = target;
+        this.targetDirectory = targetDirectory;
     }
 
     @Override
     protected void execute(TaskContext taskContext, File workDirectory) {
-        final File sourceDirectory = new File(taskContext.getHybrisDirectory(), source);
-        final File targetDirectory = new File(workDirectory, target);
+        final File sourceDirectory = new File(taskContext.getHybrisDirectory(), this.source.toString());
+        final File targetDirectory = new File(workDirectory, this.targetDirectory.toString());
 
         try {
             if (sourceDirectory.isDirectory()) {

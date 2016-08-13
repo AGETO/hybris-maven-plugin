@@ -5,7 +5,7 @@ import java.io.File;
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
 
 /**
- * Created by mhaagen on 12.08.2016.
+ * Created by Marvin Haagen on 12.08.2016.
  */
 public class ExtensionProperties {
 

@@ -13,4 +13,4 @@ hs_err_pid*
 
 # project specific
 /.idea
-/target
+/targetDirectory

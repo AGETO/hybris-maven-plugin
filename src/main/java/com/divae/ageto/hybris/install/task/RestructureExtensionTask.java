@@ -42,14 +42,14 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         List<InstallTask> installTasks = Lists.newArrayList();
         installTasks.addAll(Arrays.<InstallTask>asList( //
                 new CreatePomFromExtensionTask(extension), //
-                new CreateDirectoryTask(sourcesDirectory.toString()), //
-                new CreateDirectoryTask(resourcesDirectory.toString())) //
+                new CreateDirectoryTask(sourcesDirectory), //
+                new CreateDirectoryTask(resourcesDirectory)) //
         );
 
         if (extension.getBinary().getClass() == JARArchive.class) {
+            Path sourceFile = extension.getBinary().getExtensionBinaryPath().toPath();
             installTasks.add(new ExtractZipTask(
-                    hybrisDirectory.relativize(extension.getBinary().getExtensionBinaryPath().toPath()).toString(),
-                    resourcesDirectory.toString()));
+                    hybrisDirectory.relativize(sourceFile).toFile(), resourcesDirectory));
         }
         if (extension.getBinary().getClass() == ClassFolder.class) {
             installTasks.add(

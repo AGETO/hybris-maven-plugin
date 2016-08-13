@@ -13,10 +13,10 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class MoveTestSourcesTask extends AbstractWorkDirectoryTask {
 
-    private final String fromDirectory;
-    private final String toDirectory;
+    private final File fromDirectory;
+    private final File toDirectory;
 
-    public MoveTestSourcesTask(final String fromDirectory, final String toDirectory) {
+    public MoveTestSourcesTask(final File fromDirectory, final File toDirectory) {
         this.fromDirectory = fromDirectory;
         this.toDirectory = toDirectory;
     }
@@ -25,8 +25,8 @@ public class MoveTestSourcesTask extends AbstractWorkDirectoryTask {
     protected void execute(final TaskContext taskContext, final File workDirectory) {
         // TODO khauschild: prevent empty directories
 
-        final File from = new File(workDirectory, fromDirectory);
-        final File to = new File(workDirectory, toDirectory);
+        final File from = new File(workDirectory, fromDirectory.toString());
+        final File to = new File(workDirectory, toDirectory.toString());
 
         try {
             Files.walkFileTree(from.toPath(), new SimpleFileVisitor<Path>() {
@@ -41,7 +41,11 @@ public class MoveTestSourcesTask extends AbstractWorkDirectoryTask {
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
                     if (file.endsWith("Test.java")) {
                         Files.copy(file, to.toPath().resolve(from.toPath().relativize(file)));
-                        file.toFile().delete();
+                        if (file.toFile().exists() && !file.toFile().delete()) {
+                            throw new RuntimeException(
+                                    String.format("file %s has been copied to %s, but source file at %s can not be deleted",
+                                            file.getFileName(), to, file));
+                        }
                     }
                     return FileVisitResult.CONTINUE;
 

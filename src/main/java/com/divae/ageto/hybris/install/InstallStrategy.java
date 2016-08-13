@@ -47,7 +47,7 @@ enum InstallStrategy {
                 new RestructurePlatformTask(extensions),
 
                 // prepare code generator
-                new ExecuteMavenTask("",
+                new ExecuteMavenTask(new File(""),
                         new String[] { "install:install-file",
                                 String.format("-Dfile=%s",
                                         new File(taskContext.getHybrisDirectory(), "bin/platform/bootstrap/bin/ybootstrap.jar")),
@@ -56,7 +56,7 @@ enum InstallStrategy {
                         true), //
 
                 // install
-                new ExecuteMavenTask("", new String[] { "clean", "install" }, true), //
+                new ExecuteMavenTask(new File(""), new String[] { "clean", "install" }, true), //
 
                 // cleanup
                 new CleanupTask() //

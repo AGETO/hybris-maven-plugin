@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
@@ -18,6 +20,8 @@ import com.google.common.base.Throwables;
  * @author Marvin Haagen
  */
 class HybrisFakeStructure {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(HybrisFakeStructure.class);
 
     static File generate(final File hybrisReactorDir) {
         Arrays.asList(1, 2, 3).stream().map(i -> i + 1);
@@ -31,7 +35,8 @@ class HybrisFakeStructure {
             final File platformExtensionsXML = new File(
                     "src/main/resources/com/divae/ageto/hybris/install/platform.extensions.xml");
 
-            if (!platformDirectory.mkdirs()) {
+            if (!platformDirectory.exists() && !platformDirectory.mkdirs()) {
+                LOGGER.error(String.format("Platform directory can not be created at %s", platformDirectory));
                 throw new RuntimeException(String.format("Platform directory can not be created at %s", platformDirectory));
             }
             copyFile(platformExtensionsXML, new File(platformDirectory, "extensions.xml"));
@@ -47,6 +52,7 @@ class HybrisFakeStructure {
                         extensionProperties.getExtensionBaseDirectory().toString());
 
                 if (!extensionDirectory.mkdirs()) {
+                    LOGGER.error(String.format("Extension directory can not be created at %s", extensionDirectory));
                     throw new RuntimeException(String.format("Extension directory can not be created at %s", extensionDirectory));
                 }
 

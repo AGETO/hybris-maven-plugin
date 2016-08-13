@@ -18,11 +18,11 @@ import com.google.common.base.Throwables;
  */
 class CreatePomFromTemplateTask extends AbstractWorkDirectoryTask {
 
-    private final String       template;
-    private final String       targetDirectory;
+    private final File         template;
+    private final File         targetDirectory;
     private final List<String> modules;
 
-    CreatePomFromTemplateTask(final String template, final String targetDirectory, final List<String> modules) {
+    CreatePomFromTemplateTask(final File template, final File targetDirectory, final List<String> modules) {
         this.template = template;
         this.targetDirectory = targetDirectory;
         this.modules = modules;
@@ -35,7 +35,8 @@ class CreatePomFromTemplateTask extends AbstractWorkDirectoryTask {
             // read model
             final MavenXpp3Reader reader = new MavenXpp3Reader();
             final Model model = reader
-                    .read(new TokenReplacingReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(template)),
+                    .read(new TokenReplacingReader(
+                            new InputStreamReader(ClassLoader.getSystemResourceAsStream(template.toString())),
                             Collections.singletonMap("hybris.version", taskContext.getHybrisVersion().getVersion())));
 
             // fill with parameters
@@ -46,10 +47,14 @@ class CreatePomFromTemplateTask extends AbstractWorkDirectoryTask {
             }
 
             // write model
-            final File target = new File(workDirectory, targetDirectory);
+            final File target = new File(workDirectory, targetDirectory.toString());
             final File pomFile = new File(target, "pom.xml");
-            pomFile.getParentFile().mkdirs();
-            pomFile.createNewFile();
+            if (!pomFile.getParentFile().exists() && !pomFile.getParentFile().mkdirs()) {
+                throw new RuntimeException(String.format("Directory %s can not be created", pomFile.getParentFile()));
+            }
+            if (!pomFile.exists() && !pomFile.createNewFile()) {
+                throw new RuntimeException(String.format("File %s can not be created", pomFile));
+            }
             stream = new FileOutputStream(pomFile);
             new MavenXpp3Writer().write(stream, model);
         } catch (final Exception exception) {

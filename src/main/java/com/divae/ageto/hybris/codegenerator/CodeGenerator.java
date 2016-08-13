@@ -15,7 +15,7 @@ class CodeGenerator {
 
     static void generate(final File hybrisReactorDir) {
         final File hybrisFakeDirectory = HybrisFakeStructure.generate(hybrisReactorDir);
-        invokeBootstrapCodeGenerator(hybrisFakeDirectory);
+        invokeBootstrapCodeGenerator(hybrisFakeDirectory.toString());
         createModelsArtifacts(hybrisFakeDirectory, hybrisReactorDir);
     }
 
@@ -29,11 +29,11 @@ class CodeGenerator {
         }
     }
 
-    private static void invokeBootstrapCodeGenerator(final File hybrisFakeDirectory) {
+    private static void invokeBootstrapCodeGenerator(final String hybrisFakeDirectory) {
         try {
             final Class<?> bootstrapCodeGeneratorClass = Class.forName("de.hybris.bootstrap.codegenerator.CodeGenerator");
             final Method mainMethod = bootstrapCodeGeneratorClass.getMethod("main", String[].class);
-            mainMethod.invoke(null, new Object[] { new String[] { hybrisFakeDirectory.toString() } });
+            mainMethod.invoke(null, new Object[] { new String[] { hybrisFakeDirectory } });
         } catch (final Exception exception) {
             throw Throwables.propagate(exception);
         }
