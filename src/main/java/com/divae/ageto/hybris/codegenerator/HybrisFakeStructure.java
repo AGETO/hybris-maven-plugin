@@ -3,6 +3,7 @@ package com.divae.ageto.hybris.codegenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -25,17 +26,18 @@ class HybrisFakeStructure {
             final File hybrisFakeDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris");
             final File binDirectory = new File(hybrisFakeDirectory, "bin");
             final File platformDirectory = new File(binDirectory, "platform");
-            final File extensionsDirectory = hybrisReactorDir;
 
             // TODO use restructured platform.extensions.xml
             final File platformExtensionsXML = new File(
                     "src/main/resources/com/divae/ageto/hybris/install/platform.extensions.xml");
 
-            platformDirectory.mkdirs();
+            if (!platformDirectory.mkdirs()) {
+                throw new RuntimeException(String.format("Platform directory can not be created at %s", platformDirectory));
+            }
             copyFile(platformExtensionsXML, new File(platformDirectory, "extensions.xml"));
 
-            List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, extensionsDirectory,
-                    Arrays.asList(new File("target")));
+            List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, hybrisReactorDir,
+                    Collections.singletonList(new File("target")));
 
             for (Extension extension : extensions) {
                 ExtensionProperties extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir,
@@ -44,7 +46,9 @@ class HybrisFakeStructure {
                 final File extensionDirectory = new File(hybrisFakeDirectory,
                         extensionProperties.getExtensionBaseDirectory().toString());
 
-                extensionDirectory.mkdirs();
+                if (!extensionDirectory.mkdirs()) {
+                    throw new RuntimeException(String.format("Extension directory can not be created at %s", extensionDirectory));
+                }
 
                 copyFile(
                         new File(hybrisReactorDir,

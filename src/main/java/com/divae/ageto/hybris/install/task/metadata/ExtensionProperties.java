@@ -15,6 +15,17 @@ public class ExtensionProperties {
 
     public ExtensionProperties(final String extensionName, final File extensionBaseDirectory,
             final ExtensionBinary extensionBinary) {
+
+        if (extensionName == null) {
+            throw new RuntimeException("Extension name must not be null");
+        }
+        if (extensionBaseDirectory == null) {
+            throw new RuntimeException("Extension base directory must not be null");
+        }
+        if (extensionBinary == null) {
+            throw new RuntimeException("Extension binary must not be null");
+        }
+
         this.extensionName = extensionName;
         this.extensionBaseDirectory = extensionBaseDirectory;
         this.binary = extensionBinary;

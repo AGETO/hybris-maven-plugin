@@ -1,7 +1,6 @@
 package com.divae.ageto.hybris.install.extensions;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -126,11 +125,8 @@ public enum ExtensionFactory {
         File extensionPath = extensionPaths.get(extensionName);
         File extensionInfo = new File(extensionPath.toString(), "extensioninfo.xml");
         List<String> dependencyNames;
-        if (hybrisInstallDirectory.equals(hybrisBinDirectory)) {
-            dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
-        } else {
-            dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
-        }
+        dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
+
         List<Extension> extensions = Lists.newArrayList();
 
         for (String dependencyName : dependencyNames) {
@@ -161,7 +157,7 @@ public enum ExtensionFactory {
         final File classPath = new File(extensionFolder, "classes");
 
         if (binPath.exists()) {
-            return new JARArchive(getJARArchive(binPath, extensionName, extensionFolder));
+            return new JARArchive(getJARArchive(binPath, extensionName));
         }
         if (classPath.exists()) {
             return new ClassFolder(extensionFolder);
@@ -170,24 +166,16 @@ public enum ExtensionFactory {
         return new None(); // extension has no binary
     }
 
-    private static File getJARArchive(File binPath, String extensionName, File extensionFolder) {
-        File[] files = binPath.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
+    private static File getJARArchive(File binPath, String extensionName) {
+        File[] files = binPath.listFiles((File pathname) -> {
 
                 File fileName = new File(pathname.getName());
-                File filePath = pathname.getParentFile();
 
-                if (fileName.toString().equals(String.format("%sserver.jar", extensionName))) {
-                    return true;
-                }
+            return fileName.toString().equals(String.format("%sserver.jar", extensionName));
 
-                return false;
-            }
         });
 
-        File jarFile = files[0];
-        return jarFile;
+        return files[0];
     }
 
 }
