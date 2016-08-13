@@ -30,6 +30,7 @@ class HybrisFakeStructure {
             final File hybrisFakeDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris");
             final File binDirectory = new File(hybrisFakeDirectory, "bin");
             final File platformDirectory = new File(binDirectory, "platform");
+            final File resourcesDirectory = new File(hybrisReactorDir, "src/main/resources");
 
             // TODO use restructured platform.extensions.xml
             final File platformExtensionsXML = new File(
@@ -39,7 +40,11 @@ class HybrisFakeStructure {
                 LOGGER.error(String.format("Platform directory can not be created at %s", platformDirectory));
                 throw new RuntimeException(String.format("Platform directory can not be created at %s", platformDirectory));
             }
+
             copyFile(platformExtensionsXML, new File(platformDirectory, "extensions.xml"));
+            copyFile(new File(resourcesDirectory, "advanced.properties"),
+                    new File(platformDirectory, "resources/advanced.properties"));
+            copyFile(new File(resourcesDirectory, "project.properties"), new File(platformDirectory, "project.properties"));
 
             List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, hybrisReactorDir,
                     Collections.singletonList(new File("target")));
@@ -108,6 +113,11 @@ class HybrisFakeStructure {
         if (!srcFile.exists()) {
             return;
         }
+
+        if (!destFile.getParentFile().exists()) {
+            destFile.getParentFile().mkdirs();
+        }
+
         FileUtils.copyFile(srcFile, destFile);
     }
 
