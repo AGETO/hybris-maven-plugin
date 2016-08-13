@@ -10,19 +10,26 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.utils.MavenCentralSearch;
 import com.google.common.base.Throwables;
+import com.google.common.io.PatternFilenameFilter;
 
 /**
  * @author Klaus Hauschild
  */
 class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
+
+    private static final Logger LOGGER                = LoggerFactory.getLogger(CreatePomFromExtensionTask.class);
 
     private static final String MODEL_VERSION         = "4.0.0";
     private static final String HYBRIS__GROUP_ID      = "de.hybris";
@@ -50,6 +57,13 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         parent.setArtifactId(PLATFORM__ARTIFACT_ID);
         parent.setVersion(taskContext.getHybrisVersion().getVersion());
         model.setParent(parent);
+        addExtensionDependencies(taskContext, extension, model);
+        addModelsDependency(taskContext, extension, model);
+        addExternalDependency(taskContext, extension, model);
+        return model;
+    }
+
+    private void addExtensionDependencies(final TaskContext taskContext, final Extension extension, final Model model) {
         for (final Extension extensionDependency : extension.getDependencies()) {
             final Dependency dependency = new Dependency();
             dependency.setGroupId(HYBRIS__GROUP_ID);
@@ -57,14 +71,37 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
             dependency.setVersion(taskContext.getHybrisVersion().getVersion());
             model.getDependencies().add(dependency);
         }
-        if (extension.getName().equals("core")) {
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId(HYBRIS__GROUP_ID);
-            dependency.setArtifactId("models");
-            dependency.setVersion(taskContext.getHybrisVersion().getVersion());
-            model.getDependencies().add(dependency);
+    }
+
+    private void addModelsDependency(final TaskContext taskContext, final Extension extension, final Model model) {
+        if (!extension.getName().equals("core")) {
+            return;
         }
-        return model;
+        final Dependency dependency = new Dependency();
+        dependency.setGroupId(HYBRIS__GROUP_ID);
+        dependency.setArtifactId("models");
+        dependency.setVersion(taskContext.getHybrisVersion().getVersion());
+        model.getDependencies().add(dependency);
+    }
+
+    private void addExternalDependency(final TaskContext taskContext, final Extension extension, final Model model) {
+        final File libDirectory = new File(
+                taskContext.getHybrisDirectory().toPath().resolve(extension.getBaseDirectory().toPath()).toFile(), "lib");
+        final File[] libraryFiles = libDirectory.listFiles(new PatternFilenameFilter(".*\\.jar"));
+        if (libraryFiles == null) {
+            return;
+        }
+        for (final File libraryFile : libraryFiles) {
+            final String libraryFileName = FilenameUtils.getName(libraryFile.getAbsolutePath());
+            try {
+                final Dependency dependency = MavenCentralSearch.determineDependencyForLibrary(libraryFileName);
+                model.getDependencies().add(dependency);
+            } catch (final IllegalArgumentException exception) {
+                LOGGER.warn(String.format("Unable to determine external maven dependency for '%s'. Installing it locally.",
+                        libraryFileName));
+                // TODO install library locally
+            }
+        }
     }
 
     private void writeModel(final File workDirectory, final Model model) {
