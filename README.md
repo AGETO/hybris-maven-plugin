@@ -2,6 +2,7 @@
 [![Dependency Status](https://www.versioneye.com/user/projects/57acbc42fc256900403eab3e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57acbc42fc256900403eab3e)
 [![Issue Stats](http://issuestats.com/github/AGETO/hybris-maven-plugin/badge/pr)](http://issuestats.com/github/AGETO/hybris-maven-plugin)
 [![Issue Stats](http://issuestats.com/github/AGETO/hybris-maven-plugin/badge/issue)](http://issuestats.com/github/AGETO/hybris-maven-plugin)
+[![codecov](https://codecov.io/gh/AGETO/hybris-maven-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/AGETO/hybris-maven-plugin)
 
 # Hybris Maven Plugin
 This maven plugin aims for allowing the hybris commerce suite to be build to java archive files.
