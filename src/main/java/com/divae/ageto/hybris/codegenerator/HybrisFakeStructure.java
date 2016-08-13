@@ -58,7 +58,7 @@ class HybrisFakeStructure {
                         extension.getName());
 
                 final File extensionDirectory = new File(hybrisFakeDirectory,
-                        extensionProperties.getExtensionBaseDirectory().toString());
+                        extensionProperties.getBaseDirectory().toString());
 
                 if (!extensionDirectory.exists() && !extensionDirectory.mkdirs()) {
                     LOGGER.error(String.format("Extension directory can not be created at %s", extensionDirectory));

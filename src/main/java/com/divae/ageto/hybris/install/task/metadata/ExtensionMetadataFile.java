@@ -48,7 +48,7 @@ public enum ExtensionMetadataFile {
             String name = properties.getProperty("extension.name");
             File baseFile = new File(properties.getProperty("extension.directory"));
             ExtensionBinary binary = getExtensionBinary(properties);
-            return new ExtensionProperties(name, baseFile, binary);
+            return new ExtensionProperties(baseFile);
         } catch (IOException e) {
             Throwables.propagate(e);
         }
