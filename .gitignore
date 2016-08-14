@@ -60,3 +60,5 @@ fabric.properties
 # project specific
 /.idea
 /targetDirectory
+target/
+velocity.log
