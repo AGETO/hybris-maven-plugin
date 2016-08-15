@@ -2,6 +2,8 @@ package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
 
+import com.divae.ageto.hybris.utils.FileUtils;
+
 /**
  * @author Klaus Hauschild
  */
@@ -16,9 +18,8 @@ class CreateDirectoryTask extends AbstractWorkDirectoryTask {
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
         final File directoryToCreate = new File(workDirectory, directory.toString());
-        if (!directoryToCreate.exists() && !directoryToCreate.mkdirs()) {
-            throw new RuntimeException(String.format("Unable to create directory %s", directoryToCreate));
-        }
+
+        FileUtils.makeDirectory(directoryToCreate);
     }
 
 }

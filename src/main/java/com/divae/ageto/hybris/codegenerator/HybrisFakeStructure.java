@@ -36,10 +36,7 @@ class HybrisFakeStructure {
             final File platformExtensionsXML = new File(
                     "src/main/resources/com/divae/ageto/hybris/install/platform.extensions.xml");
 
-            if (!platformDirectory.exists() && !platformDirectory.mkdirs()) {
-                LOGGER.error(String.format("Platform directory can not be created at %s", platformDirectory));
-                throw new RuntimeException(String.format("Platform directory can not be created at %s", platformDirectory));
-            }
+            com.divae.ageto.hybris.utils.FileUtils.makeDirectory(platformDirectory);
 
             copyFile(platformExtensionsXML, new File(platformDirectory, "extensions.xml"));
             copyFile(new File(resourcesDirectory, "advanced.properties"),
@@ -60,10 +57,7 @@ class HybrisFakeStructure {
                 final File extensionDirectory = new File(hybrisFakeDirectory,
                         extensionProperties.getBaseDirectory().toString());
 
-                if (!extensionDirectory.exists() && !extensionDirectory.mkdirs()) {
-                    LOGGER.error(String.format("Extension directory can not be created at %s", extensionDirectory));
-                    throw new RuntimeException(String.format("Extension directory can not be created at %s", extensionDirectory));
-                }
+                com.divae.ageto.hybris.utils.FileUtils.makeDirectory(extensionDirectory);
 
                 copyFile(
                         new File(hybrisReactorDir,
@@ -99,10 +93,7 @@ class HybrisFakeStructure {
             return;
         }
 
-        if (!destFile.getParentFile().exists() && !destFile.getParentFile().mkdirs()) {
-            LOGGER.error(String.format("Directory %s can not be created", destFile.getParentFile()));
-            throw new RuntimeException(String.format("Directory %s can not be created", destFile.getParentFile()));
-        }
+        com.divae.ageto.hybris.utils.FileUtils.makeDirectory(destFile.getParentFile());
 
         FileUtils.copyFile(srcFile, destFile);
     }

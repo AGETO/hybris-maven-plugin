@@ -16,6 +16,8 @@ import java.util.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.divae.ageto.hybris.utils.FileUtils;
+
 /**
  * @author Klaus Hauschild
  */
@@ -39,10 +41,8 @@ class ExtractZipTask extends AbstractWorkDirectoryTask {
 
         try {
             final File destinationDirectory = new File(workDirectory, this.destinationDirectory.toString());
-            if (!destinationDirectory.exists() && !destinationDirectory.mkdirs()) {
-                LOGGER.error(String.format("Directory %s can not be created", destinationDirectory));
-                throw new RuntimeException(String.format("Directory %s can not be created", destinationDirectory));
-            }
+
+            FileUtils.makeDirectory(destinationDirectory);
 
             final ZipInputStream zipInputStream = new ZipInputStream(
                     new FileInputStream(new File(taskContext.getHybrisDirectory(), sourceFile.toString())));
@@ -54,16 +54,10 @@ class ExtractZipTask extends AbstractWorkDirectoryTask {
 
                 LOGGER.trace(String.format("  extracting '%s'", file));
 
-                if (!file.getParentFile().mkdirs()) {
-                    LOGGER.error(String.format("Directory %s can not be created", file.getParentFile()));
-                    throw new RuntimeException(String.format("Directory %s can not be created", file.getParentFile()));
-                }
+                FileUtils.makeDirectory(file.getParentFile());
 
                 if (zipEntry.isDirectory()) {
-                    if (!file.mkdirs()) {
-                        LOGGER.error(String.format("Directory %s can not be created", file));
-                        throw new RuntimeException(String.format("Directory %s can not be created", file));
-                    }
+                    FileUtils.makeDirectory(file);
                     zipEntry = zipInputStream.getNextEntry();
                     continue;
                 }

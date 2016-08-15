@@ -11,6 +11,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 
+import com.divae.ageto.hybris.utils.FileUtils;
 import com.google.common.base.Throwables;
 
 /**
@@ -49,12 +50,8 @@ class CreatePomFromTemplateTask extends AbstractWorkDirectoryTask {
             // write model
             final File target = new File(workDirectory, targetDirectory.toString());
             final File pomFile = new File(target, "pom.xml");
-            if (!pomFile.getParentFile().exists() && !pomFile.getParentFile().mkdirs()) {
-                throw new RuntimeException(String.format("Directory %s can not be created", pomFile.getParentFile()));
-            }
-            if (!pomFile.exists() && !pomFile.createNewFile()) {
-                throw new RuntimeException(String.format("File %s can not be created", pomFile));
-            }
+            FileUtils.makeDirectory(pomFile.getParentFile());
+            FileUtils.makeFile(pomFile);
             stream = new FileOutputStream(pomFile);
             new MavenXpp3Writer().write(stream, model);
         } catch (final Exception exception) {
