@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.utils.FileUtils;
 import com.divae.ageto.hybris.utils.dependencies.DependencyResolver;
 import com.divae.ageto.hybris.utils.dependencies.DependencyResolverDelegator;
 import com.google.common.base.Throwables;
@@ -102,12 +103,8 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         final File extensionPom = new File(new File(workDirectory, extension.getName()), "pom.xml");
         FileOutputStream stream = null;
         try {
-            if (!extensionPom.getParentFile().exists() && !extensionPom.getParentFile().mkdirs()) {
-                throw new RuntimeException(String.format("Can not create directory %s", extensionPom.getParentFile()));
-            }
-            if (!extensionPom.exists() && !extensionPom.createNewFile()) {
-                throw new RuntimeException(String.format("Can not create file %s", extensionPom));
-            }
+            FileUtils.makeDirectory(extensionPom.getParentFile());
+            FileUtils.makeFile(extensionPom);
             stream = new FileOutputStream(extensionPom);
             new MavenXpp3Writer().write(stream, model);
         } catch (final IOException exception) {

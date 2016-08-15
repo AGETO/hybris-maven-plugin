@@ -12,12 +12,19 @@ import com.google.common.collect.Lists;
  */
 public class Extension {
 
-    protected final File            baseDirectory;
-    protected final String          name;
-    protected final ExtensionBinary binary;
+    private final File            baseDirectory;
+    private final String          name;
+    private final ExtensionBinary binary;
     private final List<Extension> dependencies;
 
-    protected Extension(final File baseDirectory, final String name, final ExtensionBinary binary,
+    public Extension(final File baseDirectory) {
+        this.baseDirectory = baseDirectory;
+        this.name = null;
+        this.binary = null;
+        this.dependencies = null;
+    }
+
+    public Extension(final File baseDirectory, final String name, final ExtensionBinary binary,
             final List<Extension> dependencies) {
         this.baseDirectory = baseDirectory;
         this.name = name;
