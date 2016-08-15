@@ -5,6 +5,8 @@
 [![codecov](https://codecov.io/gh/AGETO/hybris-maven-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/AGETO/hybris-maven-plugin)
 [![codebeat badge](https://codebeat.co/badges/f13a309c-6d6a-4340-a382-929891ad236a)](https://codebeat.co/projects/github-com-ageto-hybris-maven-plugin)
 
+[OpenHub](https://www.openhub.net/p/hybris-maven-plugin)
+
 # Hybris Maven Plugin
 This maven plugin aims for allowing the hybris commerce suite to be build to java archive files.
 It converts a given hybris installation to a maven project. 
