@@ -37,6 +37,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         final File sourcesDirectory = new File(extensionDirectory, "src/main/java");
         final File testSourcesDirectory = new File(extensionDirectory, "src/test/java");
         final File resourcesDirectory = new File(extensionDirectory, "src/main/resources");
+        final File webDirectory = new File(String.format("%s-web", extension.getName()));
         Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
 
         List<InstallTask> installTasks = Lists.newArrayList();
@@ -72,6 +73,11 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         }
 
         installTasks.add(new CreateExtensionMetadataFileTask(extension));
+
+        if (new File(String.format("%s/%s/web", hybrisDirectory, extension.getBaseDirectory())).exists()) {
+            installTasks.add(new CopyDirectoryContentToDirectoryTask(
+                    new File(String.format("%s/%s/web", hybrisDirectory, extension.getBaseDirectory())), webDirectory));
+        }
 
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
     }
