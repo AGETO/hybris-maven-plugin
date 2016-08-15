@@ -4,7 +4,10 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.maven.model.Dependency;
+
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.task.AbstractWorkDirectoryTask;
 import com.divae.ageto.hybris.install.task.CleanupTask;
 import com.divae.ageto.hybris.install.task.CreateWorkDirectoryTask;
 import com.divae.ageto.hybris.install.task.ExecuteMavenTask;
@@ -13,6 +16,8 @@ import com.divae.ageto.hybris.install.task.OpenWorkDirectoryInExplorerTask;
 import com.divae.ageto.hybris.install.task.RestructureExtensionTask;
 import com.divae.ageto.hybris.install.task.RestructurePlatformTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
+import com.divae.ageto.hybris.utils.maven.MavenExecutorUtils;
+import com.divae.ageto.hybris.version.HybrisVersion;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -47,22 +52,33 @@ enum InstallStrategy {
                 new RestructurePlatformTask(extensions),
 
                 // prepare code generator
-                new ExecuteMavenTask(new File(""),
-                        new String[] { "install:install-file",
-                                String.format("-Dfile=%s",
-                                        new File(taskContext.getHybrisDirectory(), "bin/platform/bootstrap/bin/ybootstrap.jar")),
-                                "-DgroupId=de.hybris", "-DartifactId=bootstrap",
-                                String.format("-Dversion=%s", taskContext.getHybrisVersion().getVersion()), "-Dpackaging=jar" },
-                        true), //
+                new AbstractWorkDirectoryTask() {
+
+                    @Override
+                    protected void execute(final TaskContext taskContext, final File workDirectory) {
+                        MavenExecutorUtils.installLibrary(
+                                new File(taskContext.getHybrisDirectory(), "bin/platform/bootstrap/bin/ybootstrap.jar"),
+                                getBootstrapDependency(taskContext.getHybrisVersion()));
+                    }
+
+                },
 
                 // install
-                new ExecuteMavenTask(new File(""), new String[] { "clean", "install" }, true), //
+                new ExecuteMavenTask(new File(""), new String[] { "clean", "install" }), //
 
                 // cleanup
                 new CleanupTask() //
         ));
 
         return installTasks;
+    }
+
+    private static Dependency getBootstrapDependency(final HybrisVersion hybrisVersion) {
+        final Dependency dependency = new Dependency();
+        dependency.setGroupId("de.hybris");
+        dependency.setArtifactId("bootstrap");
+        dependency.setVersion(hybrisVersion.getVersion());
+        return dependency;
     }
 
 }

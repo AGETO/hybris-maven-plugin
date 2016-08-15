@@ -13,10 +13,10 @@ abstract class AbstractDependencyResolver implements DependencyResolver {
     @Override
     public Dependency resolve(final File library) {
         final Dependency partialDependency = getPartialDependency(library);
-        return resolve(partialDependency.getArtifactId(), partialDependency.getVersion());
+        return resolve(library, partialDependency.getArtifactId(), partialDependency.getVersion());
     }
 
-    protected abstract Dependency resolve(final String artifactId, final String version);
+    protected abstract Dependency resolve(final File library, final String artifactId, final String version);
 
     private Dependency getPartialDependency(final File library) {
         final String rawLibraryName = getRawLibraryName(library);

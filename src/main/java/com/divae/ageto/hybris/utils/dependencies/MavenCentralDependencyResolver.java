@@ -1,5 +1,6 @@
 package com.divae.ageto.hybris.utils.dependencies;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.maven.model.Dependency;
@@ -11,17 +12,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 /**
  * @author Klaus Hauschild
  */
-public class MavenCentralDependencyResolver extends AbstractDependencyResolver {
+class MavenCentralDependencyResolver extends AbstractDependencyResolver {
 
     @Override
-    protected Dependency resolve(final String artifactId, final String version) {
+    protected Dependency resolve(final File library, final String artifactId, final String version) {
         final RestTemplate restTemplate = new RestTemplate();
         final Result result = restTemplate.getForObject(
                 "http://search.maven.org/solrsearch/select?q=a:\"{0}\" AND v:\"{1}\" AND p:\"jar\"&rows=1&wt=json", Result.class,
                 artifactId, version);
         final List<Result.Response.Doc> docs = result.getResponse().getDocs();
         if (docs.isEmpty()) {
-            throw new UnresolvableDependencyException(artifactId, version);
+            throw new UnresolvableDependencyException(library);
         }
         final Result.Response.Doc doc = docs.get(0);
         final Dependency dependency = new Dependency();

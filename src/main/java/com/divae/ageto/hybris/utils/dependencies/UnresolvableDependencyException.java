@@ -1,12 +1,14 @@
 package com.divae.ageto.hybris.utils.dependencies;
 
+import java.io.File;
+
 /**
  * @author Klaus Hauschild
  */
-public class UnresolvableDependencyException extends RuntimeException {
+class UnresolvableDependencyException extends RuntimeException {
 
-    public UnresolvableDependencyException(final String artifactId, final String version) {
-        super(String.format("Unable to resolve library %s-%s", artifactId, version));
+    UnresolvableDependencyException(final File library) {
+        super(String.format("Unable to resolve library %s", library));
     }
 
 }
