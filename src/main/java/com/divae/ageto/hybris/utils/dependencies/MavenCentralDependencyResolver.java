@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.maven.model.Dependency;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -33,8 +34,9 @@ public class MavenCentralDependencyResolver extends AbstractDependencyResolver {
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class Result {
 
-        private Response response;
+        Response response;
 
+        @JsonGetter
         Response getResponse() {
             return response;
         }
@@ -42,8 +44,9 @@ public class MavenCentralDependencyResolver extends AbstractDependencyResolver {
         @JsonIgnoreProperties(ignoreUnknown = true)
         static class Response {
 
-            private List<Doc> docs;
+            List<Doc> docs;
 
+            @JsonGetter
             List<Doc> getDocs() {
                 return docs;
             }
@@ -55,14 +58,17 @@ public class MavenCentralDependencyResolver extends AbstractDependencyResolver {
                 private String a;
                 private String v;
 
+                @JsonGetter
                 String getG() {
                     return g;
                 }
 
+                @JsonGetter
                 String getA() {
                     return a;
                 }
 
+                @JsonGetter
                 String getV() {
                     return v;
                 }
