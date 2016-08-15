@@ -21,6 +21,7 @@
         <extension name="scripting"/>
         <extension name="validation"/>
         <extension name="workflow"/>
+        <extension name="hac"/>
 
 
         <!-- ext-platform -->
