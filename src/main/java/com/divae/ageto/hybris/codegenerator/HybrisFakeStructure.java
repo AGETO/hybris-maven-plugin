@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
 import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
-import com.divae.ageto.hybris.install.task.metadata.ExtensionProperties;
 import com.google.common.base.Throwables;
 
 /**
@@ -51,7 +50,7 @@ class HybrisFakeStructure {
                     Collections.singletonList(new File("target")));
 
             for (Extension extension : extensions) {
-                ExtensionProperties extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir,
+                Extension extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir,
                         extension.getName());
 
                 final File extensionDirectory = new File(hybrisFakeDirectory,
