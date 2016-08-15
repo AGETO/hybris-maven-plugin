@@ -13,7 +13,7 @@ public class CreateExtensionMetadataFileTask extends AbstractWorkDirectoryTask {
 
     private final Extension extension;
 
-    public CreateExtensionMetadataFileTask(Extension extension) {
+    public CreateExtensionMetadataFileTask(final Extension extension) {
         this.extension = extension;
     }
 

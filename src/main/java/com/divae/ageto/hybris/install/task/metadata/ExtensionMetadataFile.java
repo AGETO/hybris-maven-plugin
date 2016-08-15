@@ -22,8 +22,9 @@ public enum ExtensionMetadataFile {
     private static String FILE_NAME_FORMAT = "%s-metadata.properties";
 
     public static File createMetadataFile(final Extension extension, final File workDirectory) {
-        final File metadataFile = new File(new File(workDirectory, extension.getName()),
-                getMetadataFileName(extension.getName()).toString());
+        File metadataFolder = MetadataFile.getFilePath(extension.getName());
+        final File metadataFile = new File(new File(workDirectory, metadataFolder.toString()),
+                MetadataFile.getFileName(extension.getName()).toString());
         final Properties properties = new Properties();
         try {
             properties.setProperty("extension.name", extension.getName());
@@ -37,7 +38,9 @@ public enum ExtensionMetadataFile {
     }
 
     public static Extension readMetadataFile(final File workDirectory, final String extensionName) {
-        final File metadataFile = new File(new File(workDirectory, extensionName), getMetadataFileName(extensionName).toString());
+        String metadataFolder = MetadataFile.getFilePath(extensionName).toString();
+        final File metadataFile = new File(new File(workDirectory, metadataFolder),
+                MetadataFile.getFileName(extensionName).toString());
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(metadataFile));
@@ -69,10 +72,6 @@ public enum ExtensionMetadataFile {
         if (extension.getBinary().getClass() != None.class) {
             config.setProperty("extension.binary.path", extension.getBinary().getExtensionBinaryPath().toString());
         }
-    }
-
-    private static File getMetadataFileName(final String extensionName) {
-        return new File(String.format(FILE_NAME_FORMAT, extensionName));
     }
 
 }
