@@ -25,3 +25,9 @@ Also maven gives you good support while the life cycle of your project.
 ## In detail
 First it determines the version of the hybris installation and then disassembles and restructures the sources and resources of the suite in a temporary folder. After that, it calls the hybris build tools for preparing the build of the hybris suite, before it runs the actual build process and installs the reactor build.
 Basing on the resulting hybris artifacts in your local maven repository you can develop your custom extenions before building and deploying your hybris installation.
+
+## Links
+* hybris experts
+  * [Mavenize hybris](https://experts.hybris.com/questions/42075/mavenize-hybris.html)
+* IntelliJ IDEA integration
+  * [Impex Editor Intellij IDEA Plugin](https://bitbucket.org/AlexanderBartash/impex-editor-intellij-idea-plugin)
