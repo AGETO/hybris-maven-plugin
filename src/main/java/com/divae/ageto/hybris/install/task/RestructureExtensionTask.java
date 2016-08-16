@@ -39,7 +39,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         final File testSourcesDirectory = extension.getTestSourcesDirectory();
         final File resourcesDirectory = extension.getResourcesDirectory();
 
-        Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
+        final Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
 
         List<InstallTask> installTasks = Lists.newArrayList();
         installTasks.addAll(Arrays.<InstallTask>asList( //
@@ -52,22 +52,39 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
         installTasks.addAll(Arrays.<InstallTask>asList(
                 new CopyDirectoryFilesToDirectoryTask(
-                        new File(String.format("%s/%s", hybrisDirectory, extension.getBaseDirectory())),
+                        getResourcesDirectory(hybrisDirectory.toFile(), extension),
                         resourcesDirectory), //
                 new CopyDirectoryContentToDirectoryTask(
-                        new File(String.format("%s/%s/resources", hybrisDirectory, extension.getBaseDirectory())),
+                        getSourcesDirectory(hybrisDirectory.toFile(), extension),
                         resourcesDirectory) //
         ));
 
-        if (new File(String.format("%s/%s/testsrc", hybrisDirectory, extension.getBaseDirectory())).exists()) {
+        if (getTestSourcesDirectory(hybrisDirectory.toFile(), extension).exists()) {
             installTasks.add(new CopyDirectoryContentToDirectoryTask(
-                    new File(String.format("%s/%s/testsrc", hybrisDirectory, extension.getBaseDirectory())),
+                    getTestSourcesDirectory(hybrisDirectory.toFile(), extension),
                     testSourcesDirectory));
         }
 
         installTasks.add(new CreateExtensionMetadataFileTask(extension));
 
+        if (new File(extension.getBaseDirectory(), "web").exists()) {
+            Extension ext = new Extension(new File(extension.getBaseDirectory(), "web"), extension.getName() + "-web");
+            installTasks.add(new RestructureWebExtensionTask(ext));
+        }
+
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
+    }
+
+    private File getResourcesDirectory(final File hybrisDirectory, final Extension extension) {
+        return new File(String.format("%s/%s", hybrisDirectory, extension.getBaseDirectory()));
+    }
+
+    private File getSourcesDirectory(final File hybrisDirectory, final Extension extension) {
+        return new File(String.format("%s/%s/resources", hybrisDirectory, extension.getBaseDirectory()));
+    }
+
+    private File getTestSourcesDirectory(final File hybrisDirectory, final Extension extension) {
+        return new File(String.format("%s/%s/testsrc", hybrisDirectory, extension.getBaseDirectory()));
     }
 
     private void copyBinary(final Extension extension, final File resourcesDirectory, final Path hybrisDirectory,
