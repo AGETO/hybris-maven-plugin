@@ -74,7 +74,8 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
     private ExtensionBinary findBinary(final File hybrisDirectory, final Extension extension) {
         return ExtensionFactory.getBinary(extension.getName(),
-                Collections.singletonMap(extension.getName(), new File(extension.getBaseDirectory(), "web/webroot/WEB-INF")));
+                Collections.singletonMap(extension.getName(),
+                        new File(hybrisDirectory, new File(extension.getBaseDirectory(), "web/webroot/WEB-INF").toString())));
     }
 
     protected File getBaseDirectory(final File hybrisDirectory, final Extension extension) {

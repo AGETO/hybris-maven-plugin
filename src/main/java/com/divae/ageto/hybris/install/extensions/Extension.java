@@ -20,7 +20,7 @@ public class Extension {
     public Extension(final File baseDirectory, String name, ExtensionBinary binary) {
         this.baseDirectory = baseDirectory;
         this.name = name;
-        this.binary = null;
+        this.binary = binary;
         this.dependencies = null;
     }
 
