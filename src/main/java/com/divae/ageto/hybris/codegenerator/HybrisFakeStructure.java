@@ -79,9 +79,6 @@ class HybrisFakeStructure {
 
                 copyFile(new File(hybrisReactorDir, String.format("%s/extensioninfo.xml", extension.getBaseDirectory())),
                         new File(extensionDirectory, "extensioninfo.xml"));
-
-                FileUtils.copyDirectory(new File(hybrisReactorDir, String.format("%s/src/test/java", extension.getName())),
-                        new File(extensionDirectory, "testsrc"));
             }
 
             return platformDirectory;
