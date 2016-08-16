@@ -54,11 +54,6 @@ public class CopyDirectoryFilesToDirectoryTask extends CopyFilesTask {
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                if (fileFilter.accept(dir.toFile())) {
-                    Path relativePath = source.toPath().relativize(dir);
-                    new File(target, relativePath.toString()).mkdirs();
-                    return FileVisitResult.CONTINUE;
-                }
                 return FileVisitResult.SKIP_SUBTREE;
             }
         });
