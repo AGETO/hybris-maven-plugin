@@ -1,13 +1,13 @@
 package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,6 @@ import com.divae.ageto.hybris.install.extensions.WebExtension;
 import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
-import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentAndExcludeTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
 import com.divae.ageto.hybris.install.task.metadata.CreateExtensionMetadataFileTask;
@@ -51,13 +50,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         );
 
         this.copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, installTasks);
-
-        installTasks.addAll(Arrays.<InstallTask>asList(
-                new CopyDirectoryFilesToDirectoryTask(
-                        getBaseDirectory(hybrisDirectory.toFile(), extension), extension.getResourcesDirectory()), //
-                new CopyDirectoryContentToDirectoryTask(
-                        getResourcesDirectory(hybrisDirectory.toFile(), extension), extension.getResourcesDirectory()) //
-        ));
+        addCopyRootExtensionFolder(installTasks, hybrisDirectory, extension, workDirectory);
 
         if (getTestSourcesDirectory(hybrisDirectory.toFile(), extension).exists()) {
             installTasks.add(new CopyDirectoryContentToDirectoryTask(
@@ -75,6 +68,21 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         }
 
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
+    }
+
+    protected void addCopyRootExtensionFolder(final List<InstallTask> installTasks, final Path hybrisDirectory,
+            final Extension extension, final File workdirectory) {
+
+        installTasks.addAll(Arrays.<InstallTask>asList(
+                new CopyDirectoryFilesToDirectoryTask(this.getBaseDirectory(hybrisDirectory.toFile(), extension),
+                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile())), //
+                new CopyDirectoryContentToDirectoryTask(getResourcesDirectory(hybrisDirectory.toFile(), extension),
+                        extension.getResourcesDirectory()) //
+        ));
+    }
+
+    protected FileFilter getFileFilter(final File workDirectory, final File hybrisDirectory) {
+        return FileFilterUtils.trueFileFilter();
     }
 
     private ExtensionBinary findBinary(final File hybrisDirectory, final Extension extension) {
@@ -103,11 +111,9 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         }
         if (extension.getBinary().getClass() == ClassFolder.class) {
             if (this.getClass() == RestructureWebExtensionTask.class) {
-                Set<File> excludeFiles = new HashSet<>();
-                excludeFiles.add(new File(extension.getBinary().getExtensionBinaryPath(), "classes"));
 
-                installTasks.add(new CopyDirectoryContentAndExcludeTask(extension.getBinary().getExtensionBinaryPath(),
-                        resourcesDirectory, excludeFiles));
+                installTasks.add(new CopyDirectoryContentToDirectoryTask(extension.getBinary().getExtensionBinaryPath(),
+                        resourcesDirectory));
                 return;
             }
             installTasks.add(

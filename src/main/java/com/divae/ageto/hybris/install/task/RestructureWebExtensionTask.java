@@ -1,6 +1,7 @@
 package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -20,17 +21,17 @@ public class RestructureWebExtensionTask extends RestructureExtensionTask {
     }
 
     @Override
-    protected void execute(TaskContext taskContext, File workDirectory) {
+    protected void execute(final TaskContext taskContext, final File workDirectory) {
         super.execute(taskContext, workDirectory);
     }
 
     @Override
-    protected File getResourcesDirectory(File hybrisDirectory, Extension extension) {
+    protected File getResourcesDirectory(final File hybrisDirectory, final Extension extension) {
         return new File(hybrisDirectory, new File(extension.getBaseDirectory(), "webroot").toString());
     }
 
     @Override
-    protected File getTestSourcesDirectory(File hybrisDirectory, Extension extension) {
+    protected File getTestSourcesDirectory(final File hybrisDirectory, final Extension extension) {
         return super.getTestSourcesDirectory(hybrisDirectory, extension);
     }
 
@@ -40,4 +41,14 @@ public class RestructureWebExtensionTask extends RestructureExtensionTask {
         WebExtension webExtension = (WebExtension) extension;
         super.copyBinary(extension, webExtension.getWebResourcesFolder(), hybrisDirectory, installTasks);
     }
+
+    @Override
+    protected FileFilter getFileFilter(final File workDirectory, final File hybrisDirectory) {
+        File excludeFile = extension.getBinary().getExtensionBinaryPath();
+        final File exclude = excludeFile;
+        return (File file) -> {
+            return !file.toPath().startsWith(exclude.toPath());
+        };
+    }
 }
+
