@@ -22,4 +22,8 @@ public class WebExtension extends Extension {
     public File getResourcesDirectory() {
         return new File(getExtensionDirectory(), "src/main/webapp");
     }
+
+    public File getWebResourcesFolder() {
+        return super.getResourcesDirectory();
+    }
 }

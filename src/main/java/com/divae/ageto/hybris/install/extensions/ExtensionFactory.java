@@ -160,7 +160,7 @@ public enum ExtensionFactory {
             return new JARArchive(getJARArchive(binPath, extensionName));
         }
         if (classPath.exists()) {
-            return new ClassFolder(extensionFolder);
+            return new ClassFolder(classPath);
         }
 
         return new None(); // extension has no binary

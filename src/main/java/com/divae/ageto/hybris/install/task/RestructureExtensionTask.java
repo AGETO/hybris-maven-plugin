@@ -50,7 +50,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CreateDirectoryTask(extension.getResourcesDirectory())) //
         );
 
-        copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, installTasks);
+        this.copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, installTasks);
 
         installTasks.addAll(Arrays.<InstallTask>asList(
                 new CopyDirectoryFilesToDirectoryTask(
@@ -95,7 +95,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         return new File(String.format("%s/%s/testsrc", hybrisDirectory, extension.getBaseDirectory()));
     }
 
-    private void copyBinary(final Extension extension, final File resourcesDirectory, final Path hybrisDirectory,
+    protected void copyBinary(final Extension extension, final File resourcesDirectory, final Path hybrisDirectory,
             final List<InstallTask> installTasks) {
         if (extension.getBinary().getClass() == JARArchive.class) {
             Path sourceFile = extension.getBinary().getExtensionBinaryPath().toPath();
