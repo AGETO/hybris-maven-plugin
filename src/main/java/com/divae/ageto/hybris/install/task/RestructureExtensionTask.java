@@ -31,13 +31,14 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
+
         LOGGER.debug(String.format("Restructure extension %s", extension.getName()));
 
-        final File extensionDirectory = new File(extension.getName());
-        final File sourcesDirectory = new File(extensionDirectory, "src/main/java");
-        final File testSourcesDirectory = new File(extensionDirectory, "src/test/java");
-        final File resourcesDirectory = new File(extensionDirectory, "src/main/resources");
-        final File webDirectory = new File(String.format("%s-web", extension.getName()));
+        final File extensionDirectory = extension.getExtensionDirectory();
+        final File sourcesDirectory = extension.getSourcesDirectory();
+        final File testSourcesDirectory = extension.getTestSourcesDirectory();
+        final File resourcesDirectory = extension.getResourcesDirectory();
+
         Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
 
         List<InstallTask> installTasks = Lists.newArrayList();
@@ -47,15 +48,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CreateDirectoryTask(resourcesDirectory)) //
         );
 
-        if (extension.getBinary().getClass() == JARArchive.class) {
-            Path sourceFile = extension.getBinary().getExtensionBinaryPath().toPath();
-            installTasks.add(new ExtractZipTask(
-                    hybrisDirectory.relativize(sourceFile).toFile(), resourcesDirectory));
-        }
-        if (extension.getBinary().getClass() == ClassFolder.class) {
-            installTasks.add(
-                    new CopyDirectoryContentToDirectoryTask(extension.getBinary().getExtensionBinaryPath(), resourcesDirectory));
-        }
+        copyBinary(extension, resourcesDirectory, hybrisDirectory, installTasks);
 
         installTasks.addAll(Arrays.<InstallTask>asList(
                 new CopyDirectoryFilesToDirectoryTask(
@@ -74,11 +67,18 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
         installTasks.add(new CreateExtensionMetadataFileTask(extension));
 
-        if (new File(String.format("%s/%s/web", hybrisDirectory, extension.getBaseDirectory())).exists()) {
-            installTasks.add(new CopyDirectoryContentToDirectoryTask(
-                    new File(String.format("%s/%s/web", hybrisDirectory, extension.getBaseDirectory())), webDirectory));
-        }
-
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
+    }
+
+    private void copyBinary(final Extension extension, final File resourcesDirectory, final Path hybrisDirectory,
+            final List<InstallTask> installTasks) {
+        if (extension.getBinary().getClass() == JARArchive.class) {
+            Path sourceFile = extension.getBinary().getExtensionBinaryPath().toPath();
+            installTasks.add(new ExtractZipTask(hybrisDirectory.relativize(sourceFile).toFile(), resourcesDirectory));
+        }
+        if (extension.getBinary().getClass() == ClassFolder.class) {
+            installTasks.add(
+                    new CopyDirectoryContentToDirectoryTask(extension.getBinary().getExtensionBinaryPath(), resourcesDirectory));
+        }
     }
 }

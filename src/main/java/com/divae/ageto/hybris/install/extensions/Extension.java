@@ -32,6 +32,22 @@ public class Extension {
         this.dependencies = dependencies;
     }
 
+    public File getExtensionDirectory() {
+        return new File(getName());
+    }
+
+    public File getSourcesDirectory() {
+        return new File(getExtensionDirectory(), "src/main/java");
+    }
+
+    public File getTestSourcesDirectory() {
+        return new File(getExtensionDirectory(), "src/test/java");
+    }
+
+    public File getResourcesDirectory() {
+        return new File(getExtensionDirectory(), "src/main/resources");
+    }
+
     public File getBaseDirectory() {
         return baseDirectory;
     }

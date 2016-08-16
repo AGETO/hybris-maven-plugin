@@ -19,8 +19,6 @@ import com.google.common.base.Throwables;
 public enum ExtensionMetadataFile {
     ;
 
-    private static String FILE_NAME_FORMAT = "%s-metadata.properties";
-
     public static File createMetadataFile(final Extension extension, final File workDirectory) {
         File metadataFolder = MetadataFile.getFilePath(extension.getName());
         final File metadataFile = new File(new File(workDirectory, metadataFolder.toString()),
