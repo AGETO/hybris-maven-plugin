@@ -25,8 +25,8 @@ public enum MavenExecutorUtils {
                 String.format("-Dversion=%s", mavenCoordinates.getVersion()), //
                 "-Dpackaging=jar" //
         };
-        final MavenExecutor mavenExecutor = new EmbeddedMavenExecutor();
-        mavenExecutor.execute(arguments, new File(""));
+        final MavenExecutor mavenExecutor = new ExternalInstalledMavenExecutor();
+        mavenExecutor.execute(arguments, new File("."));
     }
 
 }

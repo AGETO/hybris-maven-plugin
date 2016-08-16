@@ -22,7 +22,7 @@ class CodeGeneratorMojo extends AbstractMojo {
         try {
             CodeGenerator.generate(project.getBasedir());
         } catch (final Exception exception) {
-            getLog().error(exception);
+            throw new MojoFailureException("Code generation failed!", exception);
         }
     }
 

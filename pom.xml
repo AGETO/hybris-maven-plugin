@@ -86,6 +86,11 @@
             <artifactId>wagon-provider-api</artifactId>
             <version>2.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-exec</artifactId>
+            <version>1.9</version>
+        </dependency>
         <!-- /embedded maven -->
 
         <!-- testing -->

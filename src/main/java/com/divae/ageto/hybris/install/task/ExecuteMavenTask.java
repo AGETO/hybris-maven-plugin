@@ -2,7 +2,7 @@ package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
 
-import com.divae.ageto.hybris.utils.maven.EmbeddedMavenExecutor;
+import com.divae.ageto.hybris.utils.maven.ExternalInstalledMavenExecutor;
 import com.divae.ageto.hybris.utils.maven.MavenExecutor;
 
 /**
@@ -10,7 +10,7 @@ import com.divae.ageto.hybris.utils.maven.MavenExecutor;
  */
 public class ExecuteMavenTask extends AbstractWorkDirectoryTask {
 
-    private final MavenExecutor mavenExecutor = new EmbeddedMavenExecutor();
+    private final MavenExecutor mavenExecutor = new ExternalInstalledMavenExecutor();
     private final File          directory;
     private final String[]      arguments;
 
