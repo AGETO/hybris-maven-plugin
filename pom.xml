@@ -91,6 +91,11 @@
             <artifactId>zt-exec</artifactId>
             <version>1.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-util</artifactId>
+            <version>1.7</version>
+        </dependency>
         <!-- /embedded maven -->
 
         <!-- testing -->
