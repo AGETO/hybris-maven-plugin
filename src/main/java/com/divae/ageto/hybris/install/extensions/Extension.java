@@ -17,7 +17,7 @@ public class Extension {
     private final ExtensionBinary binary;
     private final List<Extension> dependencies;
 
-    public Extension(final File baseDirectory, String name) {
+    public Extension(final File baseDirectory, String name, ExtensionBinary binary) {
         this.baseDirectory = baseDirectory;
         this.name = name;
         this.binary = null;

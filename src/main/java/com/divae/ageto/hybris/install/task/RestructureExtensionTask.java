@@ -3,13 +3,16 @@ package com.divae.ageto.hybris.install.task;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
 import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
+import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
@@ -34,56 +37,55 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
         LOGGER.debug(String.format("Restructure extension %s", extension.getName()));
 
-        final File extensionDirectory = extension.getExtensionDirectory();
-        final File sourcesDirectory = extension.getSourcesDirectory();
-        final File testSourcesDirectory = extension.getTestSourcesDirectory();
-        final File resourcesDirectory = extension.getResourcesDirectory();
-
         final Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
 
         List<InstallTask> installTasks = Lists.newArrayList();
         installTasks.addAll(Arrays.<InstallTask>asList( //
                 new CreatePomFromExtensionTask(extension), //
-                new CreateDirectoryTask(sourcesDirectory), //
-                new CreateDirectoryTask(resourcesDirectory)) //
+                new CreateDirectoryTask(extension.getSourcesDirectory()), //
+                new CreateDirectoryTask(extension.getResourcesDirectory())) //
         );
 
-        copyBinary(extension, resourcesDirectory, hybrisDirectory, installTasks);
+        copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, installTasks);
 
         installTasks.addAll(Arrays.<InstallTask>asList(
                 new CopyDirectoryFilesToDirectoryTask(
-                        getResourcesDirectory(hybrisDirectory.toFile(), extension),
-                        resourcesDirectory), //
+                        getBaseDirectory(hybrisDirectory.toFile(), extension), extension.getResourcesDirectory()), //
                 new CopyDirectoryContentToDirectoryTask(
-                        getSourcesDirectory(hybrisDirectory.toFile(), extension),
-                        resourcesDirectory) //
+                        getResourcesDirectory(hybrisDirectory.toFile(), extension), extension.getResourcesDirectory()) //
         ));
 
         if (getTestSourcesDirectory(hybrisDirectory.toFile(), extension).exists()) {
             installTasks.add(new CopyDirectoryContentToDirectoryTask(
                     getTestSourcesDirectory(hybrisDirectory.toFile(), extension),
-                    testSourcesDirectory));
+                    extension.getTestSourcesDirectory()));
         }
 
         installTasks.add(new CreateExtensionMetadataFileTask(extension));
 
-        if (new File(extension.getBaseDirectory(), "web").exists()) {
-            Extension ext = new Extension(new File(extension.getBaseDirectory(), "web"), extension.getName() + "-web");
+        if (new File(hybrisDirectory.toFile(), new File(extension.getBaseDirectory(), "web").toString()).exists()) {
+            Extension ext = new Extension(new File(extension.getBaseDirectory(), "web"), extension.getName() + "-web",
+                    findBinary(hybrisDirectory.toFile(), extension));
             installTasks.add(new RestructureWebExtensionTask(ext));
         }
 
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
     }
 
-    private File getResourcesDirectory(final File hybrisDirectory, final Extension extension) {
+    private ExtensionBinary findBinary(final File hybrisDirectory, final Extension extension) {
+        return ExtensionFactory.getBinary(extension.getName(),
+                Collections.singletonMap(extension.getName(), new File(extension.getBaseDirectory(), "web/webroot/WEB-INF")));
+    }
+
+    protected File getBaseDirectory(final File hybrisDirectory, final Extension extension) {
         return new File(String.format("%s/%s", hybrisDirectory, extension.getBaseDirectory()));
     }
 
-    private File getSourcesDirectory(final File hybrisDirectory, final Extension extension) {
+    protected File getResourcesDirectory(final File hybrisDirectory, final Extension extension) {
         return new File(String.format("%s/%s/resources", hybrisDirectory, extension.getBaseDirectory()));
     }
 
-    private File getTestSourcesDirectory(final File hybrisDirectory, final Extension extension) {
+    protected File getTestSourcesDirectory(final File hybrisDirectory, final Extension extension) {
         return new File(String.format("%s/%s/testsrc", hybrisDirectory, extension.getBaseDirectory()));
     }
 
