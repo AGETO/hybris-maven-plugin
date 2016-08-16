@@ -30,4 +30,5 @@ public class RestructureWebExtensionTask extends RestructureExtensionTask {
     protected File getTestSourcesDirectory(File hybrisDirectory, Extension extension) {
         return super.getTestSourcesDirectory(hybrisDirectory, extension);
     }
+
 }

@@ -4,16 +4,20 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
+import com.divae.ageto.hybris.install.extensions.WebExtension;
 import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
+import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentAndExcludeTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryContentToDirectoryTask;
 import com.divae.ageto.hybris.install.task.copy.CopyDirectoryFilesToDirectoryTask;
 import com.divae.ageto.hybris.install.task.metadata.CreateExtensionMetadataFileTask;
@@ -64,8 +68,9 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         installTasks.add(new CreateExtensionMetadataFileTask(extension));
 
         if (new File(hybrisDirectory.toFile(), new File(extension.getBaseDirectory(), "web").toString()).exists()) {
-            Extension ext = new Extension(new File(extension.getBaseDirectory(), "web"), extension.getName() + "-web",
-                    findBinary(hybrisDirectory.toFile(), extension), Collections.singletonList(extension));
+            ExtensionBinary binary = findBinary(hybrisDirectory.toFile(), extension);
+            WebExtension ext = new WebExtension(new File(extension.getBaseDirectory(), "web"), extension.getName() + "-web",
+                    binary, Collections.singletonList(extension));
             installTasks.add(new RestructureWebExtensionTask(ext));
         }
 
@@ -97,6 +102,14 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
             installTasks.add(new ExtractZipTask(hybrisDirectory.relativize(sourceFile).toFile(), resourcesDirectory));
         }
         if (extension.getBinary().getClass() == ClassFolder.class) {
+            if (this.getClass() == RestructureWebExtensionTask.class) {
+                Set<File> excludeFiles = new HashSet<>();
+                excludeFiles.add(new File(extension.getBinary().getExtensionBinaryPath(), "classes"));
+
+                installTasks.add(new CopyDirectoryContentAndExcludeTask(extension.getBinary().getExtensionBinaryPath(),
+                        resourcesDirectory, excludeFiles));
+                return;
+            }
             installTasks.add(
                     new CopyDirectoryContentToDirectoryTask(extension.getBinary().getExtensionBinaryPath(), resourcesDirectory));
         }
