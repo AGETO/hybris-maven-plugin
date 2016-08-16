@@ -77,7 +77,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CopyDirectoryFilesToDirectoryTask(this.getBaseDirectory(hybrisDirectory.toFile(), extension),
                         extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile())), //
                 new CopyDirectoryContentToDirectoryTask(getResourcesDirectory(hybrisDirectory.toFile(), extension),
-                        extension.getResourcesDirectory()) //
+                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile())) //
         ));
     }
 
