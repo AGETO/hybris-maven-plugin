@@ -75,7 +75,10 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         if (extension.getBinary().getClass() != None.class) {
             if (DecompileTask.isEnabled(taskContext)) {
                 final File extensionBinaryPath = extension.getBinary().getExtensionBinaryPath();
-                installTasks.add(new DecompileTask(extensionBinaryPath, extension.getResourcesDirectory()));
+                installTasks.addAll(Arrays.asList( //
+                        new DecompileTask(extensionBinaryPath, extension.getSourcesDirectory()), //
+                        new MoveTestSourcesTask(extension.getSourcesDirectory(), extension.getTestSourcesDirectory()) //
+                ));
                 return;
             }
             this.copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, installTasks);
