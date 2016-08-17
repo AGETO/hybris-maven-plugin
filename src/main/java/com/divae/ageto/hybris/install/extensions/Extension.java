@@ -1,10 +1,17 @@
 package com.divae.ageto.hybris.install.extensions;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Objects;
 
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
 /**
@@ -17,7 +24,8 @@ public class Extension {
     private final ExtensionBinary binary;
     private final List<Extension> dependencies;
 
-    public Extension(final File baseDirectory, String name, ExtensionBinary binary) {
+    public Extension(final File baseDirectory, final String name, final ExtensionBinary binary) {
+
         this.baseDirectory = baseDirectory;
         this.name = name;
         this.binary = binary;
@@ -30,6 +38,40 @@ public class Extension {
         this.name = name;
         this.binary = binary;
         this.dependencies = dependencies;
+    }
+
+    public File getExternalDependenciesXML(final File hybrisDirectory) {
+        if (new File(hybrisDirectory, new File(baseDirectory, "external-dependencies.xml").toString()).exists()) {
+            return new File(hybrisDirectory, new File(baseDirectory, "external-dependencies.xml").toString());
+        }
+        if (new File(binary.getExtensionBinaryPath(), "external-dependencies.xml").exists()) {
+            return new File(binary.getExtensionBinaryPath(), "external-dependencies.xml");
+        }
+        return findExternalDependenciesXML(hybrisDirectory);
+    }
+
+    private File findExternalDependenciesXML(final File hybrisDirectory) {
+        final File[] externalDependenciesFile = { null };
+        try {
+            Files.walkFileTree(new File(hybrisDirectory, baseDirectory.toString()).toPath(), new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (file.endsWith("external-dependencies.xml")) {
+                        externalDependenciesFile[0] = file.toFile();
+                        return FileVisitResult.TERMINATE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw Throwables.propagate(e);
+        }
+        return externalDependenciesFile[0];
     }
 
     public File getExtensionDirectory() {
