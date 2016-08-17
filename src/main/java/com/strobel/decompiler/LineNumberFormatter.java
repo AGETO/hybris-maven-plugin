@@ -14,19 +14,19 @@ import java.util.List;
 
 import com.strobel.decompiler.languages.LineNumberPosition;
 
-public class LineNumberFormatter {
+class LineNumberFormatter {
     private final List<LineNumberPosition>                      _positions;
     private final File                                          _file;
     private final EnumSet<LineNumberFormatter.LineNumberOption> _options;
 
-    public LineNumberFormatter(File file, List<LineNumberPosition> lineNumberPositions,
+    LineNumberFormatter(File file, List<LineNumberPosition> lineNumberPositions,
             EnumSet<LineNumberFormatter.LineNumberOption> options) {
         this._file = file;
         this._positions = lineNumberPositions;
         this._options = options == null ? EnumSet.noneOf(LineNumberFormatter.LineNumberOption.class) : options;
     }
 
-    public void reformatFile() throws IOException {
+    void reformatFile() throws IOException {
         final List<LineNumberPosition> lineBrokenPositions = new ArrayList<>();
         final List<String> brokenLines = this.breakLines(lineBrokenPositions);
         this.emitFormatted(brokenLines, lineBrokenPositions);
@@ -36,10 +36,7 @@ public class LineNumberFormatter {
         int numLinesRead = 0;
         int lineOffset = 0;
         final List<String> brokenLines = new ArrayList<>();
-        BufferedReader r = new BufferedReader(new FileReader(this._file));
-        Throwable var6 = null;
-
-        try {
+        try (BufferedReader r = new BufferedReader(new FileReader(this._file))) {
             for (int x2 = 0; x2 < this._positions.size(); ++x2) {
                 LineNumberPosition pos = this._positions.get(x2);
                 o_LineBrokenPositions.add(
@@ -83,21 +80,7 @@ public class LineNumberFormatter {
                 brokenLines.add(var23);
             }
         } catch (Throwable var21) {
-            var6 = var21;
             throw var21;
-        } finally {
-            if (r != null) {
-                if (var6 != null) {
-                    try {
-                        r.close();
-                    } catch (Throwable var20) {
-                        var6.addSuppressed(var20);
-                    }
-                } else {
-                    r.close();
-                }
-            }
-
         }
 
         return brokenLines;
@@ -109,10 +92,8 @@ public class LineNumberFormatter {
         int numLinesRead = 0;
         Iterator lines = brokenLines.iterator();
         int maxLineNo = LineNumberPosition.computeMaxLineNumber(lineBrokenPositions);
-        LineNumberPrintWriter w = new LineNumberPrintWriter(maxLineNo, new BufferedWriter(new FileWriter(tempFile)));
-        Throwable var9 = null;
-
-        try {
+        try (LineNumberPrintWriter w = new LineNumberPrintWriter(maxLineNo, new BufferedWriter(new FileWriter(tempFile)))) {
+            Throwable var9 = null;
             if (!this._options.contains(LineNumberFormatter.LineNumberOption.LEADING_COMMENTS)) {
                 w.suppressLineNumbers();
             }
@@ -201,21 +182,7 @@ public class LineNumberFormatter {
                 break;
             }
         } catch (Throwable var27) {
-            var9 = var27;
             throw var27;
-        } finally {
-            if (w != null) {
-                if (var9 != null) {
-                    try {
-                        w.close();
-                    } catch (Throwable var26) {
-                        var9.addSuppressed(var26);
-                    }
-                } else {
-                    w.close();
-                }
-            }
-
         }
 
         this._file.delete();

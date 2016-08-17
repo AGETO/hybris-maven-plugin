@@ -25,8 +25,7 @@ public class CopyDirectoryFilesToDirectoryTask extends CopyFilesTask {
     }
 
     public CopyDirectoryFilesToDirectoryTask(final File source, final File target) {
-        super(source, target);
-        this.fileFilter = FileFilterUtils.trueFileFilter();
+        this(source, target, FileFilterUtils.trueFileFilter());
     }
 
     @Override
@@ -38,11 +37,8 @@ public class CopyDirectoryFilesToDirectoryTask extends CopyFilesTask {
             throw new IOException("Target path is not a directory.");
         }
 
-        FileFilter fileF = ((File file) -> {
-            return fileFilter.accept(file) && file.isFile();
-        });
-
         Files.walkFileTree(source.toPath(), new SimpleFileVisitor<Path>() {
+
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (fileFilter.accept(file.toFile())) {
@@ -56,6 +52,7 @@ public class CopyDirectoryFilesToDirectoryTask extends CopyFilesTask {
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 return FileVisitResult.SKIP_SUBTREE;
             }
+
         });
     }
 
