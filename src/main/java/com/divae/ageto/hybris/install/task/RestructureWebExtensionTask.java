@@ -9,13 +9,13 @@ import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.WebExtension;
 
 /**
- * Created by mhaagen on 16.08.2016.
+ * @author Klaus Hauschild
  */
-public class RestructureWebExtensionTask extends RestructureExtensionTask {
+class RestructureWebExtensionTask extends RestructureExtensionTask {
 
     private final Extension extension;
 
-    public RestructureWebExtensionTask(final Extension extension) {
+    RestructureWebExtensionTask(final Extension extension) {
         super(extension);
         this.extension = extension;
     }
@@ -44,11 +44,8 @@ public class RestructureWebExtensionTask extends RestructureExtensionTask {
 
     @Override
     protected FileFilter getFileFilter(final File workDirectory, final File hybrisDirectory) {
-        File excludeFile = extension.getBinary().getExtensionBinaryPath();
-        final File exclude = excludeFile;
-        return (File file) -> {
-            return !file.toPath().startsWith(exclude.toPath());
-        };
+        final File exclude = extension.getBinary().getExtensionBinaryPath();
+        return (File file) -> !file.toPath().startsWith(exclude.toPath());
     }
-}
 
+}
