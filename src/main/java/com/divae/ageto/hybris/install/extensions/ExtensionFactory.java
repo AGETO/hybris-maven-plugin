@@ -148,7 +148,7 @@ public enum ExtensionFactory {
             final File hybrisInstallDirectory, final File hybrisBinDirectory) {
         LOGGER.debug(String.format("Read extension information for: %s", extensionName));
         final File baseDirectory = extensionPaths.get(extensionName);
-        final ExtensionBinary binary = getBinary(extensionName, extensionPaths);
+        final ExtensionBinary binary = getBinary(extensionName, extensionPaths, hybrisBinDirectory);
         final List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory,
                 hybrisBinDirectory);
         final Extension extension = new Extension(baseDirectory, extensionName, binary, dependencies);
@@ -156,27 +156,33 @@ public enum ExtensionFactory {
         return extension;
     }
 
-    public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths) {
+    public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths,
+            final File hybrisIntallDirectory) {
         final File extensionFolder = extensionPaths.get(extensionName);
         final File binPath = new File(extensionFolder, "bin");
         final File classPath = new File(extensionFolder, "classes");
 
-        if (binPath.exists()) {
-            return new JARArchive(getJARArchive(binPath, extensionName));
+        if (new File(hybrisIntallDirectory, binPath.toString()).exists()) {
+            return new JARArchive(
+                    getJARArchive(new File(hybrisIntallDirectory, binPath.toString()), extensionName, hybrisIntallDirectory));
         }
-        if (classPath.exists()) {
+        if (new File(hybrisIntallDirectory, classPath.toString()).exists()) {
             return new ClassFolder(classPath);
         }
 
         return new None(); // extension has no binary
     }
 
-    private static File getJARArchive(final File binPath, final String extensionName) {
+    public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths) {
+        return getBinary(extensionName, extensionPaths, new File(""));
+    }
+
+    private static File getJARArchive(final File binPath, final String extensionName, final File hybrisInstallDirectory) {
         final File[] files = binPath.listFiles((File pathname) -> {
             final File fileName = new File(pathname.getName());
             return fileName.toString().equals(String.format("%sserver.jar", extensionName));
         });
-        return files[0];
+        return hybrisInstallDirectory.toPath().relativize(files[0].toPath()).toFile();
     }
 
 }
