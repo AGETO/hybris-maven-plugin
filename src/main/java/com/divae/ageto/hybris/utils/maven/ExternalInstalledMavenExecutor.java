@@ -33,6 +33,9 @@ public class ExternalInstalledMavenExecutor implements MavenExecutor {
         try {
             final List<String> argumentsAsList = Lists.newArrayList(Arrays.asList(arguments));
             argumentsAsList.add(0, getMavenCommand());
+            if (LOGGER.isDebugEnabled()) {
+                argumentsAsList.add("-e");
+            }
             new ProcessExecutor() //
                     .command(argumentsAsList) //
                     .directory(directory) //
