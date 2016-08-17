@@ -53,6 +53,9 @@ public enum MavenUtils {
     }
 
     public static boolean isDependencyResolvable(final Dependency dependency) {
+        // TODO maybe create temporary pom.xml and resolve the dependency (this will reflect local configuration such as proxy
+        // and internal repository mirrors
+
         final MavenDefaultLayout defaultLayout = new MavenDefaultLayout();
         final RemoteRepository centralRepository = new RemoteRepository.Builder( //
                 "central", //
