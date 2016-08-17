@@ -9,11 +9,11 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
 import com.divae.ageto.hybris.install.extensions.binary.None;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 
 /**
  * @author Marvin Haagen
@@ -77,7 +77,7 @@ public class Extension {
         return externalDependenciesFile[0];
     }
 
-    public File getExtensionDirectory() {
+    File getExtensionDirectory() {
         return new File(getName());
     }
 
@@ -126,11 +126,13 @@ public class Extension {
 
     @Override
     public String toString() {
-        final List<String> dependencyNames = Lists.newArrayList();
-        for (final Extension dependency : dependencies) {
-            dependencyNames.add(dependency.getName());
+        final StringBuilder builder = new StringBuilder();
+        builder.append(name);
+        if (dependencies != null) {
+            builder.append(" ");
+            builder.append(dependencies.stream().map(Extension::getName).collect(Collectors.toList()));
         }
-        return String.format("%s %s", name, dependencyNames);
+        return builder.toString();
     }
 
 }
