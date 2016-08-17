@@ -20,15 +20,11 @@ enum Extensions {
     static List<String> getExtensionNames(final File hybrisInstallDirectory) {
         try {
             final File hybrisPlatformDirectory = new File(hybrisInstallDirectory, "bin/platform");
-            final File platformExtensionsFile = new File(System.getProperty("user.dir")
-                    + "/src/main/resources/com/divae/ageto/hybris/install/platform.extensions.xml");
+            final File platformExtensionsFile = new File(hybrisPlatformDirectory, "extensions.xml");
             final FileBasedConfigurationBuilder<XMLConfiguration> builder = new FileBasedConfigurationBuilder<>(
                     XMLConfiguration.class).configure(new Parameters().xml().setFile(platformExtensionsFile));
             final XMLConfiguration platformExtensionsConfiguration = builder.getConfiguration();
-            final List<String> platformExtensions = Lists
-                    .newArrayList(platformExtensionsConfiguration.getList(String.class, "extensions.extension[@name]"));
-            platformExtensions.add("core");
-            return platformExtensions;
+            return Lists.newArrayList(platformExtensionsConfiguration.getList(String.class, "extensions.extension[@name]"));
         } catch (final Exception exception) {
             throw Throwables.propagate(exception);
         }

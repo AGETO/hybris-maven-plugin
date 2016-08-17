@@ -9,6 +9,7 @@
 
         <path dir="${HYBRIS_BIN_DIR}"/>
 
+        <extension name="core"/>
         <extension name="catalog"/>
         <extension name="comments"/>
         <extension name="commons"/>
