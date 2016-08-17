@@ -20,11 +20,14 @@ public enum ExtensionMetadataFile {
     ;
 
     public static File createMetadataFile(final Extension extension, final File workDirectory) {
-        File metadataFolder = MetadataFile.getFilePath(extension.getName());
-        final File metadataFile = new File(new File(workDirectory, metadataFolder.toString()),
-                MetadataFile.getFileName(extension.getName()).toString());
-        final Properties properties = new Properties();
         try {
+            final File metadataFolder = MetadataFile.getFilePath(extension.getName());
+            final File metadataFile = new File(new File(workDirectory, metadataFolder.toString()),
+                    MetadataFile.getFileName(extension.getName()).toString());
+            metadataFile.getParentFile().mkdirs();
+            metadataFile.createNewFile();
+            final Properties properties = new Properties();
+
             properties.setProperty("extension.name", extension.getName());
             properties.setProperty("extension.directory", extension.getBaseDirectory().toString());
             addExtensionBinaryProperties(properties, extension);

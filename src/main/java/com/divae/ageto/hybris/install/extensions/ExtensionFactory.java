@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +53,6 @@ public enum ExtensionFactory {
     }
 
     public static List<Extension> getExtensions(final File hybrisInstallDirectory) {
-
         final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
         final Map<String, File> extensionPaths = getExtensionPaths(hybrisInstallDirectory);
         final List<Extension> extensions = Lists.newArrayList();
@@ -123,9 +123,14 @@ public enum ExtensionFactory {
     private static List<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths,
             final File hybrisInstallDirectory, final File hybrisBinDirectory) {
         final File extensionPath = extensionPaths.get(extensionName);
+        if (extensionPath == null) {
+            throw new NullPointerException(extensionName);
+        }
         final File extensionInfo = new File(extensionPath.toString(), "extensioninfo.xml");
-        final List<String> dependencyNames;
-        dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
+        if (!extensionInfo.exists()) {
+            return Collections.emptyList();
+        }
+        final List<String> dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
 
         final List<Extension> extensions = Lists.newArrayList();
 
@@ -141,7 +146,7 @@ public enum ExtensionFactory {
 
     private static Extension createExtension(final String extensionName, final Map<String, File> extensionPaths,
             final File hybrisInstallDirectory, final File hybrisBinDirectory) {
-        LOGGER.debug(String.format("Read extension informations for: %s", extensionName));
+        LOGGER.debug(String.format("Read extension information for: %s", extensionName));
         final File baseDirectory = extensionPaths.get(extensionName);
         final ExtensionBinary binary = getBinary(extensionName, extensionPaths);
         final List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory,
