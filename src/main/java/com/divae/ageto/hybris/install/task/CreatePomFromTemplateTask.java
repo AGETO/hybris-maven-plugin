@@ -28,8 +28,8 @@ class CreatePomFromTemplateTask extends AbstractWorkDirectoryTask {
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
         // readModel model
-        final Model model = MavenUtils
-                .readModel(new TokenReplacingReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(template.toString())),
+        final Model model = MavenUtils.readModel(
+                new TokenReplacingReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(template.toString())),
                         Collections.singletonMap("hybris.version", taskContext.getHybrisVersion().getVersion())));
 
         // fill with parameters
