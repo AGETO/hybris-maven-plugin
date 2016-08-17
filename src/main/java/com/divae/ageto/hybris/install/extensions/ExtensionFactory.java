@@ -121,15 +121,15 @@ public enum ExtensionFactory {
     }
 
     private static List<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths,
-            File hybrisInstallDirectory, File hybrisBinDirectory) {
-        File extensionPath = extensionPaths.get(extensionName);
-        File extensionInfo = new File(extensionPath.toString(), "extensioninfo.xml");
-        List<String> dependencyNames;
+            final File hybrisInstallDirectory, final File hybrisBinDirectory) {
+        final File extensionPath = extensionPaths.get(extensionName);
+        final File extensionInfo = new File(extensionPath.toString(), "extensioninfo.xml");
+        final List<String> dependencyNames;
         dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
 
-        List<Extension> extensions = Lists.newArrayList();
+        final List<Extension> extensions = Lists.newArrayList();
 
-        for (String dependencyName : dependencyNames) {
+        for (final String dependencyName : dependencyNames) {
             if (!EXTENSIONS.containsKey(dependencyName)) {
                 createExtension(dependencyName, extensionPaths, hybrisInstallDirectory, hybrisBinDirectory);
             }
@@ -140,19 +140,19 @@ public enum ExtensionFactory {
     }
 
     private static Extension createExtension(final String extensionName, final Map<String, File> extensionPaths,
-            File hybrisInstallDirectory, File hybrisBinDirectory) {
+            final File hybrisInstallDirectory, final File hybrisBinDirectory) {
         LOGGER.debug(String.format("Read extension informations for: %s", extensionName));
-        File baseDirectory = extensionPaths.get(extensionName);
-        ExtensionBinary binary = getBinary(extensionName, extensionPaths);
-        List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory, hybrisBinDirectory);
+        final File baseDirectory = extensionPaths.get(extensionName);
+        final ExtensionBinary binary = getBinary(extensionName, extensionPaths);
+        final List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory,
+                hybrisBinDirectory);
         final Extension extension = new Extension(baseDirectory, extensionName, binary, dependencies);
         EXTENSIONS.put(extensionName, extension);
         return extension;
     }
 
     public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths) {
-
-        File extensionFolder = extensionPaths.get(extensionName);
+        final File extensionFolder = extensionPaths.get(extensionName);
         final File binPath = new File(extensionFolder, "bin");
         final File classPath = new File(extensionFolder, "classes");
 
@@ -166,15 +166,11 @@ public enum ExtensionFactory {
         return new None(); // extension has no binary
     }
 
-    private static File getJARArchive(File binPath, String extensionName) {
-        File[] files = binPath.listFiles((File pathname) -> {
-
-                File fileName = new File(pathname.getName());
-
+    private static File getJARArchive(final File binPath, final String extensionName) {
+        final File[] files = binPath.listFiles((File pathname) -> {
+            final File fileName = new File(pathname.getName());
             return fileName.toString().equals(String.format("%sserver.jar", extensionName));
-
         });
-
         return files[0];
     }
 

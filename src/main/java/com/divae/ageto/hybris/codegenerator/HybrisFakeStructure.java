@@ -2,7 +2,6 @@ package com.divae.ageto.hybris.codegenerator;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,13 +28,9 @@ class HybrisFakeStructure {
             final File platformDirectory = new File(binDirectory, "platform");
             final File resourcesDirectory = new File(hybrisReactorDir, "src/main/resources");
 
-            // TODO use restructured platform.extensions.xml
-            final InputStream platformExtensionsStream = ClassLoader
-                    .getSystemResourceAsStream("com/divae/ageto/hybris/install/platform.extensions.xml");
-
             com.divae.ageto.hybris.utils.FileUtils.makeDirectory(platformDirectory);
 
-            FileUtils.copyInputStreamToFile(platformExtensionsStream, new File(platformDirectory, "extensions.xml"));
+            copyFile(new File(resourcesDirectory, "platform.extensions.xml"), new File(platformDirectory, "extensions.xml"));
             copyFile(new File(resourcesDirectory, "advanced.properties"),
                     new File(platformDirectory, "resources/advanced.properties"));
             copyFile(new File(resourcesDirectory, "project.properties"), new File(platformDirectory, "project.properties"));

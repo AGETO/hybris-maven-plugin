@@ -2,6 +2,7 @@ package com.divae.ageto.hybris.install;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,6 @@ import com.divae.ageto.hybris.install.task.DecompileTask;
 import com.divae.ageto.hybris.install.task.TaskChainTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
 import com.divae.ageto.hybris.version.HybrisVersion;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -57,6 +56,7 @@ class InstallHybrisArtifacts {
         final List<Extension> transitiveExtensions = ExtensionFactory.getTransitiveExtensions(extensions);
         final List<Extension> basicExtensions = filterBasicExtensions(transitiveExtensions);
         final List<Extension> basicTransitiveExtensions = ExtensionFactory.getTransitiveExtensions(basicExtensions);
+        // TODO only use basic extensions and their transitive extension dependencies
         installTasks = new TaskChainTask("install artifacts",
                 InstallStrategy.getInstallTasks(taskContext, basicTransitiveExtensions));
         /*installTasks = new TaskChainTask("install artifacts",
@@ -71,14 +71,8 @@ class InstallHybrisArtifacts {
     }
 
     private List<Extension> filterBasicExtensions(final List<Extension> extensions) {
-        return Lists.newArrayList(Iterables.filter(extensions, new Predicate<Extension>() {
-
-            @Override
-            public boolean apply(final Extension input) {
-                return BASIC_EXTENSIONS.contains(input.getName());
-            }
-
-        }));
+        return Lists.newArrayList(
+                extensions.stream().filter(input -> BASIC_EXTENSIONS.contains(input.getName())).collect(Collectors.toList()));
     }
 
     public void execute() {
