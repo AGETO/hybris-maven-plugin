@@ -30,7 +30,7 @@ public class ExtensionFactoryIT {
             }
         }
 
-        assertEquals(ExtensionFactory.getTransitiveExtensions(extensions).size(), 90);
+        assertEquals(ExtensionFactory.getTransitiveExtensions(extensions).size(), 70);
     }
 
     private void printExtension(Extension extension, String indent) {

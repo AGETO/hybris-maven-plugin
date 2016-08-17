@@ -11,7 +11,7 @@ import com.divae.ageto.hybris.utils.EnvironmentUtils;
  */
 public class InstallHybrisArtifactsIT {
 
-    @Test
+    // @Test
     public void installHybrisArtifactsTest() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
         final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory, null,
