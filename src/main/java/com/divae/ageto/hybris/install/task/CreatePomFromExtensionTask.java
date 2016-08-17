@@ -82,7 +82,7 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
     private void addExternalDependencies(final TaskContext taskContext, final Extension extension, final Model model) {
         final File extensionDirectory = taskContext.getHybrisDirectory().toPath().resolve(extension.getBaseDirectory().toPath())
                 .toFile();
-        final File externalDependenciesDefinition = new File(extensionDirectory, "external-dependencies.xml");
+        final File externalDependenciesDefinition = extension.getExternalDependenciesXML(taskContext.getHybrisDirectory());
         final Model externalDependenciesModel = MavenUtils.readModel(externalDependenciesDefinition);
         externalDependenciesModel.getDependencies().forEach(dependency -> {
             if (dependency.getVersion().startsWith("${") && dependency.getVersion().endsWith("}")) {

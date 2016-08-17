@@ -2,7 +2,7 @@ package com.divae.ageto.hybris.codegenerator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,8 +23,6 @@ class HybrisFakeStructure {
     private static Logger LOGGER = LoggerFactory.getLogger(HybrisFakeStructure.class);
 
     static File generate(final File hybrisReactorDir) {
-        Arrays.asList(1, 2, 3).stream().map(i -> i + 1);
-
         try {
             final File hybrisFakeDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris");
             final File binDirectory = new File(hybrisFakeDirectory, "bin");
@@ -32,12 +30,12 @@ class HybrisFakeStructure {
             final File resourcesDirectory = new File(hybrisReactorDir, "src/main/resources");
 
             // TODO use restructured platform.extensions.xml
-            final File platformExtensionsXML = new File(
-                    "src/main/resources/com/divae/ageto/hybris/install/platform.extensions.xml");
+            final InputStream platformExtensionsStream = ClassLoader
+                    .getSystemResourceAsStream("com/divae/ageto/hybris/install/platform.extensions.xml");
 
             com.divae.ageto.hybris.utils.FileUtils.makeDirectory(platformDirectory);
 
-            copyFile(platformExtensionsXML, new File(platformDirectory, "extensions.xml"));
+            FileUtils.copyInputStreamToFile(platformExtensionsStream, new File(platformDirectory, "extensions.xml"));
             copyFile(new File(resourcesDirectory, "advanced.properties"),
                     new File(platformDirectory, "resources/advanced.properties"));
             copyFile(new File(resourcesDirectory, "project.properties"), new File(platformDirectory, "project.properties"));
@@ -46,15 +44,13 @@ class HybrisFakeStructure {
             copyFile(new File(resourcesDirectory, "bootstrap/pojo/global-eventtemplate.vm"),
                     new File(platformDirectory, "bootstrap/resources/pojo/global-eventtemplate.vm"));
 
-            List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, hybrisReactorDir,
+            final List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, hybrisReactorDir,
                     Collections.singletonList(new File("target")));
 
             for (Extension extension : extensions) {
-                Extension extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir,
-                        extension.getName());
+                Extension extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, extension.getName());
 
-                final File extensionDirectory = new File(hybrisFakeDirectory,
-                        extensionProperties.getBaseDirectory().toString());
+                final File extensionDirectory = new File(hybrisFakeDirectory, extensionProperties.getBaseDirectory().toString());
 
                 com.divae.ageto.hybris.utils.FileUtils.makeDirectory(extensionDirectory);
 
