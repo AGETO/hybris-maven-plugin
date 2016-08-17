@@ -14,7 +14,7 @@ import com.divae.ageto.hybris.version.HybrisVersion;
 /**
  * Created by mhaagen on 16.08.2016.
  */
-public class RestructureWebExtensionTaskTest {
+public class RestructureWebExtensionTaskIT {
     @Test
     public void testExecute() throws Exception {
         File hybrisDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
