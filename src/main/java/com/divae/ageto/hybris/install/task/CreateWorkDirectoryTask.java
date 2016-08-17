@@ -18,7 +18,12 @@ public class CreateWorkDirectoryTask implements InstallTask {
 
     @Override
     public void execute(final TaskContext taskContext) {
-        final File workDirectory = Files.createTempDir();
+        File workDirectory = AbstractWorkDirectoryTask.getWorkDirectory(taskContext);
+        if (workDirectory != null) {
+            workDirectory.mkdirs();
+            return;
+        }
+        workDirectory = Files.createTempDir();
         LOGGER.info(String.format("Work directory: %s", workDirectory));
         taskContext.setParameter(WORK_DIRECTORY, workDirectory);
     }

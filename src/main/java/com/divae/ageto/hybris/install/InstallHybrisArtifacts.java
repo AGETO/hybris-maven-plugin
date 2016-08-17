@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
+import com.divae.ageto.hybris.install.task.CreateWorkDirectoryTask;
 import com.divae.ageto.hybris.install.task.TaskChainTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
 import com.divae.ageto.hybris.version.HybrisVersion;
@@ -59,6 +60,11 @@ class InstallHybrisArtifacts {
                 InstallStrategy.getInstallTasks(taskContext, basicTransitiveExtensions));
         /*installTasks = new TaskChainTask("install artifacts",
                 InstallStrategy.getInstallTasks(taskContext, transitiveExtensions));*/
+    }
+
+    InstallHybrisArtifacts(final File hybrisDirectory, final File workdirectory) {
+        this(hybrisDirectory);
+        taskContext.setParameter(CreateWorkDirectoryTask.WORK_DIRECTORY, workdirectory);
     }
 
     private List<Extension> filterBasicExtensions(final List<Extension> extensions) {
