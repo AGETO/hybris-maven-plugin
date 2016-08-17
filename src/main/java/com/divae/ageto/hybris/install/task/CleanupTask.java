@@ -17,18 +17,7 @@ public class CleanupTask extends AbstractWorkDirectoryTask {
         LOGGER.info(String.format("Cleanup work directory: %s", workDirectory));
 
         // TODO activate this for production
-        // delete(workDirectory);
-    }
-
-    private void delete(final File directory) {
-        if (directory.isDirectory() && directory.listFiles() != null) {
-            for (final File child : directory.listFiles()) {
-                delete(child);
-            }
-        }
-        if (directory.exists() && !directory.delete()) {
-            throw new RuntimeException(String.format("Directory %s can not be deleted", directory));
-        }
+        // FileUtils.delete(workDirectory);
     }
 
 }

@@ -5,7 +5,7 @@ import java.io.File;
 import com.google.common.base.Throwables;
 
 /**
- * Created by mhaagen on 15.08.2016.
+ * @author Marvin Haagen
  */
 public enum FileUtils {
 
@@ -26,4 +26,19 @@ public enum FileUtils {
             throw Throwables.propagate(e);
         }
     }
+
+    public static void delete(final File directory) {
+        if (directory.isDirectory()) {
+            final File[] files = directory.listFiles();
+            if (files != null) {
+                for (final File child : files) {
+                    delete(child);
+                }
+            }
+        }
+        if (directory.exists() && !directory.delete()) {
+            throw new RuntimeException(String.format("Directory %s can not be deleted", directory));
+        }
+    }
+
 }
