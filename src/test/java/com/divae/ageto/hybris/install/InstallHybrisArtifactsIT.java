@@ -14,7 +14,8 @@ public class InstallHybrisArtifactsIT {
     @Test
     public void installHybrisArtifactsTest() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
-        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory);
+        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory, null,
+                false);
         installHybrisArtifacts.execute();
     }
 

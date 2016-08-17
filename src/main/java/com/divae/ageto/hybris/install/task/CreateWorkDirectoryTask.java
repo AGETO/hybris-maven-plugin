@@ -16,11 +16,19 @@ public class CreateWorkDirectoryTask implements InstallTask {
 
     private static final Logger LOGGER         = LoggerFactory.getLogger(CreateWorkDirectoryTask.class);
 
-    @Override
-    public void execute(final TaskContext taskContext) {
-        final File workDirectory = Files.createTempDir();
-        LOGGER.info(String.format("Work directory: %s", workDirectory));
+    public static void setWorkDirectory(final TaskContext taskContext, final File workDirectory) {
         taskContext.setParameter(WORK_DIRECTORY, workDirectory);
     }
 
+    @Override
+    public void execute(final TaskContext taskContext) {
+        File workDirectory = AbstractWorkDirectoryTask.getWorkDirectory(taskContext);
+        if (workDirectory != null) {
+            workDirectory.mkdirs();
+            return;
+        }
+        workDirectory = Files.createTempDir();
+        LOGGER.info(String.format("Work directory: %s", workDirectory));
+        setWorkDirectory(taskContext, workDirectory);
+    }
 }

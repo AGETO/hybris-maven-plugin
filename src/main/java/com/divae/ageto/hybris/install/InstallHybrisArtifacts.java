@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
 import com.divae.ageto.hybris.install.extensions.Extensions;
+import com.divae.ageto.hybris.install.task.CreateWorkDirectoryTask;
+import com.divae.ageto.hybris.install.task.DecompileTask;
 import com.divae.ageto.hybris.install.task.TaskChainTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
 import com.divae.ageto.hybris.version.HybrisVersion;
@@ -48,7 +50,7 @@ class InstallHybrisArtifacts {
     private final TaskContext         taskContext;
     private final TaskChainTask       installTasks;
 
-    InstallHybrisArtifacts(final File hybrisDirectory) {
+    InstallHybrisArtifacts(final File hybrisDirectory, final File workDirectory, final boolean decompile) {
         final HybrisVersion hybrisVersion = HybrisVersion.of(hybrisDirectory);
         taskContext = new TaskContext(hybrisVersion, hybrisDirectory);
         // TODO REMOVE THIS!!!
@@ -63,6 +65,13 @@ class InstallHybrisArtifacts {
                 InstallStrategy.getInstallTasks(taskContext, basicTransitiveExtensions));
         /*installTasks = new TaskChainTask("install artifacts",
                 InstallStrategy.getInstallTasks(taskContext, transitiveExtensions));*/
+
+        if (workDirectory != null) {
+            CreateWorkDirectoryTask.setWorkDirectory(taskContext, workDirectory);
+        }
+        if (decompile) {
+            DecompileTask.activate(taskContext);
+        }
     }
 
     private List<Extension> filterBasicExtensions(final List<Extension> extensions) {

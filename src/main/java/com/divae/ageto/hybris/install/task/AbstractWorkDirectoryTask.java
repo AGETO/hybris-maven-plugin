@@ -7,7 +7,7 @@ import java.io.File;
  */
 public abstract class AbstractWorkDirectoryTask implements InstallTask {
 
-    private static File getWorkDirectory(final TaskContext taskContext) {
+    static File getWorkDirectory(final TaskContext taskContext) {
         return (File) taskContext.getParameter(CreateWorkDirectoryTask.WORK_DIRECTORY);
     }
 
