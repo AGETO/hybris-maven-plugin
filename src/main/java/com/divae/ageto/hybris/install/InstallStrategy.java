@@ -3,6 +3,7 @@ package com.divae.ageto.hybris.install;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
 
@@ -42,9 +43,7 @@ enum InstallStrategy {
                 new OpenWorkDirectoryInExplorerTask() //
         ));
 
-        for (final Extension extension : extensions) {
-            installTasks.add(new RestructureExtensionTask(extension));
-        }
+        installTasks.addAll(extensions.stream().map(RestructureExtensionTask::new).collect(Collectors.toList()));
 
         installTasks.addAll(Arrays.asList( //
 

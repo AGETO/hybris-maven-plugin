@@ -7,6 +7,9 @@ import java.util.List;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.WebExtension;
+import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
+import com.divae.ageto.hybris.install.extensions.binary.None;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 
 /**
  * @author Klaus Hauschild
@@ -44,7 +47,11 @@ class RestructureWebExtensionTask extends RestructureExtensionTask {
 
     @Override
     protected FileFilter getFileFilter(final File workDirectory, final File hybrisDirectory) {
-        final File exclude = extension.getBinary().getExtensionBinaryPath();
+        final ExtensionBinary binary = extension.getBinary();
+        if (binary instanceof None) {
+            return FileFilterUtils.falseFileFilter();
+        }
+        final File exclude = binary.getExtensionBinaryPath();
         return (File file) -> !file.toPath().startsWith(exclude.toPath());
     }
 

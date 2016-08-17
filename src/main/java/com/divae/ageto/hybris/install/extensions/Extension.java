@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
+import com.divae.ageto.hybris.install.extensions.binary.None;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
@@ -44,8 +45,10 @@ public class Extension {
         if (new File(hybrisDirectory, new File(baseDirectory, "external-dependencies.xml").toString()).exists()) {
             return new File(hybrisDirectory, new File(baseDirectory, "external-dependencies.xml").toString());
         }
-        if (new File(binary.getExtensionBinaryPath(), "external-dependencies.xml").exists()) {
-            return new File(binary.getExtensionBinaryPath(), "external-dependencies.xml");
+        if (!(binary instanceof None)) {
+            if (new File(binary.getExtensionBinaryPath(), "external-dependencies.xml").exists()) {
+                return new File(binary.getExtensionBinaryPath(), "external-dependencies.xml");
+            }
         }
         return findExternalDependenciesXML(hybrisDirectory);
     }

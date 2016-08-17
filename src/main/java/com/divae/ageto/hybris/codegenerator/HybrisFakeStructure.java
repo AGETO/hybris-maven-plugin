@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,8 @@ class HybrisFakeStructure {
             copyFile(new File(resourcesDirectory, "bootstrap/pojo/global-eventtemplate.vm"),
                     new File(platformDirectory, "bootstrap/resources/pojo/global-eventtemplate.vm"));
 
-            final List<Extension> extensions = ExtensionFactory.getExtensions(hybrisFakeDirectory, hybrisReactorDir,
-                    Collections.singletonList(new File("target")));
+            // TODO read extensions from reactor modules
+            final List<Extension> extensions = Lists.newArrayList();
 
             for (Extension extension : extensions) {
                 Extension extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, extension.getName());
