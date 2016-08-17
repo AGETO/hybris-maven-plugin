@@ -2,8 +2,6 @@ package com.divae.ageto.hybris.install;
 
 import java.io.File;
 
-import org.testng.annotations.Test;
-
 import com.divae.ageto.hybris.utils.EnvironmentUtils;
 
 /**
@@ -11,11 +9,14 @@ import com.divae.ageto.hybris.utils.EnvironmentUtils;
  */
 public class InstallHybrisArtifactsIT {
 
+    public static void main(final String[] args) {
+        new InstallHybrisArtifactsIT().installHybrisArtifactsTest();
+    }
+
     // @Test
     public void installHybrisArtifactsTest() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
-        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory, null,
-                false);
+        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory, null, true);
         installHybrisArtifacts.execute();
     }
 
