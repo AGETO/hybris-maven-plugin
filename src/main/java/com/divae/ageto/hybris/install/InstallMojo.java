@@ -18,7 +18,7 @@ class InstallMojo extends AbstractHybrisDirectoryMojo {
     @Parameter(property = "hybris.workDirectory")
     private String  workDirectory;
 
-    @Parameter(property = "hybris.decompile", defaultValue = "true")
+    @Parameter(property = "hybris.decompile", defaultValue = "false")
     private boolean decompile;
 
     @Override
