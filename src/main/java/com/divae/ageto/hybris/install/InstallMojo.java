@@ -15,10 +15,10 @@ import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
 @Mojo(name = "install", requiresProject = false)
 class InstallMojo extends AbstractHybrisDirectoryMojo {
 
-    @Parameter(property = "hybris.work-directory", defaultValue = "HYBRIS.WORK_DIRECTORY.EMPTY")
-    private File    workdirectory;
+    @Parameter(property = "hybris.workDirectory")
+    private String  workDirectory;
 
-    @Parameter(property = "hybris.decompiler", defaultValue = "false")
+    @Parameter(property = "hybris.decompile", defaultValue = "true")
     private boolean decompile;
 
     @Override
@@ -33,10 +33,10 @@ class InstallMojo extends AbstractHybrisDirectoryMojo {
     }
 
     private File getWorkDirectory() throws MojoExecutionException {
-        if (workdirectory.toString().equals("HYBRIS.WORK_DIRECTORY.EMPTY")) {
+        if (workDirectory == null) {
             return null;
         }
-        return workdirectory;
+        return new File(workDirectory);
     }
 
 }

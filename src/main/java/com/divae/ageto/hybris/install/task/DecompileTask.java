@@ -19,9 +19,9 @@ import com.strobel.decompiler.DecompilerSettings;
  */
 public class DecompileTask extends AbstractWorkDirectoryTask {
 
-    public static final String  DECOMPILER = "decompile";
+    private static final Logger LOGGER    = LoggerFactory.getLogger(DecompileTask.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DecompileTask.class);
+    private static final String DECOMPILE = "decompile";
 
     private final File          sourceFile;
     private final File          destinationDirectory;
@@ -31,19 +31,19 @@ public class DecompileTask extends AbstractWorkDirectoryTask {
         this.destinationDirectory = destinationDirectory;
     }
 
-    public static boolean isEnabled(final TaskContext taskContext) {
-        if (taskContext.getParameter(DECOMPILER) == null) {
-            return false;
-        }
-        return (boolean) taskContext.getParameter(DECOMPILER);
+    static boolean isEnabled(final TaskContext taskContext) {
+        return Boolean.valueOf((String) taskContext.getParameter(DECOMPILE));
     }
 
     public static void activate(final TaskContext taskContext) {
-        taskContext.setParameter(DECOMPILER, true);
+        taskContext.setParameter(DECOMPILE, true);
     }
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
+        if (!isEnabled(taskContext)) {
+            return;
+        }
         LogManager.getLogManager().reset();
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
