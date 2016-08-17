@@ -32,7 +32,7 @@ public class DecompileTask extends AbstractWorkDirectoryTask {
     }
 
     static boolean isEnabled(final TaskContext taskContext) {
-        return Boolean.valueOf((String) taskContext.getParameter(DECOMPILE));
+        return Boolean.valueOf((Boolean) taskContext.getParameter(DECOMPILE));
     }
 
     public static void activate(final TaskContext taskContext) {
