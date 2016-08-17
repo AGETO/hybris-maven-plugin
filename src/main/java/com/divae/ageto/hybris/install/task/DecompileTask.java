@@ -17,7 +17,9 @@ import com.strobel.decompiler.DecompilerSettings;
 /**
  * @author Klaus Hauschild
  */
-class DecompileTask extends AbstractWorkDirectoryTask {
+public class DecompileTask extends AbstractWorkDirectoryTask {
+
+    public static final String  DECOMPILER = "decompile";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecompileTask.class);
 
@@ -27,6 +29,14 @@ class DecompileTask extends AbstractWorkDirectoryTask {
     DecompileTask(final File sourceFile, final File destinationDirectory) {
         this.sourceFile = sourceFile;
         this.destinationDirectory = destinationDirectory;
+    }
+
+    public static boolean isEnabled(final TaskContext taskContext) {
+        return (boolean) taskContext.getParameter(DECOMPILER);
+    }
+
+    public static void activate(final TaskContext taskContext) {
+        taskContext.setParameter(DECOMPILER, true);
     }
 
     @Override

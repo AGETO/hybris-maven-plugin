@@ -16,11 +16,15 @@ import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
 class InstallMojo extends AbstractHybrisDirectoryMojo {
 
     @Parameter(property = "hybris.work-directory", defaultValue = "HYBRIS.WORK_DIRECTORY.EMPTY")
-    private File workdirectory;
+    private File    workdirectory;
+
+    @Parameter(property = "hybris.decompiler", defaultValue = "false")
+    private boolean decompile;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final InstallHybrisArtifacts installHybrisArtifacts = getInstallHybrisArtifactsTask(getWorkdirectory());
+        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(getHybrisDirectory(), getWorkDirectory(),
+                decompile);
         try {
             installHybrisArtifacts.execute();
         } catch (final Exception exception) {
@@ -28,18 +32,11 @@ class InstallMojo extends AbstractHybrisDirectoryMojo {
         }
     }
 
-    private File getWorkdirectory() throws MojoExecutionException {
+    private File getWorkDirectory() throws MojoExecutionException {
         if (workdirectory.toString().equals("HYBRIS.WORK_DIRECTORY.EMPTY")) {
             return null;
         }
         return workdirectory;
-    }
-
-    private InstallHybrisArtifacts getInstallHybrisArtifactsTask(final File workdirectory) {
-        if (!workdirectory.toString().equals("")) {
-            new InstallHybrisArtifacts(getHybrisDirectory(), workdirectory);
-        }
-        return new InstallHybrisArtifacts(getHybrisDirectory());
     }
 
 }
