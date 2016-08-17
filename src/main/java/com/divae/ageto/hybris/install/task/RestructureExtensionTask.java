@@ -53,8 +53,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         addCopyRootExtensionFolder(installTasks, hybrisDirectory, extension, workDirectory);
 
         if (getTestSourcesDirectory(hybrisDirectory.toFile(), extension).exists()) {
-            installTasks.add(new CopyDirectoryContentToDirectoryTask(
-                    getTestSourcesDirectory(hybrisDirectory.toFile(), extension),
+            installTasks.add(new CopyDirectoryContentToDirectoryTask(getTestSourcesDirectory(hybrisDirectory.toFile(), extension),
                     extension.getTestSourcesDirectory()));
         }
 
@@ -70,7 +69,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         new TaskChainTask("restructure extension", installTasks).execute(taskContext);
     }
 
-    protected void addCopyRootExtensionFolder(final List<InstallTask> installTasks, final Path hybrisDirectory,
+    private void addCopyRootExtensionFolder(final List<InstallTask> installTasks, final Path hybrisDirectory,
             final Extension extension, final File workdirectory) {
 
         installTasks.addAll(Arrays.<InstallTask>asList(
@@ -86,12 +85,11 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
     }
 
     private ExtensionBinary findBinary(final File hybrisDirectory, final Extension extension) {
-        return ExtensionFactory.getBinary(extension.getName(),
-                Collections.singletonMap(extension.getName(),
-                        new File(hybrisDirectory, new File(extension.getBaseDirectory(), "web/webroot/WEB-INF").toString())));
+        return ExtensionFactory.getBinary(extension.getName(), Collections.singletonMap(extension.getName(),
+                new File(hybrisDirectory, new File(extension.getBaseDirectory(), "web/webroot/WEB-INF").toString())));
     }
 
-    protected File getBaseDirectory(final File hybrisDirectory, final Extension extension) {
+    private File getBaseDirectory(final File hybrisDirectory, final Extension extension) {
         return new File(String.format("%s/%s", hybrisDirectory, extension.getBaseDirectory()));
     }
 
@@ -120,4 +118,5 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                     new CopyDirectoryContentToDirectoryTask(extension.getBinary().getExtensionBinaryPath(), resourcesDirectory));
         }
     }
+
 }
