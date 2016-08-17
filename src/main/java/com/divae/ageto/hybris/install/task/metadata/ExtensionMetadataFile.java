@@ -19,8 +19,6 @@ import com.google.common.base.Throwables;
 public enum ExtensionMetadataFile {
     ;
 
-    private static String FILE_NAME_FORMAT = "%s-metadata.properties";
-
     public static File createMetadataFile(final Extension extension, final File workDirectory) {
         File metadataFolder = MetadataFile.getFilePath(extension.getName());
         final File metadataFile = new File(new File(workDirectory, metadataFolder.toString()),
@@ -47,7 +45,7 @@ public enum ExtensionMetadataFile {
             final String name = properties.getProperty("extension.name");
             final File baseFile = new File(properties.getProperty("extension.directory"));
             final ExtensionBinary binary = getExtensionBinary(properties);
-            return new Extension(baseFile);
+            return new Extension(baseFile, name, binary);
         } catch (final IOException exception) {
             throw Throwables.propagate(exception);
         }

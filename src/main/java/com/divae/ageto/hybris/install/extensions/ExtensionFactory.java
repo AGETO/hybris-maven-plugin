@@ -150,7 +150,7 @@ public enum ExtensionFactory {
         return extension;
     }
 
-    private static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths) {
+    public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths) {
 
         File extensionFolder = extensionPaths.get(extensionName);
         final File binPath = new File(extensionFolder, "bin");
@@ -160,7 +160,7 @@ public enum ExtensionFactory {
             return new JARArchive(getJARArchive(binPath, extensionName));
         }
         if (classPath.exists()) {
-            return new ClassFolder(extensionFolder);
+            return new ClassFolder(classPath);
         }
 
         return new None(); // extension has no binary

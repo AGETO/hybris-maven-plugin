@@ -17,10 +17,10 @@ public class Extension {
     private final ExtensionBinary binary;
     private final List<Extension> dependencies;
 
-    public Extension(final File baseDirectory) {
+    public Extension(final File baseDirectory, String name, ExtensionBinary binary) {
         this.baseDirectory = baseDirectory;
-        this.name = null;
-        this.binary = null;
+        this.name = name;
+        this.binary = binary;
         this.dependencies = null;
     }
 
@@ -30,6 +30,22 @@ public class Extension {
         this.name = name;
         this.binary = binary;
         this.dependencies = dependencies;
+    }
+
+    public File getExtensionDirectory() {
+        return new File(getName());
+    }
+
+    public File getSourcesDirectory() {
+        return new File(getExtensionDirectory(), "src/main/java");
+    }
+
+    public File getTestSourcesDirectory() {
+        return new File(getExtensionDirectory(), "src/test/java");
+    }
+
+    public File getResourcesDirectory() {
+        return new File(getExtensionDirectory(), "src/main/resources");
     }
 
     public File getBaseDirectory() {
