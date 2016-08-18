@@ -2,18 +2,17 @@ package com.divae.ageto.hybris.codegenerator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
-import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
 import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
+import com.divae.ageto.hybris.install.task.metadata.MetadataFile;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 
 /**
  * @author Marvin Haagen
@@ -41,7 +40,7 @@ class HybrisFakeStructure {
                     new File(platformDirectory, "bootstrap/resources/pojo/global-eventtemplate.vm"));
 
             // TODO read extensions from reactor modules
-            final List<Extension> extensions = Lists.newArrayList();
+            final List<Extension> extensions = readExtensionsFromReactorModules(hybrisReactorDir);
 
             for (Extension extension : extensions) {
                 Extension extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, extension.getName());
@@ -77,6 +76,22 @@ class HybrisFakeStructure {
         } catch (final Exception exception) {
             throw Throwables.propagate(exception);
         }
+    }
+
+    private static List<Extension> readExtensionsFromReactorModules(final File hybrisReactorDir) {
+        LOGGER.debug("Searching extensions in reactor directory...");
+        final List<Extension> extensions = Lists.newArrayList();
+
+        final File[] files = hybrisReactorDir.listFiles((File file) -> file.isDirectory() && !file.getName().equals("target"));
+
+        for (File file : files) {
+            LOGGER.debug(String.format("Extension %s found", file.getName()));
+            if (new File(file, String.format("src/main/resources/%s", MetadataFile.getFileName(file.getName()))).exists()) {
+                extensions.add(ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, file.getName()));
+            }
+        }
+
+        return extensions;
     }
 
     private static void copyFile(final File srcFile, final File destFile) throws IOException {
