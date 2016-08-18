@@ -73,12 +73,12 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
     }
 
     private void addCopyRootExtensionFolder(final List<InstallTask> installTasks, final Path hybrisDirectory,
-            final Extension extension, final File workDirectory) {
+            final Extension extension, final File workdirectory) {
         installTasks.addAll(Arrays.<InstallTask>asList(
                 new CopyDirectoryFilesToDirectoryTask(this.getBaseDirectory(hybrisDirectory.toFile(), extension),
-                        extension.getResourcesDirectory(), getFileFilter(workDirectory, hybrisDirectory.toFile())), //
+                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile())), //
                 new CopyDirectoryContentToDirectoryTask(getResourcesDirectory(hybrisDirectory.toFile(), extension),
-                        extension.getResourcesDirectory(), getFileFilter(workDirectory, hybrisDirectory.toFile()))));
+                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile()))));
     }
 
     protected FileFilter getFileFilter(final File workDirectory, final File hybrisDirectory) {
