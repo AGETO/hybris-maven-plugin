@@ -16,15 +16,12 @@ import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
 class InstallMojo extends AbstractHybrisDirectoryMojo {
 
     @Parameter(property = "hybris.workDirectory")
-    private String  workDirectory;
-
-    @Parameter(property = "hybris.decompile", defaultValue = "false")
-    private boolean decompile;
+    private String workDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(getHybrisDirectory(), getWorkDirectory(),
-                decompile);
+        final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(getHybrisDirectory(),
+                getWorkDirectory());
         try {
             installHybrisArtifacts.execute();
         } catch (final Exception exception) {
