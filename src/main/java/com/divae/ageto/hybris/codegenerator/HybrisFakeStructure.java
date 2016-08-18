@@ -23,6 +23,7 @@ class HybrisFakeStructure {
 
     static File generate(final File hybrisReactorDir) {
         try {
+            LOGGER.info("Creating hybris fake structure");
             final File hybrisFakeDirectory = new File(hybrisReactorDir, "target/hybris-fake/hybris");
             final File binDirectory = new File(hybrisFakeDirectory, "bin");
             final File platformDirectory = new File(binDirectory, "platform");
@@ -43,6 +44,8 @@ class HybrisFakeStructure {
             final List<Extension> extensions = readExtensionsFromReactorModules(hybrisReactorDir);
 
             for (Extension extension : extensions) {
+                final File source = new File(String.format("%s/%s/src/main/resources", hybrisReactorDir, extension.getName()));
+                LOGGER.info(source.toString());
                 Extension extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, extension.getName());
 
                 final File extensionDirectory = new File(hybrisFakeDirectory, extensionProperties.getBaseDirectory().toString());
@@ -50,25 +53,21 @@ class HybrisFakeStructure {
                 com.divae.ageto.hybris.utils.FileUtils.makeDirectory(extensionDirectory);
 
                 copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/%s-advanced-deployment.xml", extension.getBaseDirectory(),
-                                        extension.getName())),
+                        new File(source, String.format("%s-advanced-deployment.xml", extension.getName())),
                         new File(extensionDirectory, String.format("resources/%s-advanced-deployment.xml", extension.getName())));
 
                 copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/%s-beans.xml", extension.getBaseDirectory(), extension.getName())),
+                        new File(source, String.format("%s-beans.xml", extension.getName())),
                         new File(extensionDirectory, String.format("resources/%s-beans.xml", extension.getName())));
 
                 copyFile(
-                        new File(hybrisReactorDir,
-                                String.format("%s/%s-items.xml", extension.getBaseDirectory(), extension.getName())),
+                        new File(source, String.format("%s-items.xml", extension.getName())),
                         new File(extensionDirectory, String.format("resources/%s-items.xml", extension.getName())));
 
-                copyFile(new File(hybrisReactorDir, String.format("%s/project.properties", extension.getBaseDirectory())),
+                copyFile(new File(source, "project.properties"),
                         new File(extensionDirectory, "project.properties"));
 
-                copyFile(new File(hybrisReactorDir, String.format("%s/extensioninfo.xml", extension.getBaseDirectory())),
+                copyFile(new File(source, "extensioninfo.xml"),
                         new File(extensionDirectory, "extensioninfo.xml"));
             }
 
@@ -95,7 +94,9 @@ class HybrisFakeStructure {
     }
 
     private static void copyFile(final File srcFile, final File destFile) throws IOException {
+        LOGGER.info(String.format("Copying file %s to %s", srcFile, destFile));
         if (!srcFile.exists()) {
+            LOGGER.info("Source file not exists");
             return;
         }
 

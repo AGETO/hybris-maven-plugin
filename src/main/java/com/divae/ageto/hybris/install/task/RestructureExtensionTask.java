@@ -38,7 +38,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
     @Override
     protected void execute(final TaskContext taskContext, final File workDirectory) {
-        LOGGER.debug(String.format("Restructure extension %s", extension.getName()));
+        LOGGER.info(String.format("Restructure extension %s", extension.getName()));
 
         final Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
 
@@ -91,7 +91,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CopyDirectoryFilesToDirectoryTask(this.getBaseDirectory(hybrisDirectory.toFile(), extension),
                         extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile())), //
                 new CopyDirectoryContentToDirectoryTask(getResourcesDirectory(hybrisDirectory.toFile(), extension),
-                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile())) //
+                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile()))
         ));
     }
 
