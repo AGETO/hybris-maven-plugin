@@ -50,7 +50,10 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         );
 
         addCopyRootExtensionFolder(extensionTasks, hybrisDirectory, extension, workDirectory);
-        decompileOrCopyBinary(extension, hybrisDirectory, extensionTasks, taskContext);
+
+        if (extension.getBinary().getClass() != None.class) {
+            this.copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, extensionTasks);
+        }
 
         if (getTestSourcesDirectory(hybrisDirectory.toFile(), extension).exists()) {
             extensionTasks.add(new CopyDirectoryContentToDirectoryTask(
@@ -68,21 +71,6 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         }
 
         new TaskChainTask("restructure extension", extensionTasks).execute(taskContext);
-    }
-
-    private void decompileOrCopyBinary(final Extension extension, final Path hybrisDirectory,
-            final List<InstallTask> installTasks, final TaskContext taskContext) {
-        if (extension.getBinary().getClass() != None.class) {
-            if (DecompileTask.isEnabled(taskContext) && extension.getBinary().getClass() != ClassFolder.class) {
-                final File extensionBinaryPath = extension.getBinary().getExtensionBinaryPath();
-                installTasks.addAll(Arrays.asList( //
-                        new DecompileTask(extensionBinaryPath, extension.getSourcesDirectory()), //
-                        new MoveTestSourcesTask(extension.getSourcesDirectory(), extension.getTestSourcesDirectory()) //
-                ));
-                return;
-            }
-            this.copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, installTasks);
-        }
     }
 
     private void addCopyRootExtensionFolder(final List<InstallTask> installTasks, final Path hybrisDirectory,

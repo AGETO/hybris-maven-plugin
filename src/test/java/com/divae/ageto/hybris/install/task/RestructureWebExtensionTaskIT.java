@@ -3,8 +3,6 @@ package com.divae.ageto.hybris.install.task;
 import java.io.File;
 import java.util.Collections;
 
-import org.testng.annotations.Test;
-
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.WebExtension;
 import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
