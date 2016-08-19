@@ -1,6 +1,6 @@
 package com.divae.ageto.hybris.codegenerator;
 
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,12 +9,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Set;
 
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.testng.collections.Sets;
 
+import com.divae.ageto.hybris.AbstractTempDirectoryTests;
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
@@ -22,49 +23,47 @@ import com.divae.ageto.hybris.install.extensions.binary.None;
 import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
 
 /**
- * Created by mhaagen on 18.08.2016.
+ * @author Marvin Haagen
  */
-public class HybrisFakeStructureTest {
+public class HybrisFakeStructureTest extends AbstractTempDirectoryTests {
+
+    private Logger          LOGGER      = LoggerFactory.getLogger(HybrisFakeStructureTest.class);
+
     private final Set<File> dummyFiles  = Sets.newHashSet();
     private final Set<File> outputFiles = Sets.newHashSet();
-    @Rule
-    public TemporaryFolder  folder      = new TemporaryFolder();
-    private Logger          LOGGER      = LoggerFactory.getLogger(HybrisFakeStructureTest.class);
     private File            hybrisFakeDirectory;
 
-    @org.junit.Before
-    public void setUp() throws Exception {
+    @BeforeTest
+    public void beforeTest() throws Exception {
+        final String[] format = { "extensionfileslist/%s/%s-input.txt", "extensionfileslist/%s/%s-output.txt" };
 
-        String[] format = { "extensionfileslist/%s/%s-input.txt", "extensionfileslist/%s/%s-output.txt" };
-
-        Object[][] ext = { { "hac", "bin/platform/ext/hac", new None() }, { "hac-web", "bin/platform/ext/hac/web",
+        final Object[][] ext = { { "hac", "bin/platform/ext/hac", new None() }, { "hac-web", "bin/platform/ext/hac/web",
                 new ClassFolder(new File("bin/platform/ext/hac/web/webroot/WEB-INF/classes")) } };
 
-        for (Object[] extension : ext) {
+        for (final Object[] extension : ext) {
             readFiles(format[0], (String) extension[0], dummyFiles);
             readFiles(format[1], (String) extension[0], outputFiles);
 
-            Extension extension2 = new Extension(new File((String) extension[1]), (String) extension[0],
+            final Extension extension2 = new Extension(new File((String) extension[1]), (String) extension[0],
                     (ExtensionBinary) extension[2]);
             LOGGER.debug(String.format("Generating metadata file for %s", extension2.getName()));
-            ExtensionMetadataFile.createMetadataFile(extension2, new File(folder.toString()));
+            ExtensionMetadataFile.createMetadataFile(extension2, getTempDirectory());
 
         }
 
-        hybrisFakeDirectory = new File(new File(folder.toString()), "target/hybris-fake/hybris/bin");
+        hybrisFakeDirectory = new File(getTempDirectory(), "target/hybris-fake/hybris/bin");
 
-        for (File file : dummyFiles) {
-            LOGGER.debug(
-                    String.format("Creating folder %s", new File(new File(folder.toString()), file.toString()).getParentFile()));
-            new File(new File(folder.toString()), file.toString()).getParentFile().mkdirs();
-            LOGGER.debug(String.format("Creating file %s", new File(new File(folder.toString()), file.toString())));
-            new File(new File(folder.toString()), file.toString()).createNewFile();
+        for (final File file : dummyFiles) {
+            LOGGER.debug(String.format("Creating folder %s", new File(getTempDirectory(), file.toString()).getParentFile()));
+            new File(getTempDirectory(), file.toString()).getParentFile().mkdirs();
+            LOGGER.debug(String.format("Creating file %s", new File(getTempDirectory(), file.toString())));
+            new File(getTempDirectory(), file.toString()).createNewFile();
         }
     }
 
-    private void readFiles(final String format, final String extensionName, Set<File> files) throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream(String.format(format, extensionName, extensionName));
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+    private void readFiles(final String format, final String extensionName, final Set<File> files) throws IOException {
+        final InputStream inputStream = getClass().getResourceAsStream(String.format(format, extensionName, extensionName));
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
         while (true) {
             line = bufferedReader.readLine();
@@ -76,31 +75,26 @@ public class HybrisFakeStructureTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void generate() throws Exception {
-        for (File file : dummyFiles) {
-            LOGGER.debug(String.format("Checking if folder %s exists",
-                    new File(new File(folder.toString()), file.toString()).getParentFile()));
-            assertTrue(new File(new File(folder.toString()), file.toString()).getParentFile().exists());
-            assertTrue(new File(new File(folder.toString()), file.toString()).getParentFile().isDirectory());
-            LOGGER.debug(String.format("Checking if file %s exists", new File(new File(folder.toString()), file.toString())));
-            assertTrue(new File(new File(folder.toString()), file.toString()).exists());
-            assertTrue(new File(new File(folder.toString()), file.toString()).isFile());
+        for (final File file : dummyFiles) {
+            LOGGER.debug(
+                    String.format("Checking if folder %s exists", new File(getTempDirectory(), file.toString()).getParentFile()));
+            assertTrue(new File(getTempDirectory(), file.toString()).getParentFile().exists());
+            assertTrue(new File(getTempDirectory(), file.toString()).getParentFile().isDirectory());
+            LOGGER.debug(String.format("Checking if file %s exists", new File(getTempDirectory(), file.toString())));
+            assertTrue(new File(getTempDirectory(), file.toString()).exists());
+            assertTrue(new File(getTempDirectory(), file.toString()).isFile());
         }
 
         LOGGER.debug("Starting generation of hybris fake structure");
-        HybrisFakeStructure.generate(new File(folder.toString()));
+        HybrisFakeStructure.generate(getTempDirectory());
         LOGGER.debug("Hybris fake structure generation done");
 
-        for (File file : outputFiles) {
+        for (final File file : outputFiles) {
             LOGGER.debug(String.format("Checking if file %s exists", new File(hybrisFakeDirectory, file.toString())));
             assertTrue(new File(hybrisFakeDirectory, file.toString()).exists());
         }
-    }
-
-    @org.junit.After
-    public void clearUp() {
-        folder.delete();
     }
 
 }

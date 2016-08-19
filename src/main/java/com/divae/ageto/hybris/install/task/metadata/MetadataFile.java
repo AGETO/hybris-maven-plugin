@@ -3,9 +3,10 @@ package com.divae.ageto.hybris.install.task.metadata;
 import java.io.File;
 
 /**
- * Created by mhaagen on 15.08.2016.
+ * @author Marvin Haagen
  */
 public enum MetadataFile {
+
     ;
 
     public static File getFileName(String extensionName) {

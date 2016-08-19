@@ -1,9 +1,5 @@
 package com.divae.ageto.hybris.install.extensions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -16,91 +12,80 @@ import java.util.Set;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 import com.beust.jcommander.internal.Sets;
+import com.divae.ageto.hybris.AbstractTempDirectoryTests;
 import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
 /**
- * Created by mhaagen on 19.08.2016.
+ * @author Marvin Haagen
  */
-public class ExtensionFactoryTest {
+public class ExtensionFactoryTest extends AbstractTempDirectoryTests {
 
-    private final Set<String> extensionNames = Sets.newHashSet();
-    private final Set<File>   jarFiles       = Sets.newHashSet();
-    private final Set<File>   classFiles     = Sets.newHashSet();
+    private Set<String> extensionNames = Sets.newHashSet();
+    private final Set<File> jarFiles = Sets.newHashSet();
+    private final Set<File> classFiles = Sets.newHashSet();
 
-    @Rule
-    public TemporaryFolder    folder         = new TemporaryFolder();
+    @BeforeTest
+    public void beforeTest() throws Exception {
+        extensionNames = readExtensionNames(getTempDirectory());
 
-    @Before
-    public void setUp() throws Exception {
-        try {
-            Set<String> extensionNames = readExtensionNames(folder.getRoot());
-
-            this.extensionNames.addAll(extensionNames);
-            createExtensionFolders(folder.getRoot(), extensionNames);
-            createClassFolders(folder.getRoot());
-            createJarFiles(folder.getRoot());
-
-        } catch (final Exception exception) {
-            throw Throwables.propagate(exception);
-        }
+        createExtensionFolders(getTempDirectory(), extensionNames);
+        createClassFolders(getTempDirectory());
+        createJarFiles(getTempDirectory());
     }
 
-    private void createJarFiles(File folder) throws Exception {
-        final InputStream jarFiles = getClass().getResourceAsStream("jarfiles.txt");
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(jarFiles));
-        String line;
+    private void createFiles(final File folder, final String source, final Set<File> target) throws Exception {
+        final InputStream jarFiles = getClass().getResourceAsStream(source);
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(jarFiles))) {
+            String line;
 
-        while (true) {
-            line = bufferedReader.readLine();
-            if (line == null) {
-                break;
+            while (true) {
+                line = bufferedReader.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                new File(folder, line).getParentFile().mkdirs();
+                new File(folder, line).createNewFile();
+                target.add(new File(folder, line));
             }
-
-            new File(folder, line).getParentFile().mkdirs();
-            new File(folder, line).createNewFile();
-            this.jarFiles.add(new File(folder, line));
         }
     }
 
-    private void createClassFolders(File folder) throws Exception {
-        final InputStream classFilesTXT = getClass().getResourceAsStream("classfiles.txt");
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(classFilesTXT));
-        String line;
-
-        while (true) {
-            line = bufferedReader.readLine();
-            if (line == null) {
-                break;
-            }
-
-            new File(folder, line).mkdirs();
-            this.classFiles.add(new File(folder, line));
-        }
+    private void createJarFiles(final File folder) throws Exception {
+        createFiles(folder, "jarfiles.txt", jarFiles);
     }
 
-    private void createExtensionFolders(File folder, Set<String> extensionNames) throws Exception {
-        for (String extensionName : extensionNames) {
-            File extensionDir = new File(folder, String.format("bin/platform/ext/%s", extensionName));
+    private void createClassFolders(final File folder) throws Exception {
+        createFiles(folder, "classfiles.txt", classFiles);
+    }
+
+    private void createExtensionFolders(final File folder, final Set<String> extensionNames) throws Exception {
+        for (final String extensionName : extensionNames) {
+            final File extensionDir = new File(folder, String.format("bin/platform/ext/%s", extensionName));
             extensionDir.mkdirs();
-            InputStream extensioninfo = getClass().getResourceAsStream(String.format("extensioninfo/%s.xml", extensionName));
-            Files.copy(extensioninfo, new File(extensionDir, "extensioninfo.xml").toPath());
+            try (InputStream extensioninfo = getClass()
+                    .getResourceAsStream(String.format("extensioninfo/%s.xml", extensionName))) {
+                Files.copy(extensioninfo, new File(extensionDir, "extensioninfo.xml").toPath());
+            }
         }
     }
 
-    private Set<String> readExtensionNames(File folder) throws Exception {
-        final InputStream extensionsXML = getClass().getResourceAsStream("extensions.xml");
-        new File(folder, "bin/platform").mkdirs();
-        Files.copy(extensionsXML, new File(folder, "bin/platform/extensions.xml").toPath());
+    private Set<String> readExtensionNames(final File folder) throws Exception {
+        try (final InputStream extensionsXML = getClass().getResourceAsStream("extensions.xml")) {
+            new File(folder, "bin/platform").mkdirs();
+            Files.copy(extensionsXML, new File(folder, "bin/platform/extensions.xml").toPath());
+        }
 
         final File hybrisPlatformDirectory = new File(folder, "bin/platform");
         final File platformExtensionsFile = new File(hybrisPlatformDirectory, "extensions.xml");
@@ -112,30 +97,25 @@ public class ExtensionFactoryTest {
         return new HashSet<>(extensionNames);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        folder.delete();
-    }
-
     @Test
     public void getExtensions() throws Exception {
-        final Set<Extension> extensions = ExtensionFactory.getExtensions(folder.getRoot());
+        final Set<Extension> extensions = ExtensionFactory.getExtensions(getTempDirectory());
 
-        assertEquals(14, extensions.size());
+        assertEquals(extensions.size(), 14);
 
-        for (Extension extension : extensions) {
+        for (final Extension extension : extensions) {
             assertTrue(extensionNames.contains(extension.getName()));
             assertTrue(!extension.getBaseDirectory().isAbsolute());
-            checkBinary(folder.getRoot(), extension);
+            checkBinary(extension);
         }
     }
 
-    private void checkBinary(final File folder, final Extension extension) {
+    private void checkBinary(final Extension extension) {
         assertNotNull(extension.getBinary());
-        if (extension.getBinary().getClass() == JARArchive.class) {
+        if (extension.getBinary() instanceof JARArchive) {
             assertTrue(!extension.getBinary().getExtensionBinaryPath().isAbsolute());
         }
-        if (extension.getBinary().getClass() == ClassFolder.class) {
+        if (extension.getBinary() instanceof ClassFolder) {
             assertTrue(!extension.getBinary().getExtensionBinaryPath().isAbsolute());
         }
     }

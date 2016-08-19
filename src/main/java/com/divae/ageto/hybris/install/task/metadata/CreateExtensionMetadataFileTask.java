@@ -18,7 +18,8 @@ public class CreateExtensionMetadataFileTask extends AbstractWorkDirectoryTask {
     }
 
     @Override
-    protected void execute(TaskContext taskContext, File workDirectory) {
+    protected void execute(final TaskContext taskContext, final File workDirectory) {
         ExtensionMetadataFile.createMetadataFile(extension, workDirectory);
     }
+
 }

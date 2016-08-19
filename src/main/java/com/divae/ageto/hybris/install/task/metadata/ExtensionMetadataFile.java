@@ -1,9 +1,11 @@
 package com.divae.ageto.hybris.install.task.metadata;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
@@ -17,6 +19,7 @@ import com.google.common.base.Throwables;
  * @author Marvin Haagen
  */
 public enum ExtensionMetadataFile {
+
     ;
 
     public static File createMetadataFile(final Extension extension, final File workDirectory) {
@@ -31,7 +34,9 @@ public enum ExtensionMetadataFile {
             properties.setProperty("extension.name", extension.getName());
             properties.setProperty("extension.directory", extension.getBaseDirectory().toString());
             addExtensionBinaryProperties(properties, extension);
-            properties.store(new FileOutputStream(metadataFile), null);
+            try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(metadataFile))) {
+                properties.store(outputStream, null);
+            }
             return metadataFile;
         } catch (IOException exception) {
             throw Throwables.propagate(exception);

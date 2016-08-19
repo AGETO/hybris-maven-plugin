@@ -2,6 +2,8 @@ package com.divae.ageto.hybris;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
@@ -13,19 +15,22 @@ import com.google.common.io.Files;
  */
 public abstract class AbstractTempDirectoryTests {
 
-    private File tempDirectory;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTempDirectoryTests.class);
+
+    private File                tempDirectory;
 
     protected File getTempDirectory() {
         return tempDirectory;
     }
 
     @BeforeTest
-    private void before() {
+    public void prepareTempDirectory() {
         tempDirectory = Files.createTempDir();
+        LOGGER.debug(String.format("temp directory test working in: %s", tempDirectory));
     }
 
     @AfterTest
-    private void after() {
+    public void deleteTempDirectory() {
         if (tempDirectory != null) {
             FileUtils.delete(tempDirectory);
         }
