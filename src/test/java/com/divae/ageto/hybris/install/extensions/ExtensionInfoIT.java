@@ -6,7 +6,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import com.divae.ageto.hybris.utils.EnvironmentUtils;
 

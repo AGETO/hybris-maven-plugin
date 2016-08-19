@@ -1,6 +1,7 @@
 package com.divae.ageto.hybris;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public abstract class AbstractTempDirectoryTests {
     }
 
     @AfterTest
-    public void deleteTempDirectory() {
+    public void deleteTempDirectory() throws IOException {
         if (tempDirectory != null) {
             FileUtils.delete(tempDirectory);
         }

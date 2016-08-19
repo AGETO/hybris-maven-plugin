@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
@@ -34,7 +35,7 @@ public enum ExtensionMetadataFile {
             properties.setProperty("extension.name", extension.getName());
             properties.setProperty("extension.directory", extension.getBaseDirectory().toString());
             addExtensionBinaryProperties(properties, extension);
-            try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(metadataFile))) {
+            try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(metadataFile))) {
                 properties.store(outputStream, null);
             }
             return metadataFile;
@@ -48,8 +49,8 @@ public enum ExtensionMetadataFile {
         final File metadataFile = new File(new File(workDirectory, metadataFolder),
                 MetadataFile.getFileName(extensionName).toString());
         Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(metadataFile));
+        try (final InputStream inputStream = new FileInputStream(metadataFile)) {
+            properties.load(inputStream);
             final String name = properties.getProperty("extension.name");
             final File baseFile = new File(properties.getProperty("extension.directory"));
             final ExtensionBinary binary = getExtensionBinary(properties);
