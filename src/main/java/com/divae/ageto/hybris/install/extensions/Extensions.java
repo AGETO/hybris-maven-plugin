@@ -37,7 +37,6 @@ public enum Extensions {
             final XMLConfiguration platformExtensionsConfiguration = builder.getConfiguration();
             final List<String> extensionNames = Lists
                     .newArrayList(platformExtensionsConfiguration.getList(String.class, "extensions.extension[@name]"));
-            extensionNames.add("hac");
             return extensionNames;
         } catch (final Exception exception) {
             throw Throwables.propagate(exception);

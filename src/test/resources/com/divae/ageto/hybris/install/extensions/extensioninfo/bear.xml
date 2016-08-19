@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="">
+
+    <extension name="bear">
+
+        <requires-extension name="horse"/>
+        <requires-extension name="eagle"/>
+        <requires-extension name="tiger"/>
+        <requires-extension name="fox"/>
+
+        <coremodule/>
+
+    </extension>
+
+</extensioninfo>

@@ -35,27 +35,10 @@ public enum ExtensionFactory {
 
     private static final Map<String, Extension> EXTENSIONS = Maps.newHashMap();
 
-    public static List<Extension> getExtensions(final File hybrisInstallDirectory, final File extensionsDirectory,
-            List<File> excludeExtensionsPaths) {
-        LOGGER.info(String.format("Read extensions of hybris installed in %s", hybrisInstallDirectory));
-        final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
-        final Map<String, File> extensionPaths = getExtensionPaths(extensionsDirectory, extensionsDirectory,
-                excludeExtensionsPaths);
-        final List<Extension> extensions = Lists.newArrayList();
-
-        for (final String extensionName : extensionNames) {
-            final Extension extension = createExtension(extensionName, extensionPaths, hybrisInstallDirectory,
-                    extensionsDirectory);
-            extensions.add(extension);
-        }
-
-        return extensions;
-    }
-
-    public static List<Extension> getExtensions(final File hybrisInstallDirectory) {
+    public static Set<Extension> getExtensions(final File hybrisInstallDirectory) {
         final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
         final Map<String, File> extensionPaths = getExtensionPaths(hybrisInstallDirectory);
-        final List<Extension> extensions = Lists.newArrayList();
+        final Set<Extension> extensions = Sets.newHashSet();
 
         for (final String extensionName : extensionNames) {
             final Extension extension = createExtension(extensionName, extensionPaths, hybrisInstallDirectory,
@@ -66,14 +49,14 @@ public enum ExtensionFactory {
         return extensions;
     }
 
-    public static List<Extension> getTransitiveExtensions(final List<Extension> extensions) {
+    public static Set<Extension> getTransitiveExtensions(final Set<Extension> extensions) {
         final Set<Extension> transitiveExtensions = Sets.newHashSet();
 
         for (final Extension extension : extensions) {
             collectExtension(extension, transitiveExtensions);
         }
 
-        return Lists.newArrayList(transitiveExtensions);
+        return Sets.newHashSet(transitiveExtensions);
     }
 
     private static void collectExtension(Extension extension, Set<Extension> extensions) {
@@ -120,7 +103,7 @@ public enum ExtensionFactory {
         }
     }
 
-    private static List<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths,
+    private static Set<Extension> getDependencies(final String extensionName, final Map<String, File> extensionPaths,
             final File hybrisInstallDirectory, final File hybrisBinDirectory) {
         final File extensionPath = extensionPaths.get(extensionName);
         if (extensionPath == null) {
@@ -128,11 +111,11 @@ public enum ExtensionFactory {
         }
         final File extensionInfo = new File(extensionPath.toString(), "extensioninfo.xml");
         if (!extensionInfo.exists()) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         final List<String> dependencyNames = ExtensionInfo.getDependencyNames(extensionInfo, hybrisBinDirectory);
 
-        final List<Extension> extensions = Lists.newArrayList();
+        final Set<Extension> extensions = Sets.newHashSet();
 
         for (final String dependencyName : dependencyNames) {
             if (!EXTENSIONS.containsKey(dependencyName)) {
@@ -149,7 +132,7 @@ public enum ExtensionFactory {
         LOGGER.debug(String.format("Read extension information for: %s", extensionName));
         final File baseDirectory = extensionPaths.get(extensionName);
         final ExtensionBinary binary = getBinary(extensionName, extensionPaths, hybrisBinDirectory);
-        final List<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory,
+        final Set<Extension> dependencies = getDependencies(extensionName, extensionPaths, hybrisInstallDirectory,
                 hybrisBinDirectory);
         final Extension extension = new Extension(baseDirectory, extensionName, binary, dependencies);
         EXTENSIONS.put(extensionName, extension);
@@ -159,6 +142,9 @@ public enum ExtensionFactory {
     public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths,
             final File hybrisIntallDirectory) {
         final File extensionFolder = extensionPaths.get(extensionName);
+        if (extensionFolder == null) {
+            throw new RuntimeException(String.format("Extension %s has no base directory", extensionName));
+        }
         final File binPath = new File(extensionFolder, "bin");
         final File classPath = new File(extensionFolder, "classes");
 
@@ -171,10 +157,6 @@ public enum ExtensionFactory {
         }
 
         return new None(); // extension has no binary
-    }
-
-    public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths) {
-        return getBinary(extensionName, extensionPaths, new File(""));
     }
 
     private static File getJARArchive(final File binPath, final String extensionName, final File hybrisInstallDirectory) {

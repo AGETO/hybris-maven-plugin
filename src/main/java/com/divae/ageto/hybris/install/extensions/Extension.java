@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.divae.ageto.hybris.install.extensions.binary.ExtensionBinary;
@@ -23,7 +23,7 @@ public class Extension {
     private final File            baseDirectory;
     private final String          name;
     private final ExtensionBinary binary;
-    private final List<Extension> dependencies;
+    private final Set<Extension>  dependencies;
 
     public Extension(final File baseDirectory, final String name, final ExtensionBinary binary) {
 
@@ -34,7 +34,7 @@ public class Extension {
     }
 
     public Extension(final File baseDirectory, final String name, final ExtensionBinary binary,
-            final List<Extension> dependencies) {
+            final Set<Extension> dependencies) {
         this.baseDirectory = baseDirectory;
         this.name = name;
         this.binary = binary;
@@ -105,7 +105,7 @@ public class Extension {
         return binary;
     }
 
-    public List<Extension> getDependencies() {
+    public Set<Extension> getDependencies() {
         return dependencies;
     }
 

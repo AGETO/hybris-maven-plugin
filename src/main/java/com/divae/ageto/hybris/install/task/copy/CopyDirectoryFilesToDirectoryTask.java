@@ -50,6 +50,9 @@ public class CopyDirectoryFilesToDirectoryTask extends CopyFilesTask {
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                if (dir.equals(source.toPath())) {
+                    return FileVisitResult.CONTINUE;
+                }
                 return FileVisitResult.SKIP_SUBTREE;
             }
 

@@ -3,6 +3,7 @@ package com.divae.ageto.hybris.install;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
@@ -29,7 +30,7 @@ enum InstallStrategy {
 
     ;
 
-    static List<InstallTask> getInstallTasks(final TaskContext taskContext, final List<Extension> extensions) {
+    static List<InstallTask> getInstallTasks(final TaskContext taskContext, final Set<Extension> extensions) {
         Preconditions.checkArgument(!extensions.isEmpty(), "at least one extension is expected");
 
         if (!taskContext.getHybrisVersion().getVersion().startsWith("5")) {

@@ -50,6 +50,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         );
 
         addCopyRootExtensionFolder(extensionTasks, hybrisDirectory, extension, workDirectory);
+
         if (extension.getBinary().getClass() != None.class) {
             this.copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, extensionTasks);
         }
@@ -64,7 +65,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         if (new File(hybrisDirectory.toFile(), new File(extension.getBaseDirectory(), "web").toString()).exists()) {
             final ExtensionBinary binary = findBinary(hybrisDirectory.toFile(), extension);
             final WebExtension webExtension = new WebExtension(new File(extension.getBaseDirectory(), "web"),
-                    extension.getName() + "-web", binary, Collections.singletonList(extension));
+                    extension.getName() + "-web", binary, Collections.singleton(extension));
             RestructurePlatformTask.addAdditionalExtensionToModules(taskContext, webExtension);
             extensionTasks.add(new RestructureWebExtensionTask(webExtension));
         }
@@ -78,7 +79,8 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
                 new CopyDirectoryFilesToDirectoryTask(this.getBaseDirectory(hybrisDirectory.toFile(), extension),
                         extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile())), //
                 new CopyDirectoryContentToDirectoryTask(getResourcesDirectory(hybrisDirectory.toFile(), extension),
-                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile()))));
+                        extension.getResourcesDirectory(), getFileFilter(workdirectory, hybrisDirectory.toFile()))
+        ));
     }
 
     protected FileFilter getFileFilter(final File workDirectory, final File hybrisDirectory) {
@@ -87,7 +89,8 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
 
     private ExtensionBinary findBinary(final File hybrisDirectory, final Extension extension) {
         return ExtensionFactory.getBinary(extension.getName(),
-                Collections.singletonMap(extension.getName(), new File(extension.getBaseDirectory(), "web/webroot/WEB-INF")),
+                Collections.singletonMap(extension.getName(),
+                        new File(extension.getBaseDirectory(), "web/webroot/WEB-INF")),
                 hybrisDirectory);
     }
 
