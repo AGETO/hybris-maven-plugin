@@ -1,0 +1,12 @@
+hac/pom.xml
+hac/src/main/resources/build.xml
+hac/src/main/resources/buildcallbacks.xml
+hac/src/main/resources/extensioninfo.xml
+hac/src/main/resources/extensioninfo.xsd
+hac/src/main/resources/external-dependencies.xml
+hac/src/main/resources/hac.build.number
+hac/src/main/resources/platformhome.properties
+hac/src/main/resources/project.properties
+hac/src/main/resources/hac/dummy.txt
+hac/src/main/resources/hac/hac-testclasses.xml
+hac/src/main/resources/hac/hac-webtestclasses.xml
