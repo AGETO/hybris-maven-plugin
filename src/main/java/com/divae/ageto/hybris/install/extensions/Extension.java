@@ -26,11 +26,7 @@ public class Extension {
     private final Set<Extension>  dependencies;
 
     public Extension(final File baseDirectory, final String name, final ExtensionBinary binary) {
-
-        this.baseDirectory = baseDirectory;
-        this.name = name;
-        this.binary = binary;
-        this.dependencies = null;
+        this(baseDirectory, name, binary, null);
     }
 
     public Extension(final File baseDirectory, final String name, final ExtensionBinary binary,

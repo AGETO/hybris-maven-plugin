@@ -9,21 +9,6 @@
     <version>${hybris.version}</version>
     <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <!--<scope>test</scope>-->
-        </dependency>
-    </dependencies>
-
     <modules>
         <module>models</module>
     </modules>
@@ -74,15 +59,17 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
+                <inherited>true</inherited>
                 <configuration>
-                    <sourceFile>1.8</sourceFile>
-                    <targetDirectory>1.8</targetDirectory>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.4</version>
+                <inherited>true</inherited>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -97,6 +84,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.1</version>
+                <inherited>true</inherited>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -106,6 +94,7 @@
                         </goals>
                         <configuration>
                             <failOnError>false</failOnError>
+                            <quiet>true</quiet>
                         </configuration>
                     </execution>
                 </executions>

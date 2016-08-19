@@ -15,8 +15,8 @@ class CodeGenerator {
 
     static void generate(final File hybrisReactorDir) {
         final File hybrisFakeDirectory = HybrisFakeStructure.generate(hybrisReactorDir);
-        // invokeBootstrapCodeGenerator(hybrisFakeDirectory);
-        // createModelsArtifacts(hybrisFakeDirectory, hybrisReactorDir);
+        invokeBootstrapCodeGenerator(hybrisFakeDirectory);
+        createModelsArtifacts(hybrisFakeDirectory, hybrisReactorDir);
     }
 
     private static void createModelsArtifacts(final File hybrisFakeDirectory, final File hybrisReactorDir) {

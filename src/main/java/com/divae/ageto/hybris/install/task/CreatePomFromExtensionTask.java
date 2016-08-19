@@ -53,7 +53,7 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         parent.setVersion(taskContext.getHybrisVersion().getVersion());
         model.setParent(parent);
         addExtensionDependencies(taskContext, extension, model);
-        addModelsDependency(taskContext, extension, model);
+        addImplicitDependencies(taskContext, extension, model);
         addExternalDependencies(taskContext, extension, model);
         return model;
     }
@@ -68,14 +68,18 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         }
     }
 
-    private void addModelsDependency(final TaskContext taskContext, final Extension extension, final Model model) {
-        if (!extension.getName().equals("core")) {
-            return;
-        }
+    private void addImplicitDependencies(final TaskContext taskContext, final Extension extension, final Model model) {
         final Dependency dependency = new Dependency();
         dependency.setGroupId(HYBRIS__GROUP_ID);
-        dependency.setArtifactId("models");
         dependency.setVersion(taskContext.getHybrisVersion().getVersion());
+        switch (extension.getName()) {
+            case "core":
+                dependency.setArtifactId("models");
+                break;
+            default:
+                dependency.setArtifactId("core");
+                break;
+        }
         model.getDependencies().add(dependency);
     }
 
