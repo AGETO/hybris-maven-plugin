@@ -65,7 +65,7 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         if (new File(hybrisDirectory.toFile(), new File(extension.getBaseDirectory(), "web").toString()).exists()) {
             final ExtensionBinary binary = findBinary(hybrisDirectory.toFile(), extension);
             final WebExtension webExtension = new WebExtension(new File(extension.getBaseDirectory(), "web"),
-                    extension.getName() + "-web", binary, Collections.singletonList(extension));
+                    extension.getName() + "-web", binary, Collections.singleton(extension));
             RestructurePlatformTask.addAdditionalExtensionToModules(taskContext, webExtension);
             extensionTasks.add(new RestructureWebExtensionTask(webExtension));
         }

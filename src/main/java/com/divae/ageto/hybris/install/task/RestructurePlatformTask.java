@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -21,9 +22,9 @@ import com.google.common.collect.Lists;
  */
 public class RestructurePlatformTask extends AbstractWorkDirectoryTask {
 
-    private final List<Extension> extensions;
+    private final Set<Extension> extensions;
 
-    public RestructurePlatformTask(final List<Extension> extensions) {
+    public RestructurePlatformTask(final Set<Extension> extensions) {
         this.extensions = extensions;
     }
 

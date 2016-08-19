@@ -3,11 +3,11 @@ package com.divae.ageto.hybris.install.extensions;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 import com.divae.ageto.hybris.utils.EnvironmentUtils;
 
@@ -21,7 +21,7 @@ public class ExtensionFactoryIT {
     @Test
     public void getExtensionsFromPlatformTest() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
-        final List<Extension> extensions = ExtensionFactory.getExtensions(hybrisInstallationDirectory);
+        final Set<Extension> extensions = ExtensionFactory.getExtensions(hybrisInstallationDirectory);
         assertEquals(extensions.size(), 70);
 
         if (LOGGER.isTraceEnabled()) {

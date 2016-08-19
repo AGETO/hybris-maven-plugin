@@ -22,7 +22,7 @@ public class RestructureWebExtensionTaskIT {
 
         new RestructureWebExtensionTask(new WebExtension(new File("bin/platform/ext/hac/web"), "hac-web",
                 new ClassFolder(new File(hybrisDirectory, "bin/platform/ext/hac/web/webroot/WEB-INF/classes")),
-                Collections.singletonList(new Extension(new File(""), "hac", null)))).execute(taskContext,
+                Collections.singleton(new Extension(new File(""), "hac", null)))).execute(taskContext,
                         new File(new File(System.getProperty("java.io.tmpdir")), "hybris-test-temp"));
     }
 
