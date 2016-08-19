@@ -1,0 +1,8 @@
+platform/extensions.xml
+platform/project.properties
+platform/bootstrap/resources/pojo/global-eventtemplate.vm
+platform/ext/hac/extensioninfo.xml
+platform/ext/hac/project.properties
+platform/resources/advanced.properties
+platform/resources/schemas
+platform/resources/schemas/beans.xsd

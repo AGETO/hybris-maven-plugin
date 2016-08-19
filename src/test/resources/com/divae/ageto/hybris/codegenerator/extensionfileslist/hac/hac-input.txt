@@ -1,3 +1,8 @@
+src/main/resources/platform.extensions.xml
+src/main/resources/advanced.properties
+src/main/resources/project.properties
+src/main/resources/schemas/beans.xsd
+src/main/resources/bootstrap/pojo/global-eventtemplate.vm
 hac/pom.xml
 hac/src/main/resources/build.xml
 hac/src/main/resources/buildcallbacks.xml

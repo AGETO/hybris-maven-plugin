@@ -1,3 +1,8 @@
+src/main/resources/platform.extensions.xml
+src/main/resources/advanced.properties
+src/main/resources/project.properties
+src/main/resources/schemas/beans.xsd
+src/main/resources/bootstrap/pojo/global-eventtemplate.vm
 hac-web/pom.xml
 hac-web/src/main/resources/hac-web-metadata.properties
 hac-web/src/main/resources/de/hybris/platform/hac/Adminweb2WebHelper.class
