@@ -27,12 +27,10 @@ import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
 public class HybrisFakeStructureTest {
     private final Set<File> dummyFiles = Sets.newHashSet();
     private final Set<File> outputFiles = Sets.newHashSet();
-
     @Rule
     public TemporaryFolder  folder     = new TemporaryFolder();
     private Logger          LOGGER     = LoggerFactory.getLogger(HybrisFakeStructureTest.class);
     private File            hybrisFakeDirectory;
-    private Set<File>       hybrisFakeStructureFiles;
 
     @org.junit.Before
     public void setUp() throws Exception {
@@ -99,6 +97,11 @@ public class HybrisFakeStructureTest {
             LOGGER.debug(String.format("Checking if file %s exists", new File(hybrisFakeDirectory, file.toString())));
             assertTrue(new File(hybrisFakeDirectory, file.toString()).exists());
         }
+    }
+
+    @org.junit.After
+    public void clearUp() {
+        folder.delete();
     }
 
 }

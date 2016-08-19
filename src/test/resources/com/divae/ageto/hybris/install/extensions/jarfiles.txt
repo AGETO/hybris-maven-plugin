@@ -1,0 +1,12 @@
+bin/platform/ext/lion/bin/lionserver.jar
+bin/platform/ext/tiger/bin/tigerserver.jar
+bin/platform/ext/bear/bin/bearserver.jar
+bin/platform/ext/bee/bin/beeserver.jar
+bin/platform/ext/vesp/bin/vespserver.jar
+bin/platform/ext/spider/bin/spiderserver.jar
+bin/platform/ext/horse/bin/horseserver.jar
+bin/platform/ext/bug/bin/bugserver.jar
+bin/platform/ext/eagle/bin/eagleserver.jar
+bin/platform/ext/dove/bin/doveserver.jar
+bin/platform/ext/pig/bin/pigserver.jar
+bin/platform/ext/fox/bin/foxserver.jar

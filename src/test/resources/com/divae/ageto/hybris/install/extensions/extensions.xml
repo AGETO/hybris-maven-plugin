@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hybrisconfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="">
+    <extensions>
+
+        <path dir="${HYBRIS_BIN_DIR}"/>
+
+        <extension name="lion"/>
+        <extension name="tiger"/>
+        <extension name="bear"/>
+        <extension name="bee"/>
+        <extension name="vesp"/>
+        <extension name="spider"/>
+        <extension name="horse"/>
+        <extension name="bug"/>
+        <extension name="leopard"/>
+        <extension name="eagle"/>
+        <extension name="dove"/>
+        <extension name="pig"/>
+        <extension name="fox"/>
+        <extension name="bull"/>
+
+    </extensions>
+</hybrisconfig>

@@ -97,21 +97,6 @@ class HybrisFakeStructure {
         return extensions;
     }
 
-    private static void copyDirectory(final File srcDirectory, final File destDirectory) {
-        LOGGER.info(String.format("Copying folder %s to %s", srcDirectory, destDirectory));
-        if (!srcDirectory.exists()) {
-            LOGGER.info("Source file not exists");
-            return;
-        }
-
-        com.divae.ageto.hybris.utils.FileUtils.makeDirectory(destDirectory.getParentFile());
-        try {
-            FileUtils.copyDirectory(srcDirectory, destDirectory);
-        } catch (IOException e) {
-            throw Throwables.propagate(e);
-        }
-    }
-
     private static void copyFile(final File srcFile, final File destFile) throws IOException {
         LOGGER.info(String.format("Copying file %s to %s", srcFile, destFile));
         if (!srcFile.exists()) {

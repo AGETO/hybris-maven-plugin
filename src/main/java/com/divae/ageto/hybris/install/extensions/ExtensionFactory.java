@@ -35,23 +35,6 @@ public enum ExtensionFactory {
 
     private static final Map<String, Extension> EXTENSIONS = Maps.newHashMap();
 
-    public static List<Extension> getExtensions(final File hybrisInstallDirectory, final File extensionsDirectory,
-            List<File> excludeExtensionsPaths) {
-        LOGGER.info(String.format("Read extensions of hybris installed in %s", hybrisInstallDirectory));
-        final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
-        final Map<String, File> extensionPaths = getExtensionPaths(extensionsDirectory, extensionsDirectory,
-                excludeExtensionsPaths);
-        final List<Extension> extensions = Lists.newArrayList();
-
-        for (final String extensionName : extensionNames) {
-            final Extension extension = createExtension(extensionName, extensionPaths, hybrisInstallDirectory,
-                    extensionsDirectory);
-            extensions.add(extension);
-        }
-
-        return extensions;
-    }
-
     public static Set<Extension> getExtensions(final File hybrisInstallDirectory) {
         final List<String> extensionNames = Extensions.getExtensionNames(hybrisInstallDirectory);
         final Map<String, File> extensionPaths = getExtensionPaths(hybrisInstallDirectory);
@@ -159,6 +142,9 @@ public enum ExtensionFactory {
     public static ExtensionBinary getBinary(final String extensionName, final Map<String, File> extensionPaths,
             final File hybrisIntallDirectory) {
         final File extensionFolder = extensionPaths.get(extensionName);
+        if (extensionFolder == null) {
+            throw new RuntimeException(String.format("Extension %s has no base directory", extensionName));
+        }
         final File binPath = new File(extensionFolder, "bin");
         final File classPath = new File(extensionFolder, "classes");
 
