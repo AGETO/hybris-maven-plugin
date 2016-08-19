@@ -56,23 +56,18 @@ class HybrisFakeStructure {
                     copyDirectory(new File(source.getParentFile(), "webapp"), new File(extension.getBaseDirectory(), "webroot"));
                 }*/
 
-                copyFile(
-                        new File(source, String.format("%s-advanced-deployment.xml", extension.getName())),
+                copyFile(new File(source, String.format("%s-advanced-deployment.xml", extension.getName())),
                         new File(extensionDirectory, String.format("resources/%s-advanced-deployment.xml", extension.getName())));
 
-                copyFile(
-                        new File(source, String.format("%s-beans.xml", extension.getName())),
+                copyFile(new File(source, String.format("%s-beans.xml", extension.getName())),
                         new File(extensionDirectory, String.format("resources/%s-beans.xml", extension.getName())));
 
-                copyFile(
-                        new File(source, String.format("%s-items.xml", extension.getName())),
+                copyFile(new File(source, String.format("%s-items.xml", extension.getName())),
                         new File(extensionDirectory, String.format("resources/%s-items.xml", extension.getName())));
 
-                copyFile(new File(source, "project.properties"),
-                        new File(extensionDirectory, "project.properties"));
+                copyFile(new File(source, "project.properties"), new File(extensionDirectory, "project.properties"));
 
-                copyFile(new File(source, "extensioninfo.xml"),
-                        new File(extensionDirectory, "extensioninfo.xml"));
+                copyFile(new File(source, "extensioninfo.xml"), new File(extensionDirectory, "extensioninfo.xml"));
             }
 
             return platformDirectory;

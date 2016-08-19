@@ -25,18 +25,17 @@ import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
  * Created by mhaagen on 18.08.2016.
  */
 public class HybrisFakeStructureTest {
-    private final Set<File> dummyFiles = Sets.newHashSet();
+    private final Set<File> dummyFiles  = Sets.newHashSet();
     private final Set<File> outputFiles = Sets.newHashSet();
     @Rule
-    public TemporaryFolder  folder     = new TemporaryFolder();
-    private Logger          LOGGER     = LoggerFactory.getLogger(HybrisFakeStructureTest.class);
+    public TemporaryFolder  folder      = new TemporaryFolder();
+    private Logger          LOGGER      = LoggerFactory.getLogger(HybrisFakeStructureTest.class);
     private File            hybrisFakeDirectory;
 
     @org.junit.Before
     public void setUp() throws Exception {
 
-        String[] format = { "extensionfileslist/%s/%s-input.txt", "extensionfileslist/%s/%s-output.txt"
-        };
+        String[] format = { "extensionfileslist/%s/%s-input.txt", "extensionfileslist/%s/%s-output.txt" };
 
         Object[][] ext = { { "hac", "bin/platform/ext/hac", new None() }, { "hac-web", "bin/platform/ext/hac/web",
                 new ClassFolder(new File("bin/platform/ext/hac/web/webroot/WEB-INF/classes")) } };
