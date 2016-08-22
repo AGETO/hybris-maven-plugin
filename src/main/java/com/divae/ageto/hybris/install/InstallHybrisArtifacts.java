@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.extensions.ExtensionFactory;
 import com.divae.ageto.hybris.install.extensions.Extensions;
+import com.divae.ageto.hybris.install.task.CopyTestSourcesTask;
 import com.divae.ageto.hybris.install.task.CreateWorkDirectoryTask;
 import com.divae.ageto.hybris.install.task.TaskChainTask;
 import com.divae.ageto.hybris.install.task.TaskContext;
@@ -51,7 +52,7 @@ class InstallHybrisArtifacts {
     private final TaskContext         taskContext;
     private final TaskChainTask       installTasks;
 
-    InstallHybrisArtifacts(final File hybrisDirectory, final File workDirectory) {
+    InstallHybrisArtifacts(final File hybrisDirectory, final File workDirectory, final boolean skipTests) {
         final HybrisVersion hybrisVersion = HybrisVersion.of(hybrisDirectory);
         taskContext = new TaskContext(hybrisVersion, hybrisDirectory);
         // TODO REMOVE THIS!!!
@@ -69,6 +70,10 @@ class InstallHybrisArtifacts {
 
         if (workDirectory != null) {
             CreateWorkDirectoryTask.setWorkDirectory(taskContext, workDirectory);
+        }
+
+        if (!skipTests) {
+            CopyTestSourcesTask.enableTestSources(taskContext);
         }
     }
 
