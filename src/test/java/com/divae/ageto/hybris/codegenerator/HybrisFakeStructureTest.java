@@ -34,7 +34,9 @@ public class HybrisFakeStructureTest extends AbstractTempDirectoryTests {
 
     @BeforeTest
     public void beforeTest() throws Exception {
-        super.prepareTempDirectory();
+        if (getTempDirectory() == null) {
+            super.prepareTempDirectory();
+        }
         final String[] format = { "extensionfileslist/%s/%s-input.txt", "extensionfileslist/%s/%s-output.txt" };
 
         final Object[][] ext = { { "hac", "bin/platform/ext/hac", new None() }, { "hac-web", "bin/platform/ext/hac/web",
