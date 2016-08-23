@@ -75,6 +75,12 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         switch (extension.getName()) {
             case "core":
                 dependency.setArtifactId("models");
+
+                final Dependency servletApi = new Dependency();
+                servletApi.setGroupId("javax.servlet");
+                servletApi.setVersion("3.0.1");
+                servletApi.setArtifactId("javax.servlet-api");
+                model.addDependency(servletApi);
                 break;
             default:
                 dependency.setArtifactId("core");
