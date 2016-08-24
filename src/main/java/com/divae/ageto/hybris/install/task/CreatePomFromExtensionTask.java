@@ -7,8 +7,11 @@
 package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.slf4j.Logger;
@@ -18,6 +21,8 @@ import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.utils.FileUtils;
 import com.divae.ageto.hybris.utils.maven.MavenExecutorUtils;
 import com.divae.ageto.hybris.utils.maven.MavenUtils;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 /**
  * @author Klaus Hauschild
@@ -31,9 +36,16 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
     private static final String PLATFORM__ARTIFACT_ID = "platform";
 
     private final Extension     extension;
+    private final String        packaging;
+
+    CreatePomFromExtensionTask(final Extension extension, final String packaging) {
+        this.extension = extension;
+        this.packaging = packaging;
+    }
 
     CreatePomFromExtensionTask(final Extension extension) {
         this.extension = extension;
+        this.packaging = null;
     }
 
     @Override
@@ -52,10 +64,17 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         parent.setArtifactId(PLATFORM__ARTIFACT_ID);
         parent.setVersion(taskContext.getHybrisVersion().getVersion());
         model.setParent(parent);
+        setExtensionPackaging(taskContext, model);
         addExtensionDependencies(taskContext, extension, model);
         addImplicitDependencies(taskContext, extension, model);
         addExternalDependencies(taskContext, extension, model);
         return model;
+    }
+
+    private void setExtensionPackaging(TaskContext taskContext, Model model) {
+        if (packaging != null) {
+            model.setPackaging(packaging);
+        }
     }
 
     private void addExtensionDependencies(final TaskContext taskContext, final Extension extension, final Model model) {
@@ -64,6 +83,7 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
             dependency.setGroupId(HYBRIS__GROUP_ID);
             dependency.setArtifactId(extensionDependency.getName());
             dependency.setVersion(taskContext.getHybrisVersion().getVersion());
+            addExcludes(dependency);
             model.getDependencies().add(dependency);
         }
     }
@@ -86,6 +106,7 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
                 dependency.setArtifactId("core");
                 break;
         }
+        addExcludes(dependency);
         model.getDependencies().add(dependency);
     }
 
@@ -104,8 +125,19 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
                 dependency.setVersion(version);
             }
             installDependencyLocallyIfNeeded(extensionDirectory, dependency);
+            addExcludes(dependency);
+
             model.getDependencies().add(dependency);
         });
+    }
+
+    private void addExcludes(Dependency dependency) {
+        Set<Exclusion> exclusions = getExclusions(dependency);
+        if (exclusions.size() > 0) {
+            for (Exclusion exclusion : exclusions) {
+                dependency.addExclusion(exclusion);
+            }
+        }
     }
 
     private void installDependencyLocallyIfNeeded(final File extensionDirectory, final Dependency dependency) {
@@ -133,4 +165,28 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         MavenUtils.writeModel(model, extensionPom);
     }
 
+    private Set<Exclusion> getExclusions(Dependency dependency) {
+        if (getExcludesMap().get(new DependencyWrapper(dependency)) == null) {
+            return Sets.newHashSet();
+        }
+        return getExcludesMap().get(new DependencyWrapper(dependency));
+    }
+
+    private Map<DependencyWrapper, Set<Exclusion>> getExcludesMap() {
+
+        final Map<DependencyWrapper, Set<Exclusion>> excludesMap = ImmutableMap.of(
+                new DependencyWrapper("displaytag", "displaytag", "1.2"),
+                Sets.newHashSet(newExclusion("org.slf4j", "jcl104-over-slf4j")));
+
+        return excludesMap;
+    }
+
+    private Exclusion newExclusion(final String groupId, final String artifactId) {
+        Exclusion exclusion = new Exclusion();
+
+        exclusion.setArtifactId(artifactId);
+        exclusion.setGroupId(groupId);
+
+        return exclusion;
+    }
 }

@@ -43,8 +43,10 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         final Path hybrisDirectory = taskContext.getHybrisDirectory().toPath();
 
         final List<InstallTask> extensionTasks = Lists.newArrayList();
+
+        addPomCreationTask(extensionTasks, extension);
+
         extensionTasks.addAll(Arrays.<InstallTask>asList( //
-                new CreatePomFromExtensionTask(extension), //
                 new CreateDirectoryTask(extension.getSourcesDirectory()), //
                 new CreateDirectoryTask(extension.getResourcesDirectory())) //
         );
@@ -69,6 +71,14 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
         }
 
         new TaskChainTask("restructure extension", extensionTasks).execute(taskContext);
+    }
+
+    private void addPomCreationTask(final List<InstallTask> installTasks, final Extension extension) {
+        if (getClass() == RestructureWebExtensionTask.class) {
+            installTasks.add(new CreatePomFromExtensionTask(extension, "war"));
+            return;
+        }
+        installTasks.add(new CreatePomFromExtensionTask(extension));
     }
 
     private void addCopyRootExtensionFolder(final List<InstallTask> installTasks, final Path hybrisDirectory,
