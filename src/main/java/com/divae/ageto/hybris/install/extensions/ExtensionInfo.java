@@ -43,7 +43,8 @@ enum ExtensionInfo {
             final List<String> dependencies = platformExtensionsConfiguration.getList(String.class,
                     "extension.requires-extension[@name]");
             if (dependencies == null) {
-                return Collections.singletonList("core");
+                // return Collections.singletonList("core");
+                return Collections.emptyList();
             }
             return dependencies;
         } catch (final Exception exception) {

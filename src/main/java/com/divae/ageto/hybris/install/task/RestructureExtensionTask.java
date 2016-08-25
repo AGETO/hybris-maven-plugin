@@ -55,10 +55,8 @@ public class RestructureExtensionTask extends AbstractWorkDirectoryTask {
             this.copyBinary(extension, extension.getResourcesDirectory(), hybrisDirectory, extensionTasks);
         }
 
-        if (getTestSourcesDirectory(hybrisDirectory.toFile(), extension).exists()) {
-            extensionTasks.add(new CopyDirectoryContentToDirectoryTask(
-                    getTestSourcesDirectory(hybrisDirectory.toFile(), extension), extension.getTestSourcesDirectory()));
-        }
+        extensionTasks.add(new CopyTestSourcesTask(getTestSourcesDirectory(hybrisDirectory.toFile(), extension),
+                extension.getTestSourcesDirectory()));
 
         extensionTasks.add(new CreateExtensionMetadataFileTask(extension));
 

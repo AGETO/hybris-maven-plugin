@@ -15,13 +15,16 @@ import com.divae.ageto.hybris.AbstractHybrisDirectoryMojo;
 @Mojo(name = "install", requiresProject = false)
 class InstallMojo extends AbstractHybrisDirectoryMojo {
 
+    @Parameter(property = "hybris.skipTests", defaultValue = "false")
+    private boolean skipTests;
+
     @Parameter(property = "hybris.workDirectory")
     private String workDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(getHybrisDirectory(),
-                getWorkDirectory());
+                getWorkDirectory(), skipTests);
         try {
             installHybrisArtifacts.execute();
         } catch (final Exception exception) {

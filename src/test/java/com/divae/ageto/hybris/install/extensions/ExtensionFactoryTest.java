@@ -1,5 +1,9 @@
 package com.divae.ageto.hybris.install.extensions;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -12,7 +16,6 @@ import java.util.Set;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -22,21 +25,20 @@ import com.divae.ageto.hybris.install.extensions.binary.ClassFolder;
 import com.divae.ageto.hybris.install.extensions.binary.JARArchive;
 import com.google.common.collect.Lists;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
 /**
  * @author Marvin Haagen
  */
 public class ExtensionFactoryTest extends AbstractTempDirectoryTests {
 
-    private Set<String> extensionNames = Sets.newHashSet();
     private final Set<File> jarFiles = Sets.newHashSet();
     private final Set<File> classFiles = Sets.newHashSet();
+    private Set<String>     extensionNames = Sets.newHashSet();
 
     @BeforeTest
     public void beforeTest() throws Exception {
+        if (getTempDirectory() == null) {
+            super.prepareTempDirectory();
+        }
         extensionNames = readExtensionNames(getTempDirectory());
 
         createExtensionFolders(getTempDirectory(), extensionNames);

@@ -27,14 +27,16 @@ import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
  */
 public class HybrisFakeStructureTest extends AbstractTempDirectoryTests {
 
-    private Logger          LOGGER      = LoggerFactory.getLogger(HybrisFakeStructureTest.class);
-
     private final Set<File> dummyFiles  = Sets.newHashSet();
     private final Set<File> outputFiles = Sets.newHashSet();
+    private Logger          LOGGER      = LoggerFactory.getLogger(HybrisFakeStructureTest.class);
     private File            hybrisFakeDirectory;
 
     @BeforeTest
     public void beforeTest() throws Exception {
+        if (getTempDirectory() == null) {
+            super.prepareTempDirectory();
+        }
         final String[] format = { "extensionfileslist/%s/%s-input.txt", "extensionfileslist/%s/%s-output.txt" };
 
         final Object[][] ext = { { "hac", "bin/platform/ext/hac", new None() }, { "hac-web", "bin/platform/ext/hac/web",
