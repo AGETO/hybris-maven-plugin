@@ -18,7 +18,7 @@ public class InstallHybrisArtifactsIT extends AbstractTempDirectoryTests {
     public void installHybrisArtifactsTest() {
         final File hybrisInstallationDirectory = EnvironmentUtils.getHybrisInstallationDirectory();
         final InstallHybrisArtifacts installHybrisArtifacts = new InstallHybrisArtifacts(hybrisInstallationDirectory,
-                getTempDirectory(), false);
+                getTempDirectory(), true);
         installHybrisArtifacts.execute();
     }
 

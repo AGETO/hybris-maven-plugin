@@ -1,5 +1,7 @@
 package com.divae.ageto.hybris.codegenerator;
 
+import static org.apache.commons.io.FileUtils.copyDirectory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -44,6 +46,7 @@ class HybrisFakeStructure {
             final List<Extension> extensions = readExtensionsFromReactorModules(hybrisReactorDir);
 
             for (Extension extension : extensions) {
+
                 final File source = new File(String.format("%s/%s/src/main/resources", hybrisReactorDir, extension.getName()));
                 LOGGER.info(source.toString());
                 Extension extensionProperties = ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, extension.getName());
@@ -52,9 +55,10 @@ class HybrisFakeStructure {
 
                 com.divae.ageto.hybris.utils.FileUtils.makeDirectory(extensionDirectory);
 
-                /*if (new File(source.getParentFile(), "webapp").exists()){
-                    copyDirectory(new File(source.getParentFile(), "webapp"), new File(extension.getBaseDirectory(), "webroot"));
-                }*/
+                if (new File(source.getParentFile(), "webapp").exists()) {
+                    copyDirectory(new File(source.getParentFile(), "webapp"),
+                            new File(new File(hybrisFakeDirectory, extension.getBaseDirectory().toString()), "webroot"));
+                }
 
                 copyFile(new File(source, String.format("%s-advanced-deployment.xml", extension.getName())),
                         new File(extensionDirectory, String.format("resources/%s-advanced-deployment.xml", extension.getName())));
