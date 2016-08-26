@@ -174,11 +174,10 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
     private Map<DependencyWrapper, Set<ExclusionWrapper>> getExcludesMap() {
 
         Map<DependencyWrapper, Set<ExclusionWrapper>> dependencyMap = new HashMap<>();
-        dependencyMap.put(
-                new DependencyWrapper("displaytag", "displaytag", "1.2"),
-                Sets.newHashSet(new ExclusionWrapper("org.slf4j", "jcl104-over-slf4j")));
         dependencyMap.put(new DependencyWrapper("org.apache.ddlutils", "ddlutils", "1.0"),
                 Sets.newHashSet(new ExclusionWrapper("commons-logging", "commons-logging-api")));
+        dependencyMap.put(new DependencyWrapper("de.hybris", "core", "5.5.1.1"), Sets.newHashSet(
+                new ExclusionWrapper("org.slf4j", "slf4j-jcl"), new ExclusionWrapper("commons-logging", "commons-logging")));
 
         return dependencyMap;
     }
