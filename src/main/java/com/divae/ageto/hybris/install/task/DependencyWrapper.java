@@ -10,9 +10,15 @@ import org.apache.maven.model.Dependency;
 public class DependencyWrapper extends Dependency {
 
     private final Dependency dependency;
+    private final String     artifactId;
+    private final String     groupId;
+    private final String     version;
 
     public DependencyWrapper(final Dependency dependency) {
         this.dependency = dependency;
+        this.artifactId = dependency.getArtifactId();
+        this.groupId = dependency.getGroupId();
+        this.version = dependency.getVersion();
     }
 
     public DependencyWrapper(final String groupId, final String artifactId, final String version) {
@@ -20,6 +26,9 @@ public class DependencyWrapper extends Dependency {
         dependency.setArtifactId(artifactId);
         dependency.setGroupId(groupId);
         dependency.setVersion(version);
+        this.artifactId = artifactId;
+        this.groupId = groupId;
+        this.version = version;
     }
 
     @Override
@@ -29,13 +38,12 @@ public class DependencyWrapper extends Dependency {
         if (o == null || getClass() != o.getClass())
             return false;
         DependencyWrapper that = (DependencyWrapper) o;
-        return (dependency.getArtifactId().equals(that.dependency.getArtifactId())
-                && dependency.getGroupId().equals(that.dependency.getGroupId())
-                && dependency.getVersion().equals(that.dependency.getVersion()));
+        return Objects.equals(artifactId, that.artifactId) && Objects.equals(groupId, that.groupId)
+                && Objects.equals(version, that.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dependency);
+        return Objects.hash(artifactId, groupId, version);
     }
 }

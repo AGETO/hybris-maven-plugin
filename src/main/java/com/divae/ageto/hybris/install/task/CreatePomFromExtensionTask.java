@@ -7,11 +7,11 @@
 package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.slf4j.Logger;
@@ -21,7 +21,6 @@ import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.utils.FileUtils;
 import com.divae.ageto.hybris.utils.maven.MavenExecutorUtils;
 import com.divae.ageto.hybris.utils.maven.MavenUtils;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
 /**
@@ -132,10 +131,10 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
     }
 
     private void addExcludes(Dependency dependency) {
-        Set<Exclusion> exclusions = getExclusions(dependency);
+        Set<ExclusionWrapper> exclusions = getExclusions(dependency);
         if (exclusions.size() > 0) {
-            for (Exclusion exclusion : exclusions) {
-                dependency.addExclusion(exclusion);
+            for (ExclusionWrapper exclusion : exclusions) {
+                dependency.addExclusion(exclusion.getExclusion());
             }
         }
     }
@@ -165,28 +164,22 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         MavenUtils.writeModel(model, extensionPom);
     }
 
-    private Set<Exclusion> getExclusions(Dependency dependency) {
+    private Set<ExclusionWrapper> getExclusions(Dependency dependency) {
         if (getExcludesMap().get(new DependencyWrapper(dependency)) == null) {
             return Sets.newHashSet();
         }
         return getExcludesMap().get(new DependencyWrapper(dependency));
     }
 
-    private Map<DependencyWrapper, Set<Exclusion>> getExcludesMap() {
+    private Map<DependencyWrapper, Set<ExclusionWrapper>> getExcludesMap() {
 
-        final Map<DependencyWrapper, Set<Exclusion>> excludesMap = ImmutableMap.of(
+        Map<DependencyWrapper, Set<ExclusionWrapper>> dependencyMap = new HashMap<>();
+        dependencyMap.put(
                 new DependencyWrapper("displaytag", "displaytag", "1.2"),
-                Sets.newHashSet(newExclusion("org.slf4j", "jcl104-over-slf4j")));
+                Sets.newHashSet(new ExclusionWrapper("org.slf4j", "jcl104-over-slf4j")));
+        dependencyMap.put(new DependencyWrapper("org.apache.ddlutils", "ddlutils", "1.0"),
+                Sets.newHashSet(new ExclusionWrapper("commons-logging", "commons-logging-api")));
 
-        return excludesMap;
-    }
-
-    private Exclusion newExclusion(final String groupId, final String artifactId) {
-        Exclusion exclusion = new Exclusion();
-
-        exclusion.setArtifactId(artifactId);
-        exclusion.setGroupId(groupId);
-
-        return exclusion;
+        return dependencyMap;
     }
 }
