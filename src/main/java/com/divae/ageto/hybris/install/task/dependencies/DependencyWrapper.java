@@ -1,4 +1,4 @@
-package com.divae.ageto.hybris.install.task;
+package com.divae.ageto.hybris.install.task.dependencies;
 
 import java.util.Objects;
 
@@ -19,6 +19,15 @@ public class DependencyWrapper extends Dependency {
         this.artifactId = dependency.getArtifactId();
         this.groupId = dependency.getGroupId();
         this.version = dependency.getVersion();
+    }
+
+    public DependencyWrapper(final String groupId, final String artifactId) {
+        dependency = new Dependency();
+        dependency.setArtifactId(artifactId);
+        dependency.setGroupId(groupId);
+        this.version = "";
+        this.artifactId = artifactId;
+        this.groupId = groupId;
     }
 
     public DependencyWrapper(final String groupId, final String artifactId, final String version) {

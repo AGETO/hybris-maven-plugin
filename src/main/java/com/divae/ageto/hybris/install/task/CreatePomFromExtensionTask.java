@@ -7,6 +7,7 @@
 package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,9 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.task.dependencies.DependencyVersion;
+import com.divae.ageto.hybris.install.task.dependencies.DependencyWrapper;
+import com.divae.ageto.hybris.install.task.dependencies.ExclusionWrapper;
 import com.divae.ageto.hybris.utils.FileUtils;
 import com.divae.ageto.hybris.utils.maven.MavenExecutorUtils;
 import com.divae.ageto.hybris.utils.maven.MavenUtils;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -67,7 +72,63 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         addExtensionDependencies(taskContext, extension, model);
         addImplicitDependencies(taskContext, extension, model);
         addExternalDependencies(taskContext, extension, model);
+        resolveDependencyVersionConflicts(taskContext, extension, model);
         return model;
+    }
+
+    private void resolveDependencyVersionConflicts(TaskContext taskContext, Extension extension, Model model) {
+        for (Dependency dependency : model.getDependencies()) {
+            final DependencyWrapper key = new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId());
+            final Map<DependencyWrapper, String> dependencyVersion = getDependencyVersion(model);
+            if (dependencyVersion.containsKey(key)) {
+                dependency.setVersion(dependencyVersion.get(key));
+            }
+        }
+    }
+
+    private Map<DependencyWrapper, String> getDependencyVersion(Model model) {
+        Map<DependencyWrapper, String> dependencyMap = Maps.newHashMap();
+
+        final Map<DependencyWrapper, DependencyVersion> dependencyGroupMap = newDependencyGroupMap();
+        for (Dependency dependency : model.getDependencies()) {
+            final DependencyWrapper key = new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId());
+            if (dependencyGroupMap.containsKey(key)) {
+                final DependencyVersion groupVersion = dependencyGroupMap.get(key);
+
+                if (groupVersion.getVersion().compareTo(dependency.getVersion()) < 0) {
+                    groupVersion.setVersion(dependency.getVersion());
+                }
+            }
+        }
+
+        for (DependencyWrapper dependencyWrapper : dependencyGroupMap.keySet()) {
+            dependencyMap.put(dependencyWrapper, dependencyGroupMap.get(dependencyWrapper).getVersion());
+        }
+
+        return dependencyMap;
+    }
+
+    private Map<DependencyWrapper, DependencyVersion> newDependencyGroupMap() {
+        Map<DependencyWrapper, DependencyVersion> dependencyGroupMap = Maps.newHashMap();
+
+        for (Set<DependencyWrapper> dependencyWrappers : getDependencyGroups()) {
+            DependencyVersion dependencyVersion = new DependencyVersion();
+
+            for (DependencyWrapper dependencyWrapper : dependencyWrappers) {
+                dependencyGroupMap.put(dependencyWrapper, dependencyVersion);
+            }
+        }
+
+        return dependencyGroupMap;
+    }
+
+    private Set<Set<DependencyWrapper>> getDependencyGroups() {
+        Set<Set<DependencyWrapper>> dependencyGroups = Sets.newHashSet();
+
+        dependencyGroups.addAll(Arrays.asList(Sets.newHashSet(Arrays.asList(new DependencyWrapper("org.slf4j", "slf4j-api"),
+                new DependencyWrapper("org.slf4j", "slf4j-jcl")))));
+
+        return dependencyGroups;
     }
 
     private void setExtensionPackaging(TaskContext taskContext, Model model) {

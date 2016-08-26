@@ -1,4 +1,4 @@
-package com.divae.ageto.hybris.install.task;
+package com.divae.ageto.hybris.install.task.dependencies;
 
 import java.util.Objects;
 
