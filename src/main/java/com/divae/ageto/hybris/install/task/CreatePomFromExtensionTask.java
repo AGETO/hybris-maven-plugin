@@ -6,10 +6,12 @@
  */
 package com.divae.ageto.hybris.install.task;
 
+import static com.divae.ageto.hybris.utils.aether.DependencyResolver.findNewestVersion;
 import static com.divae.ageto.hybris.utils.aether.DependencyResolver.listTransitiveDependencies;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +74,7 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         parent.setArtifactId(PLATFORM__ARTIFACT_ID);
         parent.setVersion(taskContext.getHybrisVersion().getVersion());
         model.setParent(parent);
-        setExtensionPackaging(taskContext, model);
+        setExtensionPackaging(model);
         addExtensionDependencies(taskContext, extension, model);
         addImplicitDependencies(taskContext, extension, model);
         addExternalDependencies(taskContext, extension, model);
@@ -86,15 +88,8 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
             dependencySet.add(new DependencyWrapper(dependency));
         }
 
-        dependencySet.addAll(listTransitiveDependencies(dependencySet));
-
-        for (DependencyWrapper dependency : dependencySet) {
-            final DependencyWrapper key = new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId());
-            final Map<DependencyWrapper, String> dependencyVersion = getDependencyVersion(dependencySet);
-            if (dependencyVersion.containsKey(key)) {
-                dependency.setVersion(dependencyVersion.get(key));
-            }
-        }
+        addTransitiveDependencies(dependencySet);
+        unifyDependencyVersions(dependencySet);
 
         List<Dependency> dependencies = Lists.newArrayList();
         for (DependencyWrapper dependency : dependencySet) {
@@ -102,6 +97,23 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         }
 
         model.setDependencies(dependencies);
+    }
+
+    private void unifyDependencyVersions(Set<DependencyWrapper> dependencySet) {
+        for (DependencyWrapper dependency : dependencySet) {
+            final DependencyWrapper key = new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId());
+            final Map<DependencyWrapper, String> dependencyVersion = getDependencyVersion(dependencySet);
+            if (dependencyVersion.containsKey(key)) {
+                dependency.setVersion(dependencyVersion.get(key));
+            }
+        }
+    }
+
+    private void addTransitiveDependencies(Set<DependencyWrapper> dependencySet) {
+        dependencySet.addAll(listTransitiveDependencies(dependencySet));
+        for (DependencyWrapper dependency : dependencySet) {
+            dependency.setVersion(findNewestVersion(dependency).getVersion());
+        }
     }
 
     private Map<DependencyWrapper, String> getDependencyVersion(Set<DependencyWrapper> dependencies) {
@@ -143,13 +155,14 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
     private Set<Set<DependencyWrapper>> getDependencyGroups() {
         Set<Set<DependencyWrapper>> dependencyGroups = Sets.newHashSet();
 
-        dependencyGroups.addAll(Arrays.asList(Sets.newHashSet(Arrays.asList(new DependencyWrapper("org.slf4j", "slf4j-api"),
-                new DependencyWrapper("org.slf4j", "slf4j-jcl"), new DependencyWrapper("org.slf4j", "slf4j-log4j12")))));
+        dependencyGroups
+                .addAll(Collections.singletonList(Sets.newHashSet(Arrays.asList(new DependencyWrapper("org.slf4j", "slf4j-api"),
+                        new DependencyWrapper("org.slf4j", "slf4j-jcl"), new DependencyWrapper("org.slf4j", "slf4j-log4j12")))));
 
         return dependencyGroups;
     }
 
-    private void setExtensionPackaging(TaskContext taskContext, Model model) {
+    private void setExtensionPackaging(Model model) {
         if (packaging != null) {
             model.setPackaging(packaging);
         }

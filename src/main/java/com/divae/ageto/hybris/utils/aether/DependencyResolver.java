@@ -13,10 +13,14 @@ import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.resolution.VersionRangeRequest;
+import org.eclipse.aether.resolution.VersionRangeResolutionException;
+import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.filter.DependencyFilterUtils;
 
 import com.divae.ageto.hybris.install.task.dependencies.DependencyWrapper;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Sets;
 
 /**
@@ -24,7 +28,34 @@ import com.google.common.collect.Sets;
  */
 public class DependencyResolver {
 
-    public static Set<DependencyWrapper> listTransitiveDependencies(Set<DependencyWrapper> dependencySet) {
+    public static DependencyWrapper findNewestVersion(final DependencyWrapper dependency) {
+        RepositorySystem system = Booter.newRepositorySystem();
+
+        RepositorySystemSession session = Booter.newRepositorySystemSession(system);
+
+        Artifact artifact = new DefaultArtifact(
+                String.format("%s:%s:[%s,)", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
+
+        VersionRangeRequest rangeRequest = new VersionRangeRequest();
+        rangeRequest.setArtifact(artifact);
+        rangeRequest.setRepositories(Booter.newRepositories());
+
+        VersionRangeResult rangeResult;
+        try {
+            rangeResult = system.resolveVersionRange(session, rangeRequest);
+        } catch (VersionRangeResolutionException e) {
+            throw Throwables.propagate(e);
+        }
+
+        if (rangeResult.getHighestVersion() == null) {
+            return dependency;
+        }
+
+        return new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId(),
+                rangeResult.getHighestVersion().toString());
+    }
+
+    public static Set<DependencyWrapper> listTransitiveDependencies(final Set<DependencyWrapper> dependencySet) {
         Set<DependencyWrapper> dependencies = Sets.newHashSet();
 
         for (DependencyWrapper dependency : dependencySet) {
@@ -39,11 +70,11 @@ public class DependencyResolver {
 
             CollectRequest collectRequest = new CollectRequest();
             collectRequest.setRoot(new Dependency(artifact, JavaScopes.COMPILE));
-            collectRequest.setRepositories(Booter.newRepositories(system, session));
+            collectRequest.setRepositories(Booter.newRepositories());
 
             DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFlter);
 
-            List<ArtifactResult> artifactResults = null;
+            List<ArtifactResult> artifactResults;
             try {
                 artifactResults = system.resolveDependencies(session, dependencyRequest).getArtifactResults();
             } catch (DependencyResolutionException e) {
