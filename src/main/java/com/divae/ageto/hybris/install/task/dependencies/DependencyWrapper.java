@@ -41,6 +41,21 @@ public class DependencyWrapper extends Dependency {
     }
 
     @Override
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    @Override
+    public String getGroupId() {
+        return groupId;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -54,5 +69,11 @@ public class DependencyWrapper extends Dependency {
     @Override
     public int hashCode() {
         return Objects.hash(artifactId, groupId, version);
+    }
+
+    @Override
+    public String toString() {
+        return "DependencyWrapper{" + "artifactId='" + artifactId + '\'' + ", groupId='" + groupId + '\'' + ", version='"
+                + version + '\'' + '}';
     }
 }
