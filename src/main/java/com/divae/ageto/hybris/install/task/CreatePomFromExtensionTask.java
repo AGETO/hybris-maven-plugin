@@ -6,9 +6,6 @@
  */
 package com.divae.ageto.hybris.install.task;
 
-import static com.divae.ageto.hybris.utils.aether.DependencyResolver.findNewestVersion;
-import static com.divae.ageto.hybris.utils.aether.DependencyResolver.listTransitiveDependencies;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +25,7 @@ import com.divae.ageto.hybris.install.task.dependencies.DependencyVersion;
 import com.divae.ageto.hybris.install.task.dependencies.DependencyWrapper;
 import com.divae.ageto.hybris.install.task.dependencies.ExclusionWrapper;
 import com.divae.ageto.hybris.utils.FileUtils;
+import com.divae.ageto.hybris.utils.aether.DependencyResolver;
 import com.divae.ageto.hybris.utils.maven.MavenExecutorUtils;
 import com.divae.ageto.hybris.utils.maven.MavenUtils;
 import com.google.common.collect.Lists;
@@ -110,9 +108,17 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
     }
 
     private void addTransitiveDependencies(Set<DependencyWrapper> dependencySet) {
-        dependencySet.addAll(listTransitiveDependencies(dependencySet));
-        for (DependencyWrapper dependency : dependencySet) {
-            dependency.setVersion(findNewestVersion(dependency).getVersion());
+        final Set<DependencyWrapper> dependencies = DependencyResolver.listTransitiveDependencies(dependencySet);
+        for (DependencyWrapper dependency : dependencies) {
+            try {
+                final DependencyWrapper newestVersion = DependencyResolver.findNewestVersion(dependency);
+                dependency.setVersion(newestVersion.getVersion());
+                dependencySet.add(dependency);
+            } catch (Exception e) {
+                LOGGER.warn(String.format("Can not resolve dependency %s:%s:%s, removing it from dependency list",
+                        dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
+
+            }
         }
     }
 

@@ -48,7 +48,7 @@ public class DependencyResolver {
         }
 
         if (rangeResult.getHighestVersion() == null) {
-            return dependency;
+            throw new RuntimeException("Version result is invalid");
         }
 
         return new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId(),
