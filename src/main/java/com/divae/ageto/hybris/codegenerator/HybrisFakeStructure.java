@@ -4,7 +4,6 @@ import static org.apache.commons.io.FileUtils.copyDirectory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -89,11 +88,7 @@ class HybrisFakeStructure {
         com.divae.ageto.hybris.utils.FileUtils.makeDirectory(destFile.getParentFile());
 
         // FileUtils.copyFile(srcFile, destFile);
-        try {
-            Files.createSymbolicLink(destFile.toPath(), srcFile.toPath());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Utils.createSymLink(destFile, srcFile);
     }
 
 }
