@@ -4,17 +4,16 @@ import static org.apache.commons.io.FileUtils.copyDirectory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
-import com.divae.ageto.hybris.install.task.metadata.MetadataFile;
+import com.divae.ageto.hybris.utils.Utils;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 
 /**
  * @author Marvin Haagen
@@ -43,7 +42,7 @@ class HybrisFakeStructure {
                     new File(platformDirectory, "bootstrap/resources/pojo/global-eventtemplate.vm"));
 
             // TODO read extensions from reactor modules
-            final List<Extension> extensions = readExtensionsFromReactorModules(hybrisReactorDir);
+            final List<Extension> extensions = Utils.readExtensionsFromReactorModules(hybrisReactorDir);
 
             for (Extension extension : extensions) {
 
@@ -80,22 +79,6 @@ class HybrisFakeStructure {
         }
     }
 
-    private static List<Extension> readExtensionsFromReactorModules(final File hybrisReactorDir) {
-        LOGGER.debug("Searching extensions in reactor directory...");
-        final List<Extension> extensions = Lists.newArrayList();
-
-        final File[] files = hybrisReactorDir.listFiles((File file) -> file.isDirectory() && !file.getName().equals("target"));
-
-        for (File file : files) {
-            LOGGER.debug(String.format("Extension %s found", file.getName()));
-            if (new File(file, String.format("src/main/resources/%s", MetadataFile.getFileName(file.getName()))).exists()) {
-                extensions.add(ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, file.getName()));
-            }
-        }
-
-        return extensions;
-    }
-
     private static void copyFile(final File srcFile, final File destFile) throws IOException {
         LOGGER.info(String.format("Copying file %s to %s", srcFile, destFile));
         if (!srcFile.exists()) {
@@ -105,7 +88,12 @@ class HybrisFakeStructure {
 
         com.divae.ageto.hybris.utils.FileUtils.makeDirectory(destFile.getParentFile());
 
-        FileUtils.copyFile(srcFile, destFile);
+        // FileUtils.copyFile(srcFile, destFile);
+        try {
+            Files.createSymbolicLink(destFile.toPath(), srcFile.toPath());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -13,14 +13,11 @@ import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
-import org.eclipse.aether.resolution.VersionRangeRequest;
-import org.eclipse.aether.resolution.VersionRangeResolutionException;
-import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.filter.DependencyFilterUtils;
 
 import com.divae.ageto.hybris.install.task.dependencies.DependencyWrapper;
-import com.google.common.base.Throwables;
+import com.divae.ageto.hybris.utils.maven.MavenUtils;
 import com.google.common.collect.Sets;
 
 /**
@@ -28,34 +25,7 @@ import com.google.common.collect.Sets;
  */
 public class DependencyResolver {
 
-    public static DependencyWrapper findNewestVersion(final DependencyWrapper dependency) {
-        RepositorySystem system = Booter.newRepositorySystem();
-
-        RepositorySystemSession session = Booter.newRepositorySystemSession(system);
-
-        Artifact artifact = new DefaultArtifact(
-                String.format("%s:%s:[%s,)", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
-
-        VersionRangeRequest rangeRequest = new VersionRangeRequest();
-        rangeRequest.setArtifact(artifact);
-        rangeRequest.setRepositories(Booter.newRepositories());
-
-        VersionRangeResult rangeResult;
-        try {
-            rangeResult = system.resolveVersionRange(session, rangeRequest);
-        } catch (VersionRangeResolutionException e) {
-            throw Throwables.propagate(e);
-        }
-
-        if (rangeResult.getHighestVersion() == null) {
-            throw new RuntimeException("Version result is invalid");
-        }
-
-        return new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId(),
-                rangeResult.getHighestVersion().toString());
-    }
-
-    public static Set<DependencyWrapper> listTransitiveDependencies(final Set<DependencyWrapper> dependencySet) {
+    public static Set<DependencyWrapper> listTransitiveDependencies(Set<DependencyWrapper> dependencySet) {
         Set<DependencyWrapper> dependencies = Sets.newHashSet();
 
         for (DependencyWrapper dependency : dependencySet) {
@@ -70,11 +40,11 @@ public class DependencyResolver {
 
             CollectRequest collectRequest = new CollectRequest();
             collectRequest.setRoot(new Dependency(artifact, JavaScopes.COMPILE));
-            collectRequest.setRepositories(Booter.newRepositories());
+            collectRequest.setRepositories(Booter.newRepositories(system, session));
 
             DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFlter);
 
-            List<ArtifactResult> artifactResults;
+            List<ArtifactResult> artifactResults = null;
             try {
                 artifactResults = system.resolveDependencies(session, dependencyRequest).getArtifactResults();
             } catch (DependencyResolutionException e) {
@@ -82,7 +52,22 @@ public class DependencyResolver {
             }
 
             for (ArtifactResult artifactResult : artifactResults) {
+
+                if (artifactResult.getRepository() == null) {
+                    continue;
+                }
+
                 Artifact artifact1 = artifactResult.getArtifact();
+
+                org.apache.maven.model.Dependency dependency1 = new org.apache.maven.model.Dependency();
+                dependency1.setArtifactId(artifact1.getArtifactId());
+                dependency1.setGroupId(artifact1.getGroupId());
+                dependency1.setVersion(artifact1.getVersion());
+                dependency1.setClassifier(artifact1.getClassifier());
+                if (!MavenUtils.isDependencyResolvable(dependency1)) {
+                    continue;
+                }
+
                 dependencies
                         .add(new DependencyWrapper(artifact1.getGroupId(), artifact1.getArtifactId(), artifact1.getVersion()));
             }

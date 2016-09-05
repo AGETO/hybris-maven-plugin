@@ -1,11 +1,13 @@
 package com.divae.ageto.hybris.utils.aether;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
@@ -15,15 +17,12 @@ import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
-
 /**
  * Created by mhaagen on 28.08.2016.
  */
-class Booter {
+public class Booter {
 
-    static RepositorySystem newRepositorySystem() {
+    public static RepositorySystem newRepositorySystem() {
         DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
         locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
         locator.addService(TransporterFactory.class, FileTransporterFactory.class);
@@ -32,14 +31,14 @@ class Booter {
         locator.setErrorHandler(new DefaultServiceLocator.ErrorHandler() {
             @Override
             public void serviceCreationFailed(Class<?> type, Class<?> impl, Throwable exception) {
-                throw Throwables.propagate(exception);
+                exception.printStackTrace();
             }
         });
 
         return locator.getService(RepositorySystem.class);
     }
 
-    static DefaultRepositorySystemSession newRepositorySystemSession(RepositorySystem system) {
+    public static DefaultRepositorySystemSession newRepositorySystemSession(RepositorySystem system) {
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
         LocalRepository localRepo = new LocalRepository("target/local-repo");
@@ -51,8 +50,8 @@ class Booter {
         return session;
     }
 
-    static List<RemoteRepository> newRepositories() {
-        return Lists.newArrayList(Collections.singletonList(newCentralRepository()));
+    public static List<RemoteRepository> newRepositories(RepositorySystem system, RepositorySystemSession session) {
+        return new ArrayList<RemoteRepository>(Arrays.asList(newCentralRepository()));
     }
 
     private static RemoteRepository newCentralRepository() {
