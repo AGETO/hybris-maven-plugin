@@ -1,6 +1,7 @@
 package com.divae.ageto.hybris.utils;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.google.common.base.Throwables;
 
@@ -28,16 +29,10 @@ public enum FileUtils {
     }
 
     public static void delete(final File directory) {
-        if (directory.isDirectory()) {
-            final File[] files = directory.listFiles();
-            if (files != null) {
-                for (final File child : files) {
-                    delete(child);
-                }
-            }
-        }
-        if (directory.exists() && !directory.delete()) {
-            throw new RuntimeException(String.format("Directory %s can not be deleted", directory));
+        try {
+            org.apache.commons.io.FileUtils.forceDelete(directory);
+        } catch (IOException e) {
+            Throwables.propagate(e);
         }
     }
 
