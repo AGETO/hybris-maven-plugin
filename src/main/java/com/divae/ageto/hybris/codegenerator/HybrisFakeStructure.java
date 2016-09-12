@@ -1,20 +1,24 @@
 package com.divae.ageto.hybris.codegenerator;
 
-import static org.apache.commons.io.FileUtils.copyDirectory;
-
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
 import com.divae.ageto.hybris.install.task.metadata.ExtensionMetadataFile;
-import com.divae.ageto.hybris.install.task.metadata.MetadataFile;
+import com.divae.ageto.hybris.utils.FileUtils;
+import com.divae.ageto.hybris.utils.Utils;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 
 /**
  * @author Marvin Haagen
@@ -43,7 +47,7 @@ class HybrisFakeStructure {
                     new File(platformDirectory, "bootstrap/resources/pojo/global-eventtemplate.vm"));
 
             // TODO read extensions from reactor modules
-            final List<Extension> extensions = readExtensionsFromReactorModules(hybrisReactorDir);
+            final List<Extension> extensions = Utils.readExtensionsFromReactorModules(hybrisReactorDir);
 
             for (Extension extension : extensions) {
 
@@ -80,20 +84,48 @@ class HybrisFakeStructure {
         }
     }
 
-    private static List<Extension> readExtensionsFromReactorModules(final File hybrisReactorDir) {
-        LOGGER.debug("Searching extensions in reactor directory...");
-        final List<Extension> extensions = Lists.newArrayList();
-
-        final File[] files = hybrisReactorDir.listFiles((File file) -> file.isDirectory() && !file.getName().equals("target"));
-
-        for (File file : files) {
-            LOGGER.debug(String.format("Extension %s found", file.getName()));
-            if (new File(file, String.format("src/main/resources/%s", MetadataFile.getFileName(file.getName()))).exists()) {
-                extensions.add(ExtensionMetadataFile.readMetadataFile(hybrisReactorDir, file.getName()));
-            }
+    private static void copyDirectory(final File srcDirectory, final File destDirectory) {
+        LOGGER.info(String.format("Copying directory %s to %s", srcDirectory, destDirectory));
+        if (!srcDirectory.exists()) {
+            LOGGER.info("Source directory not exists");
+            return;
         }
 
-        return extensions;
+        final FileFilter fileFilter = FileFilterUtils.trueFileFilter();
+
+        com.divae.ageto.hybris.utils.FileUtils.makeDirectory(destDirectory.getParentFile());
+
+        if (srcDirectory.isFile()) {
+            throw new RuntimeException("Source path is not a directory.");
+        }
+        if (destDirectory.isFile()) {
+            throw new RuntimeException("Target path is not a directory.");
+        }
+
+        try {
+            Files.walkFileTree(srcDirectory.toPath(), new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (fileFilter.accept(file.toFile())) {
+                        Path relativePath = srcDirectory.toPath().relativize(file);
+                        copyFile(file.toFile(), new File(destDirectory, relativePath.toString()));
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    if (fileFilter.accept(dir.toFile())) {
+                        Path relativePath = srcDirectory.toPath().relativize(dir);
+                        FileUtils.makeDirectory(new File(destDirectory, relativePath.toString()));
+                        return FileVisitResult.CONTINUE;
+                    }
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
+            });
+        } catch (IOException e) {
+            Throwables.propagate(e);
+        }
     }
 
     private static void copyFile(final File srcFile, final File destFile) throws IOException {
@@ -103,9 +135,10 @@ class HybrisFakeStructure {
             return;
         }
 
-        com.divae.ageto.hybris.utils.FileUtils.makeDirectory(destFile.getParentFile());
+        FileUtils.makeDirectory(destFile.getParentFile());
 
-        FileUtils.copyFile(srcFile, destFile);
+        // FileUtils.copyFile(srcFile, destFile);
+        Utils.createSymLink(destFile, srcFile);
     }
 
 }

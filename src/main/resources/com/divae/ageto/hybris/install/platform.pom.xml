@@ -20,6 +20,11 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.11.v20160721</version>
+            </plugin>
+            <plugin>
                 <groupId>com.divae.ageto</groupId>
                 <artifactId>hybris-maven-plugin</artifactId>
                 <version>${project.version}</version>

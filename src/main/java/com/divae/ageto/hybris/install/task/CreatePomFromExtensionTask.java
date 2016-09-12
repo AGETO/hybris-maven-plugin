@@ -7,6 +7,11 @@
 package com.divae.ageto.hybris.install.task;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -15,9 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.divae.ageto.hybris.install.extensions.Extension;
+import com.divae.ageto.hybris.install.task.dependencies.DependencyVersion;
+import com.divae.ageto.hybris.install.task.dependencies.DependencyWrapper;
+import com.divae.ageto.hybris.install.task.dependencies.ExclusionWrapper;
 import com.divae.ageto.hybris.utils.FileUtils;
 import com.divae.ageto.hybris.utils.maven.MavenExecutorUtils;
 import com.divae.ageto.hybris.utils.maven.MavenUtils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * @author Klaus Hauschild
@@ -31,9 +42,16 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
     private static final String PLATFORM__ARTIFACT_ID = "platform";
 
     private final Extension     extension;
+    private final String        packaging;
+
+    CreatePomFromExtensionTask(final Extension extension, final String packaging) {
+        this.extension = extension;
+        this.packaging = packaging;
+    }
 
     CreatePomFromExtensionTask(final Extension extension) {
         this.extension = extension;
+        this.packaging = null;
     }
 
     @Override
@@ -52,10 +70,87 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         parent.setArtifactId(PLATFORM__ARTIFACT_ID);
         parent.setVersion(taskContext.getHybrisVersion().getVersion());
         model.setParent(parent);
+        setExtensionPackaging(taskContext, model);
         addExtensionDependencies(taskContext, extension, model);
         addImplicitDependencies(taskContext, extension, model);
         addExternalDependencies(taskContext, extension, model);
+        // resolveDependencyVersionConflicts(taskContext, extension, model);
         return model;
+    }
+
+    private void resolveDependencyVersionConflicts(TaskContext taskContext, Extension extension, Model model) {
+        Set<DependencyWrapper> dependencySet = Sets.newHashSet();
+        for (Dependency dependency : model.getDependencies()) {
+            final DependencyWrapper dep = new DependencyWrapper(dependency);
+            dependencySet.add(dep);
+            // dependencySet.addAll(listTransitiveDependencies(Collections.singleton(dep)));
+        }
+
+        for (DependencyWrapper dependency : dependencySet) {
+            final DependencyWrapper key = new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId());
+            final Map<DependencyWrapper, String> dependencyVersion = getDependencyVersion(dependencySet);
+            if (dependencyVersion.containsKey(key)) {
+                dependency.setVersion(dependencyVersion.get(key));
+            }
+        }
+
+        List<Dependency> dependencies = Lists.newArrayList();
+        for (DependencyWrapper dependency : dependencySet) {
+            dependencies.add(dependency);
+        }
+
+        model.setDependencies(dependencies);
+    }
+
+    private Map<DependencyWrapper, String> getDependencyVersion(Set<DependencyWrapper> dependencies) {
+        Map<DependencyWrapper, String> dependencyMap = Maps.newHashMap();
+
+        final Map<DependencyWrapper, DependencyVersion> dependencyGroupMap = newDependencyGroupMap();
+        for (DependencyWrapper dependency : dependencies) {
+            final DependencyWrapper key = new DependencyWrapper(dependency.getGroupId(), dependency.getArtifactId());
+            if (dependencyGroupMap.containsKey(key)) {
+                final DependencyVersion groupVersion = dependencyGroupMap.get(key);
+
+                if (groupVersion.getVersion().compareTo(dependency.getVersion()) < 0) {
+                    groupVersion.setVersion(dependency.getVersion());
+                }
+            }
+        }
+
+        for (DependencyWrapper dependencyWrapper : dependencyGroupMap.keySet()) {
+            dependencyMap.put(dependencyWrapper, dependencyGroupMap.get(dependencyWrapper).getVersion());
+        }
+
+        return dependencyMap;
+    }
+
+    private Map<DependencyWrapper, DependencyVersion> newDependencyGroupMap() {
+        Map<DependencyWrapper, DependencyVersion> dependencyGroupMap = Maps.newHashMap();
+
+        for (Set<DependencyWrapper> dependencyWrappers : getDependencyGroups()) {
+            DependencyVersion dependencyVersion = new DependencyVersion();
+
+            for (DependencyWrapper dependencyWrapper : dependencyWrappers) {
+                dependencyGroupMap.put(dependencyWrapper, dependencyVersion);
+            }
+        }
+
+        return dependencyGroupMap;
+    }
+
+    private Set<Set<DependencyWrapper>> getDependencyGroups() {
+        Set<Set<DependencyWrapper>> dependencyGroups = Sets.newHashSet();
+
+        dependencyGroups.addAll(Arrays.asList(Sets.newHashSet(Arrays.asList(new DependencyWrapper("org.slf4j", "slf4j-api"),
+                new DependencyWrapper("org.slf4j", "slf4j-jcl"), new DependencyWrapper("org.slf4j", "slf4j-log4j12")))));
+
+        return dependencyGroups;
+    }
+
+    private void setExtensionPackaging(TaskContext taskContext, Model model) {
+        if (packaging != null) {
+            model.setPackaging(packaging);
+        }
     }
 
     private void addExtensionDependencies(final TaskContext taskContext, final Extension extension, final Model model) {
@@ -64,6 +159,7 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
             dependency.setGroupId(HYBRIS__GROUP_ID);
             dependency.setArtifactId(extensionDependency.getName());
             dependency.setVersion(taskContext.getHybrisVersion().getVersion());
+            addExcludes(dependency);
             model.getDependencies().add(dependency);
         }
     }
@@ -86,6 +182,7 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
                 dependency.setArtifactId("core");
                 break;
         }
+        addExcludes(dependency);
         model.getDependencies().add(dependency);
     }
 
@@ -104,8 +201,19 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
                 dependency.setVersion(version);
             }
             installDependencyLocallyIfNeeded(extensionDirectory, dependency);
+            addExcludes(dependency);
+
             model.getDependencies().add(dependency);
         });
+    }
+
+    private void addExcludes(Dependency dependency) {
+        Set<ExclusionWrapper> exclusions = getExclusions(dependency);
+        if (exclusions.size() > 0) {
+            for (ExclusionWrapper exclusion : exclusions) {
+                dependency.addExclusion(exclusion.getExclusion());
+            }
+        }
     }
 
     private void installDependencyLocallyIfNeeded(final File extensionDirectory, final Dependency dependency) {
@@ -133,4 +241,21 @@ class CreatePomFromExtensionTask extends AbstractWorkDirectoryTask {
         MavenUtils.writeModel(model, extensionPom);
     }
 
+    private Set<ExclusionWrapper> getExclusions(Dependency dependency) {
+        if (getExcludesMap().get(new DependencyWrapper(dependency)) == null) {
+            return Sets.newHashSet();
+        }
+        return getExcludesMap().get(new DependencyWrapper(dependency));
+    }
+
+    private Map<DependencyWrapper, Set<ExclusionWrapper>> getExcludesMap() {
+
+        Map<DependencyWrapper, Set<ExclusionWrapper>> dependencyMap = new HashMap<>();
+        dependencyMap.put(new DependencyWrapper("org.apache.ddlutils", "ddlutils", "1.0"),
+                Sets.newHashSet(new ExclusionWrapper("commons-logging", "commons-logging-api")));
+        dependencyMap.put(new DependencyWrapper("de.hybris", "core", "5.5.1.1"), Sets.newHashSet(
+                new ExclusionWrapper("org.slf4j", "slf4j-jcl"), new ExclusionWrapper("commons-logging", "commons-logging")));
+
+        return dependencyMap;
+    }
 }

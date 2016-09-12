@@ -24,6 +24,7 @@ public class Extension {
     private final String          name;
     private final ExtensionBinary binary;
     private final Set<Extension>  dependencies;
+    private File                  originalLocation;
 
     public Extension(final File baseDirectory, final String name, final ExtensionBinary binary) {
         this(baseDirectory, name, binary, null);
@@ -35,6 +36,14 @@ public class Extension {
         this.name = name;
         this.binary = binary;
         this.dependencies = dependencies;
+    }
+
+    public File getOriginalLocation() {
+        return originalLocation;
+    }
+
+    public void setOriginalLocation(File originalLocation) {
+        this.originalLocation = originalLocation;
     }
 
     public File getExternalDependenciesXML(final File hybrisDirectory) {
